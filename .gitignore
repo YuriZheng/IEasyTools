@@ -10,11 +10,15 @@
 
 # Generated files
 bin/
+IApplication/bin
 gen/
+ZYJLibrary/gen
 
 # Gradle files
 .gradle/
 build/
+IApplication/build
+ZYJLibrary/build
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -30,3 +34,10 @@ proguard/
 
 # Android Studio captures folder
 captures/
+
+.idea/
+
+# Iml file
+IEasyTools.iml
+IApplication/IApplication.iml
+ZYJLibrary/ZYJLibrary.iml
