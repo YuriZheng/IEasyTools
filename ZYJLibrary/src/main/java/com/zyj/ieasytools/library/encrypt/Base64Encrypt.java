@@ -1,10 +1,9 @@
 package com.zyj.ieasytools.library.encrypt;
 
 /**
- * A password if needed<br>
- * Finish
+ * Base64 encrypt class
  *
- * @author ZYJ:2015-5-17
+ * @author yuri.zheng 2016/04/25
  */
 public class Base64Encrypt extends BaseEncrypt {
 
@@ -24,9 +23,8 @@ public class Base64Encrypt extends BaseEncrypt {
         codes['/'] = 63;
     }
 
-    public Base64Encrypt(String privateKey, String publicKey) {
-        super(privateKey, publicKey);
-        ENCRYPT_STYLE = ENCRYPT_BASE_64;
+    private Base64Encrypt(String privateKey, String publicKey) {
+        super(privateKey, publicKey, ENCRYPT_BASE_64);
     }
 
     @Override
@@ -95,11 +93,9 @@ public class Base64Encrypt extends BaseEncrypt {
     }
 
     /**
-     * <code>
-     * 加密后的byte数组不能直接转换成String，new String(byte[])，这样会报错
+     * encrypted byte array can not be directly converted into {@link String},it will cause
      * javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher
-     * 使用一个方法将二进制转成16进制
-     * </code>
+     * This is encode Binary to Hex
      *
      * @author ZYJ:2015-5-17
      */
@@ -123,10 +119,7 @@ public class Base64Encrypt extends BaseEncrypt {
         }
 
         /**
-         * 将二进制转换成16进制
-         *
-         * @param buf
-         * @return return the string
+         * Binary to Hex
          */
         public static String parseByte2HexStr(byte buf[]) {
             StringBuffer sb = new StringBuffer();
@@ -141,10 +134,7 @@ public class Base64Encrypt extends BaseEncrypt {
         }
 
         /**
-         * 将16进制转换为二进制
-         *
-         * @param hexStr
-         * @return return the byte[]
+         * Hex to Binary
          */
         public static byte[] parseHexStr2Byte(String hexStr) {
             if (hexStr.length() < 1)
@@ -159,7 +149,7 @@ public class Base64Encrypt extends BaseEncrypt {
         }
 
         /**
-         * 将原始数据编码为base64编码
+         * Encode resource to base64
          */
         static public String encode(byte[] data) {
             char[] out = new char[((data.length + 2) / 3) * 4];
@@ -190,7 +180,7 @@ public class Base64Encrypt extends BaseEncrypt {
         }
 
         /**
-         * 将base64编码的数据解码成原始数据
+         * Encode base64 to resource
          */
         static public byte[] decode(char[] data) {
             int len = ((data.length + 3) / 4) * 3;

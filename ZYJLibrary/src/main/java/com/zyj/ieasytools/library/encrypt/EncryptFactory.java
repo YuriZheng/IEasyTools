@@ -4,6 +4,11 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Factory method
+ *
+ * @author yuri.zheng 2016/04/25
+ */
 public final class EncryptFactory {
     private static EncryptFactory mInstance = null;
 
@@ -28,7 +33,8 @@ public final class EncryptFactory {
         BaseEncrypt encrypt = null;
         try {
             Class<?> cls = Class.forName(clazz.getName());
-            Constructor<?> con = cls.getConstructor(new Class<?>[]{String.class, String.class});
+            Constructor<?> con = cls.getDeclaredConstructor(new Class<?>[]{String.class, String.class});
+            con.setAccessible(true);
             encrypt = (BaseEncrypt) con.newInstance(new Object[]{privateKey, publicKey});
             // mWeakReferences.put(clazz.getName(), encrypt);
         } catch (Exception e) {

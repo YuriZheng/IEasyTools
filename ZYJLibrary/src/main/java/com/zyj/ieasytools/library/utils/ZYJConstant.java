@@ -1,5 +1,10 @@
 package com.zyj.ieasytools.library.utils;
 
+/**
+ * Constant variable
+ *
+ * @author yuri.zheng 2016/04/25
+ */
 public final class ZYJConstant {
 
     /**

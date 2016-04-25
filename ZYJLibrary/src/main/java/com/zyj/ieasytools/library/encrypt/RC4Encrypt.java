@@ -4,13 +4,12 @@ package com.zyj.ieasytools.library.encrypt;
  * Need a password<br>
  * Finish
  *
- * @author ZYJ:2015-5-17
+ * @author yuri.zheng 2016/04/25
  */
 public class RC4Encrypt extends BaseEncrypt {
 
-    public RC4Encrypt(String privateKey, String publicKey) {
-        super(privateKey, publicKey);
-        ENCRYPT_STYLE = ENCRYPT_RC4;
+    private RC4Encrypt(String privateKey, String publicKey) {
+        super(privateKey, publicKey, ENCRYPT_RC4);
     }
 
     @Override

@@ -8,27 +8,20 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 /**
- * Need a passsword<br>
- * Finish: The call method that distinguishes 4.2 above
+ * AES encrypt class,Nees a private password to encrypt or decrypt string
  *
- * @author ZYJ:2015-5-17
+ * @author yuri.zheng 2016/04/25
  */
 public class AESEncrypt extends BaseEncrypt {
 
-    public AESEncrypt(String privateKey, String publicKey) {
-        super(privateKey, publicKey);
-        ENCRYPT_STYLE = ENCRYPT_AES;
-    }
+    /**
+     * Mode and Fill mode,{@link #MODE} can't be modified
+     */
+    private final String MODE = "AES/ECB/ISO10126Padding";
 
-//    private SecretKey generateKey(String keyStr) throws Exception {
-//        KeyGenerator kgen = KeyGenerator.getInstance("AES");
-//        kgen.init(128, new SecureRandom(keyStr.getBytes()));
-//        SecretKey secretKey = kgen.generateKey();
-//        byte[] enCodeFormat = secretKey.getEncoded();
-//        SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
-//        System.out.println("1111111: " + key.getFormat());
-//        return key;
-//    }
+    private AESEncrypt(String privateKey, String publicKey) {
+        super(privateKey, publicKey, ENCRYPT_AES);
+    }
 
     private SecretKey generateKey(String keyStr) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
@@ -38,7 +31,7 @@ public class AESEncrypt extends BaseEncrypt {
         } else {
             sr = SecureRandom.getInstance("SHA1PRNG");
         }
-        sr.setSeed(keyStr.getBytes());
+        sr.setSeed(keyStr.getBytes("utf-8"));
         kgen.init(128, sr); // 192 and 256 bits may not be available
         SecretKey skey = kgen.generateKey();
         return skey;
@@ -48,15 +41,14 @@ public class AESEncrypt extends BaseEncrypt {
     protected String protectedEncrypt(String resourceString) {
         try {
             Key key = generateKey(getPrivateKey());
-            Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
+            Cipher cipher = Cipher.getInstance(MODE);
             byte[] byteContent = resourceString.getBytes("utf-8");
             cipher.init(Cipher.ENCRYPT_MODE, key);
-            byte[] result = cipher.doFinal(byteContent);
-            return Base64Encrypt.Base64Utils.parseByte2HexStr(result);
+            return Base64Encrypt.Base64Utils.parseByte2HexStr(cipher.doFinal(byteContent));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return resourceString;
+        return null;
     }
 
     @Override
@@ -64,14 +56,13 @@ public class AESEncrypt extends BaseEncrypt {
         try {
             byte[] data = Base64Encrypt.Base64Utils.parseHexStr2Byte(encryptString);
             Key key = generateKey(getPrivateKey());
-            Cipher cipher = Cipher.getInstance("AES/ECB/NoPadding");
+            Cipher cipher = Cipher.getInstance(MODE);
             cipher.init(Cipher.DECRYPT_MODE, key);
-            byte[] result = cipher.doFinal(data);
-            return new String(result);
+            return new String(cipher.doFinal(data));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return encryptString;
+        return null;
     }
 
     @Override

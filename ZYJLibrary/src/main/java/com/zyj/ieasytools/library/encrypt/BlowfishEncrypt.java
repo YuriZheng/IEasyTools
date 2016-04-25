@@ -4,10 +4,9 @@ import java.security.MessageDigest;
 import java.util.Random;
 
 /**
- * Need a password<br>
- * Finish
+ * Blowfish encrypt class
  *
- * @author ZYJ:2015-5-17
+ * @author yuri.zheng 2016/04/25
  */
 public class BlowfishEncrypt extends BaseEncrypt {
     private static final char HEXTAB[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
@@ -15,9 +14,8 @@ public class BlowfishEncrypt extends BaseEncrypt {
     private BlowfishCBC m_bfish;
     private Random m_rndGen = new Random();
 
-    public BlowfishEncrypt(String privateKey, String publicKey) {
-        super(privateKey, publicKey);
-        ENCRYPT_STYLE = ENCRYPT_BLOWFISH;
+    private BlowfishEncrypt(String privateKey, String publicKey) {
+        super(privateKey, publicKey, ENCRYPT_BLOWFISH);
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA1");

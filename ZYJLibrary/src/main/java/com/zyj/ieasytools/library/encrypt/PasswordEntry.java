@@ -1,63 +1,153 @@
 package com.zyj.ieasytools.library.encrypt;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * The password entry
+ *
+ * @author yuri.zheng 2016/04/25
+ */
 public final class PasswordEntry implements Parcelable {
 
-    // ********************************************************************************
+    /**
+     * Web group，default
+     */
     public static final int CATEGORY_WEB = 0;
+    /**
+     * Email group
+     */
     public static final int CATEGORY_EMAIL = 1;
+    /**
+     * Wallet group
+     */
     public static final int CATEGORY_WALLET = 2;
-    public static final int CATEGORY_PRIVATE_COUNT = 3;
-    public static final int CATEGORY_APP = 4;
-    public static final int CATEGORY_GAME = 5;
-    public static final int CATEGORY_OTHER = 6;
-    // ********************************************************************************
+    /**
+     * Application group
+     */
+    public static final int CATEGORY_APP = 3;
+    /**
+     * Game group
+     */
+    public static final int CATEGORY_GAME = 4;
+    /**
+     * Other group
+     */
+    public static final int CATEGORY_OTHER = 5;
 
     private String uuid; // No change
 
+    /**
+     * Category<br>
+     * {@link #CATEGORY_WEB}<br>
+     * {@link #CATEGORY_EMAIL}<br>
+     * {@link #CATEGORY_WALLET}<br>
+     * {@link #CATEGORY_GAME}<br>
+     * {@link #CATEGORY_OTHER}<br>
+     * Customize
+     */
     public int p_category = CATEGORY_WEB;
 
-    public String p_username;
-
-    public String p_password;
-
-    public String p_address;
-
-    public String p_description;
-
-    public String p_email;
-
-    public String p_phone;
-
-    public String p_q_1;
-
-    public String p_q_a_1;
-
-    public String p_q_2;
-
-    public String p_q_a_2;
-
-    public String p_q_3;
-
-    public String p_q_a_3;
-
+    /**
+     * Save title
+     */
     public String p_title;
 
+    /**
+     * Save username
+     */
+    public String p_username;
+
+    /**
+     * Save password
+     */
+    public String p_password;
+
+    /**
+     * Save address
+     */
+    public String p_address;
+
+    /**
+     * Save description
+     */
+    public String p_description;
+
+    /**
+     * Save email
+     */
+    public String p_email;
+
+    /**
+     * Save phone
+     */
+    public String p_phone;
+
+    /**
+     * Save question1
+     */
+    public String p_q_1;
+
+    /**
+     * Save answer1
+     */
+    public String p_q_a_1;
+
+    /**
+     * Save question2
+     */
+    public String p_q_2;
+
+    /**
+     * Save answer2
+     */
+    public String p_q_a_2;
+
+    /**
+     * Save question3
+     */
+    public String p_q_3;
+
+    /**
+     * Save answer3
+     */
+    public String p_q_a_3;
+
+    /**
+     * The add time
+     */
     private long p_add_time = -1;// No change
 
+    /**
+     * The last modify time
+     */
     public long p_modify_time = -1;
 
-    private String p_encryption_method = BaseEncrypt.ENCRYPT_DES;// No change
+    /**
+     * The encrypt method
+     */
+    private String p_encryption_method = BaseEncrypt.ENCRYPT_AES;// No change
 
+    /**
+     * The public key
+     */
     private String p_encryption_public_key = "";// No change
 
+    /**
+     * The private key
+     */
     private String p_encryption_private_key = "";// No change
 
+    /**
+     * The remark
+     */
     public String p_remarks;
 
-//    public int p_version = Build.VERSION.SDK_INT;
+    /**
+     * This app's version,Compatible version of encrypt method
+     */
+    public final int p_version = Build.VERSION.SDK_INT;
 
     /**
      * @param uuid        key
@@ -139,19 +229,21 @@ public final class PasswordEntry implements Parcelable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
         if (o instanceof PasswordEntry) {
             PasswordEntry entry = (PasswordEntry) o;
-            return entry.uuid.equals(this.uuid) && entry.p_password.equals(p_password);
+            // uuid、password、username
+            return entry.uuid.equals(this.uuid) && entry.p_password.equals(p_password) && entry.p_username.equals(p_username);
         }
         return false;
     }
 
     @Override
     public String toString() {
-        return "UUID: " + uuid + ", Add time: " + p_add_time + ", Encrypt way: " + p_encryption_method;
+        return "Title: " + p_title
+                + "UUID: " + uuid
+                + "Username: " + p_username
+                + ", Add time: " + p_add_time
+                + ", Encrypt way: " + p_encryption_method;
     }
 
     @Override
