@@ -41,3 +41,7 @@ captures/
 IEasyTools.iml
 IApplication/IApplication.iml
 ZYJLibrary/ZYJLibrary.iml
+
+# Igonre gradle file
+/build.gradle
+/gradle
