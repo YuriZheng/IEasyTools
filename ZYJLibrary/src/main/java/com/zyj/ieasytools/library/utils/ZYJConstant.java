@@ -1,8 +1,4 @@
-package com.zyj.ieasytools.utils;
-
-import android.net.Uri;
-
-import com.zyj.ieasytools.IEasyToolsApplication;
+package com.zyj.ieasytools.library.utils;
 
 public final class ZYJConstant {
 
@@ -30,25 +26,25 @@ public final class ZYJConstant {
     // ================================================================================
 
     // ================================================================================
-    public static final String SCHEME = "content";
-    public static final String HOST = IEasyToolsApplication.class.getPackage().getName();
-    public static final String PORT = "ieasytools";
-    public static final String PATH = "tools";
-    public static final int ALARMS = 1;
-    public static final int ALARMS_ID = 2;
-    public static final String SHARE_LIST_TYPE = HOST + ".dir/";
-    public static final String SHARE_TYPE = HOST + ".item/";
-    // content://com.zyj.ieasytools:easytools/tools
-    public static final Uri CONTENT_URI = Uri.parse(SCHEME + "://" + HOST + ":" + PORT + "/" + PATH);
+//    public static final String SCHEME = "content";
+//    public static final String HOST = IEasyToolsApplication.class.getPackage().getName();
+//    public static final String PORT = "ieasytools";
+//    public static final String PATH = "tools";
+//    public static final int ALARMS = 1;
+//    public static final int ALARMS_ID = 2;
+//    public static final String SHARE_LIST_TYPE = HOST + ".dir/";
+//    public static final String SHARE_TYPE = HOST + ".item/";
+//    // content://com.zyj.ieasytools:easytools/tools
+//    public static final Uri CONTENT_URI = Uri.parse(SCHEME + "://" + HOST + ":" + PORT + "/" + PATH);
     // ================================================================================
 
     // ================================================================================
-    public static final String DB_ROOT = ZYJUtils.getExternalCardPath() + "/ieasyTools/";
-    public static final String DB_PASSWORD_NAME = "password_info.db";
-    public static final String TBL_PASSWORD_NAME = "Along_Password";
-    public static final String DB_SETTINGS_NAME = "preference_settings.db";
-    public static final String TBL_SETTINGS_NAME = "MY_Settings";
-    public static final int VERSION = 1;
+//    public static final String DB_ROOT = ZYJUtils.getExternalCardPath() + "/ieasyTools/";
+//    public static final String DB_PASSWORD_NAME = "password_info.db";
+//    public static final String TBL_PASSWORD_NAME = "Along_Password";
+//    public static final String DB_SETTINGS_NAME = "preference_settings.db";
+//    public static final String TBL_SETTINGS_NAME = "MY_Settings";
+//    public static final int VERSION = 1;
     // ================================================================================
 
 }
