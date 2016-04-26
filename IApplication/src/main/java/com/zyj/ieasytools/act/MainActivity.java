@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
+import com.zyj.ieasytools.library.encrypt.AESEncrypt;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.EncryptFactory;
 import com.zyj.ieasytools.library.encrypt.RC4Encrypt;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         mTextView = (TextView) findViewById(R.id.content);
 
         getSharedPreferences("keyFile", MODE_PRIVATE).edit().putString("key", "497393102").commit();
+
+        BaseEncrypt a = EncryptFactory.getInstance().getInstance(AESEncrypt.class,"","");
     }
 
     public void onViewClick(View view) {

@@ -28,11 +28,11 @@ public final class EncryptFactory {
         return mInstance;
     }
 
-    public BaseEncrypt getInstance(Class<?> clazz, String privateKey, String publicKey) {
+    public BaseEncrypt getInstance(Class<?> clz, String privateKey, String publicKey) {
         // BaseEncrypt encrypt = mWeakReferences.get(clazz.getName());
         BaseEncrypt encrypt = null;
         try {
-            Class<?> cls = Class.forName(clazz.getName());
+            Class<?> cls = Class.forName(clz.getName());
             Constructor<?> con = cls.getDeclaredConstructor(new Class<?>[]{String.class, String.class});
             con.setAccessible(true);
             encrypt = (BaseEncrypt) con.newInstance(new Object[]{privateKey, publicKey});
