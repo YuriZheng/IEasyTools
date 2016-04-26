@@ -13,7 +13,7 @@ import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.EncryptFactory;
 import com.zyj.ieasytools.library.encrypt.RC4Encrypt;
-import com.zyj.ieasytools.utils.ZYJUtils;
+import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 public class MainActivity extends AppCompatActivity {
 

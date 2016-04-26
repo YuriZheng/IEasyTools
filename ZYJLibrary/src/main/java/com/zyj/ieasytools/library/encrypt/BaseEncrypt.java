@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * The base encrypt class<br>
- * Note:The private key's length must been range 6-32
+ * Note:The private key's length must been range {@link #ENCRYPT_PRIVATE_KEY_LENGTH_MIN}-{@link #ENCRYPT_PRIVATE_KEY_LENGTH_MAX}
  *
  * @author yuri.zheng 2016/04/25
  */
@@ -96,31 +96,15 @@ public abstract class BaseEncrypt {
 
         ENCRYPT_STYLE = method;
 
-        StringBuilder exception = new StringBuilder();
-
-        if (TextUtils.isEmpty(privateKey)) {
-            exception.append("The private can't be null\n");
-        }
-        if (privateKey.length() < ENCRYPT_PRIVATE_KEY_LENGTH_MIN) {
-            exception.append("The private key length more than 6\n");
-        }
-
-        if (privateKey.length() > ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
-            exception.append("The private key length less than 32\n");
+        if (TextUtils.isEmpty(privateKey) || privateKey.length() < ENCRYPT_PRIVATE_KEY_LENGTH_MIN ||
+                privateKey.length() > ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
+            throw new RuntimeException("The private key is error, Key is " + (privateKey != null ? privateKey : "null"));
         }
 
         if (!TextUtils.isEmpty(publicKey)) {
-            if (publicKey.length() < ENCRYPT_PRIVATE_KEY_LENGTH_MIN) {
-                exception.append("The publicKey key length more than 6\n");
+            if (publicKey.length() < ENCRYPT_PRIVATE_KEY_LENGTH_MIN || publicKey.length() > ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
+                throw new RuntimeException("The public key's length is error: " + publicKey.length());
             }
-
-            if (publicKey.length() > ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
-                exception.append("The publicKey key length less than 32\n");
-            }
-        }
-
-        if (exception.length() > 0) {
-            throw new RuntimeException(exception.toString());
         }
     }
 
@@ -209,12 +193,32 @@ public abstract class BaseEncrypt {
      */
     public static interface EncryptListener {
 
+        /**
+         * Start encrypt
+         *
+         * @param encrypt the resource string
+         */
         void startEncrypt(String encrypt);
 
+        /**
+         * End of encrypt
+         *
+         * @param result the string after encrypted
+         */
         void endEncrypt(String result);
 
+        /**
+         * Start decrypt
+         *
+         * @param ecrypt the resource string
+         */
         void startDecrypt(String ecrypt);
 
+        /**
+         * End of decrypt
+         *
+         * @param result the string after decrypt
+         */
         void endDecrypt(String result);
 
     }

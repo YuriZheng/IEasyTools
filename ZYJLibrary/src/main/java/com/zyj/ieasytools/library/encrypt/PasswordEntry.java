@@ -45,7 +45,7 @@ public final class PasswordEntry implements Parcelable {
      * {@link #CATEGORY_WALLET}<br>
      * {@link #CATEGORY_GAME}<br>
      * {@link #CATEGORY_OTHER}<br>
-     * Customize
+     * Other Customize group
      */
     public int p_category = CATEGORY_WEB;
 
