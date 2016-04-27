@@ -8,8 +8,8 @@ package com.zyj.ieasytools.library.encrypt;
  */
 public class RC4Encrypt extends BaseEncrypt {
 
-    private RC4Encrypt(String privateKey, String publicKey) {
-        super(privateKey, publicKey, ENCRYPT_RC4);
+    private RC4Encrypt(String privateKey) {
+        super(privateKey, ENCRYPT_RC4);
     }
 
     @Override

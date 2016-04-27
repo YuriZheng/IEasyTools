@@ -10,6 +10,7 @@ import java.util.Map;
  * @author yuri.zheng 2016/04/25
  */
 public final class EncryptFactory {
+
     private static EncryptFactory mInstance = null;
 
     /**
@@ -28,14 +29,18 @@ public final class EncryptFactory {
         return mInstance;
     }
 
-    public BaseEncrypt getInstance(Class<?> clz, String privateKey, String publicKey) {
+    public BaseEncrypt getInstance(Class<?> clz, String privateKey) {
+        return getEncryptInstance(clz, privateKey);
+    }
+
+    private BaseEncrypt getEncryptInstance(Class<?> clz, String privateKey) {
         // BaseEncrypt encrypt = mWeakReferences.get(clazz.getName());
         BaseEncrypt encrypt = null;
         try {
             Class<?> cls = Class.forName(clz.getName());
-            Constructor<?> con = cls.getDeclaredConstructor(new Class<?>[]{String.class, String.class});
+            Constructor<?> con = cls.getDeclaredConstructor(new Class<?>[]{String.class});
             con.setAccessible(true);
-            encrypt = (BaseEncrypt) con.newInstance(new Object[]{privateKey, publicKey});
+            encrypt = (BaseEncrypt) con.newInstance(new Object[]{privateKey});
             // mWeakReferences.put(clazz.getName(), encrypt);
         } catch (Exception e) {
             e.printStackTrace();

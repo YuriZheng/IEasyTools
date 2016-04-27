@@ -14,8 +14,8 @@ public class BlowfishEncrypt extends BaseEncrypt {
     private BlowfishCBC m_bfish;
     private Random m_rndGen = new Random();
 
-    private BlowfishEncrypt(String privateKey, String publicKey) {
-        super(privateKey, publicKey, ENCRYPT_BLOWFISH);
+    private BlowfishEncrypt(String privateKey) {
+        super(privateKey, ENCRYPT_BLOWFISH);
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA1");

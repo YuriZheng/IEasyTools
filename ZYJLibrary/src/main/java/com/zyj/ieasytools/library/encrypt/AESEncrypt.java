@@ -19,8 +19,8 @@ public class AESEncrypt extends BaseEncrypt {
      */
     private final String MODE = "AES/ECB/ISO10126Padding";
 
-    private AESEncrypt(String privateKey, String publicKey) {
-        super(privateKey, publicKey, ENCRYPT_AES);
+    private AESEncrypt(String privateKey) {
+        super(privateKey, ENCRYPT_AES);
     }
 
     private SecretKey generateKey(String keyStr) throws Exception {

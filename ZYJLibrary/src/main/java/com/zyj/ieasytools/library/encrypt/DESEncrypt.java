@@ -19,8 +19,8 @@ public class DESEncrypt extends BaseEncrypt {
      */
     private final String MODE = "DES/ECB/ISO10126Padding";
 
-    private DESEncrypt(String privateKey, String publicKey) {
-        super(privateKey, publicKey, ENCRYPT_DES);
+    private DESEncrypt(String privateKey) {
+        super(privateKey, ENCRYPT_DES);
     }
 
     private SecretKey generateKey(String keyStr) throws Exception {

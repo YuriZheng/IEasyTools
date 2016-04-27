@@ -130,11 +130,6 @@ public final class PasswordEntry implements Parcelable {
     private String p_encryption_method = BaseEncrypt.ENCRYPT_AES;// No change
 
     /**
-     * The public key
-     */
-    private String p_encryption_public_key = "";// No change
-
-    /**
      * The private key
      */
     private String p_encryption_private_key = "";// No change
@@ -174,7 +169,6 @@ public final class PasswordEntry implements Parcelable {
         } else {
             p_add_time = addTime;
         }
-        this.p_encryption_public_key = public_key;
         this.p_encryption_private_key = private_key;
         this.p_encryption_method = method;
     }
@@ -198,7 +192,6 @@ public final class PasswordEntry implements Parcelable {
         p_add_time = in.readLong();
         p_modify_time = in.readLong();
         p_encryption_method = in.readString();
-        p_encryption_public_key = in.readString();
         p_encryption_private_key = in.readString();
         p_remarks = in.readString();
     }
@@ -222,7 +215,6 @@ public final class PasswordEntry implements Parcelable {
         dest.writeLong(p_add_time);
         dest.writeLong(p_modify_time);
         dest.writeString(p_encryption_method);
-        dest.writeString(p_encryption_public_key);
         dest.writeString(p_encryption_private_key);
         dest.writeString(p_remarks);
     }
@@ -285,13 +277,6 @@ public final class PasswordEntry implements Parcelable {
      */
     public long getAddTime() {
         return p_add_time;
-    }
-
-    /**
-     * {@link #p_encryption_public_key}
-     */
-    public String getEncryptionPublicKey() {
-        return p_encryption_public_key;
     }
 
     /**

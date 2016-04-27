@@ -23,8 +23,8 @@ public class Base64Encrypt extends BaseEncrypt {
         codes['/'] = 63;
     }
 
-    private Base64Encrypt(String privateKey, String publicKey) {
-        super(privateKey, publicKey, ENCRYPT_BASE_64);
+    private Base64Encrypt(String privateKey) {
+        super(privateKey, ENCRYPT_BASE_64);
     }
 
     @Override

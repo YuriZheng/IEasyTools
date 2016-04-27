@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSharedPreferences("keyFile", MODE_PRIVATE).edit().putString("key", "497393102").commit();
 
-        BaseEncrypt a = EncryptFactory.getInstance().getInstance(AESEncrypt.class,"","");
+        BaseEncrypt a = EncryptFactory.getInstance().getInstance(AESEncrypt.class, "");
     }
 
     public void onViewClick(View view) {
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             ZYJUtils.logD(getClass(), "key is null");
             return;
         }
-        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(RC4Encrypt.class, key, "");
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(RC4Encrypt.class, key);
         String string = "111111111111111111";
         if (view.getId() == R.id.encrypt) {
             String s = encrypt.encrypt(string);

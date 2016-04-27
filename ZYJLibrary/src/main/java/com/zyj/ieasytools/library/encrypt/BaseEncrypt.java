@@ -82,29 +82,16 @@ public abstract class BaseEncrypt {
     private String mPrivateKey = null;
 
     /**
-     * Only used once
-     */
-    private String mPublicKey = null;
-
-    /**
      * @param privateKey can't be null
-     * @param publicKey  not used, be null or ""
      */
-    protected BaseEncrypt(String privateKey, String publicKey, String method) {
+    protected BaseEncrypt(String privateKey, String method) {
         this.mPrivateKey = privateKey;
-        this.mPublicKey = publicKey;
 
         ENCRYPT_STYLE = method;
 
         if (TextUtils.isEmpty(privateKey) || privateKey.length() < ENCRYPT_PRIVATE_KEY_LENGTH_MIN ||
                 privateKey.length() > ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
             throw new RuntimeException("The private key is error, Key is " + (privateKey != null ? privateKey : "null"));
-        }
-
-        if (!TextUtils.isEmpty(publicKey)) {
-            if (publicKey.length() < ENCRYPT_PRIVATE_KEY_LENGTH_MIN || publicKey.length() > ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
-                throw new RuntimeException("The public key's length is error: " + publicKey.length());
-            }
         }
     }
 
@@ -114,10 +101,6 @@ public abstract class BaseEncrypt {
 
     public String getPrivateKey() {
         return mPrivateKey;
-    }
-
-    public String getPublicKey() {
-        return mPublicKey;
     }
 
     /**
