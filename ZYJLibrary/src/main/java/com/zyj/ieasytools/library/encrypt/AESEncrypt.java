@@ -8,7 +8,8 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 /**
- * AES encrypt class,Nees a private password to encrypt or decrypt string
+ * AES encrypt class,Nees a private password to encrypt or decrypt string<br>
+ * Default encrypt class
  *
  * @author yuri.zheng 2016/04/25
  */

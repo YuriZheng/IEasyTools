@@ -89,7 +89,7 @@ public class Base64Encrypt extends BaseEncrypt {
 
     @Override
     public void destory() {
-
+        // TODO Auto-generated method stub
     }
 
     /**

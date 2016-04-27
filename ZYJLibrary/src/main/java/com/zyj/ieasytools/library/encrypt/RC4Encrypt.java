@@ -121,7 +121,6 @@ public class RC4Encrypt extends BaseEncrypt {
     @Override
     public void destory() {
         // TODO Auto-generated method stub
-
     }
 
 }

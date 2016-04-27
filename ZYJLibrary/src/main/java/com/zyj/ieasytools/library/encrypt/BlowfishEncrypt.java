@@ -543,7 +543,6 @@ public class BlowfishEncrypt extends BaseEncrypt {
     @Override
     public void destory() {
         // TODO Auto-generated method stub
-
     }
 
 }
