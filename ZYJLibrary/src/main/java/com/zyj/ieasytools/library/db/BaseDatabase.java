@@ -1,10 +1,11 @@
 package com.zyj.ieasytools.library.db;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import com.zyj.ieasytools.library.utils.ZYJUtils;
+
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 
 import java.io.File;
 import java.util.List;
@@ -70,7 +71,7 @@ public abstract class BaseDatabase<T> extends SQLiteOpenHelper {
             if (!file.exists() || !file.canRead()) {
                 return DATABASE_OPEN_FILE_EXCEPTION;
             }
-            mSQLDatabase = SQLiteDatabase.openOrCreateDatabase(path, null);
+            mSQLDatabase = SQLiteDatabase.openOrCreateDatabase(path, "", null);
             if (mSQLDatabase != null) {
                 return DATABASE_OPEN_SUCCESS;
             } else {

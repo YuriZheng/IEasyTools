@@ -17,7 +17,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     }
 
     public void testEncrypt() {
-        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(AESEncrypt.class, "497393102333333", "");
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(AESEncrypt.class, "497393102333333");
 
         String string = "111";
 
