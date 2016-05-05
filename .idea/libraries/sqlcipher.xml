@@ -1,0 +1,11 @@
+<component name="libraryTable">
+    <library name="sqlcipher">
+        <CLASSES>
+            <root url="jar://$PROJECT_DIR$/ZYJLibrary/libs/sqlcipher.jar!/"/>
+        </CLASSES>
+        <JAVADOC>
+            <root url="jar://$PROJECT_DIR$/ZYJLibrary/doc/sqlcipher-javadoc.jar!/"/>
+        </JAVADOC>
+        <SOURCES/>
+    </library>
+</component>
