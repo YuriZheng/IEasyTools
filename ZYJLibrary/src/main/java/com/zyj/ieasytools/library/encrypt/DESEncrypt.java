@@ -41,7 +41,7 @@ public class DESEncrypt extends BaseEncrypt {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return resourceString;
+        return null;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class DESEncrypt extends BaseEncrypt {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return encryptString;
+        return null;
     }
 
     @Override

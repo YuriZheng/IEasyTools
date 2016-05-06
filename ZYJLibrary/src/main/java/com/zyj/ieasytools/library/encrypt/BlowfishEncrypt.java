@@ -21,7 +21,7 @@ public class BlowfishEncrypt extends BaseEncrypt {
             digest = MessageDigest.getInstance("SHA1");
             digest.update(privateKey.getBytes());
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         m_bfish = new BlowfishCBC(digest.digest(), 0L);
         digest.reset();
@@ -30,12 +30,7 @@ public class BlowfishEncrypt extends BaseEncrypt {
 
     @Override
     protected String protectedEncrypt(String resourceString) {
-        try {
-            return encryptString(resourceString);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return resourceString;
+        return encryptString(resourceString);
     }
 
     @Override

@@ -6,12 +6,15 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.os.StatFs;
+import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by yuri.zheng on 2016/4/26.
@@ -240,6 +243,46 @@ public final class ZYJUtils {
         } else {
             return -1;
         }
+    }
+
+    /**
+     * Create file in path
+     *
+     * @param path the file's path
+     * @return create success will return true, other will return false
+     */
+    public static boolean createFile(String path) {
+        File file = new File(path);
+        if (path.contains("/")) {
+            File dir = new File(path.substring(0, path.lastIndexOf("/")));
+            if (!dir.exists()) {
+                boolean createDir = dir.mkdirs();
+                if (!createDir) {
+                    return false;
+                }
+            }
+        }
+        try {
+            return file.createNewFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Get the machine code
+     *
+     * @return return the mechine code
+     */
+    public static String getMachineCode(Context context) {
+        final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        final String tmDevice, tmSerial, tmPhone, androidId;
+        tmDevice = "" + tm.getDeviceId();
+        tmSerial = "" + tm.getSimSerialNumber();
+        androidId = "" + android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
+        return deviceUuid.toString();
     }
 
 }

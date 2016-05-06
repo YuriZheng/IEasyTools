@@ -5,81 +5,185 @@ import android.content.Context;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteOpenHelper;
 
 import java.io.File;
-import java.util.List;
 
-public abstract class BaseDatabase<T> extends SQLiteOpenHelper {
+public abstract class BaseDatabase {
 
-    public SQLiteDatabase mSQLDatabase = null;
+    protected Context mContext;
 
-    // ===========================================================================
-    public static final int DATABASE_OPEN_SUCCESS = 0x00;
-    public static final int DATABASE_OPEN_FILE_EXCEPTION = 0x01;
-    public static final int DATABASE_OPEN_PASSWORD = 0x02;
-    public static final int DATABASE_OPEN_UNKNOW = 0x03;
+    private MySQLiteDatabase mSQLDatabase = null;
 
-    // ===========================================================================
+    /**
+     * The database open success
+     */
+    public static final int DATABASE_OPEN_SUCCESS = 0XA;
+    /**
+     * The databse file is not exists or cann't read
+     */
+    public static final int DATABASE_OPEN_FILE_EXCEPTION = DATABASE_OPEN_SUCCESS << 1;
+    /**
+     * Error password to open database
+     */
+    public static final int DATABASE_OPEN_PASSWORD = DATABASE_OPEN_SUCCESS << 2;
+    /**
+     * Unknow error
+     */
+    public static final int DATABASE_OPEN_UNKNOW = DATABASE_OPEN_SUCCESS << 3;
 
-    public BaseDatabase(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public BaseDatabase(Context context) {
+        this.mContext = context;
+        SQLiteDatabase.loadLibs(context);
     }
 
-    protected void dropTable(SQLiteDatabase db, String tabletName) {
-        ZYJUtils.logD(getClass(), "Drop table" + tabletName);
-        db.execSQL("DROP TABLE IF EXISTS " + tabletName);
+    /**
+     * Get the database's version
+     */
+    protected abstract int getVersion();
+
+    /**
+     * Will call when the oldVersion under the newVersion
+     */
+    protected abstract void onUpgrade(SQLiteDatabase sqliteDatabase, int oldVersion, int newVersion);
+
+    /**
+     * Drop the table from database
+     *
+     * @param tableName the tablet name
+     */
+    protected void dropTable(String tableName) {
+        if (checkDatabaseOpenState(mSQLDatabase)) {
+            ZYJUtils.logD(getClass(), "Drop table" + tableName);
+            mSQLDatabase.getSQLDatabase().execSQL("DROP TABLE IF EXISTS " + tableName);
+        } else {
+            ZYJUtils.logW(getClass(), "The database open faile");
+        }
     }
 
-    protected void creatTable(SQLiteDatabase db, String createSql) {
-        ZYJUtils.logD(getClass(), "Database onCreate: " + createSql);
-        db.execSQL(createSql);
+    /**
+     * Create table in the database
+     *
+     * @param createSql the sql
+     */
+    protected void creatTable(String createSql) {
+        if (checkDatabaseOpenState(mSQLDatabase)) {
+            ZYJUtils.logD(getClass(), "Database onCreate: " + createSql);
+            mSQLDatabase.getSQLDatabase().execSQL(createSql);
+        } else {
+            ZYJUtils.logW(getClass(), "The database open faile");
+        }
     }
-
-    /**
-     * @return the row ID of the newly inserted row, or -1 if an error occurred
-     */
-    public abstract long addEntry(T entry);
-
-    /**
-     * @return the number of rows affected if a whereClause is passed in, 0
-     * otherwise. To remove all rows and get a count pass "1" as the
-     * whereClause.
-     */
-    public abstract int delEntry(String key);
-
-    /**
-     * @return the number of rows affected
-     */
-    public abstract int modifyEntry(T entry);
-
-    /**
-     * @return Get all entry
-     */
-    public abstract List<T> queryEntry();
 
     public void onDestroy() {
-        if (mSQLDatabase != null) {
-            mSQLDatabase.close();
+        if (checkDatabaseOpenState(mSQLDatabase)) {
+            mSQLDatabase.getSQLDatabase().close();
         }
-        this.close();
+        mSQLDatabase = null;
     }
 
-    protected int getSQLiteDatabase(String path, String password) {
+    /**
+     * Create the database in the path
+     *
+     * @param path     the database's path
+     * @param password the database's password
+     * @return return the open state {@link MySQLiteDatabase}<br>
+     */
+    protected MySQLiteDatabase getSQLiteDatabase(String path, String password) {
+        if (mSQLDatabase != null) {
+            return mSQLDatabase;
+        }
+        mSQLDatabase = new MySQLiteDatabase();
         try {
             File file = new File(path);
-            if (!file.exists() || !file.canRead()) {
-                return DATABASE_OPEN_FILE_EXCEPTION;
+            if (!file.exists()) {
+                if (!ZYJUtils.createFile(path)) {
+                    mSQLDatabase.setSQL(null, DATABASE_OPEN_FILE_EXCEPTION);
+                    return mSQLDatabase;
+                }
             }
-            mSQLDatabase = SQLiteDatabase.openOrCreateDatabase(path, "", null);
-            if (mSQLDatabase != null) {
-                return DATABASE_OPEN_SUCCESS;
+            if (!file.canRead()) {
+                mSQLDatabase.setSQL(null, DATABASE_OPEN_FILE_EXCEPTION);
+                return mSQLDatabase;
+            }
+            // Debug
+            if (ZYJUtils.isPasswordDebug) {
+                password = "";
+            }
+            SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(path, password, null);
+            if (database != null) {
+                int newVersion = getVersion();
+                if (database.getVersion() > newVersion) {
+                    throw new RuntimeException("The new database version cann't under the old");
+                } else if (database.getVersion() < newVersion) {
+                    onUpgrade(database, database.getVersion(), newVersion);
+                }
+                database.setVersion(newVersion);
+                mSQLDatabase.setSQL(database, DATABASE_OPEN_SUCCESS);
             } else {
-                return DATABASE_OPEN_UNKNOW;
+                mSQLDatabase.setSQL(null, DATABASE_OPEN_UNKNOW);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return DATABASE_OPEN_PASSWORD;
+            mSQLDatabase.setSQL(null, DATABASE_OPEN_PASSWORD);
+        }
+        return mSQLDatabase;
+    }
+
+    /**
+     * Create database file in the app's cache path
+     *
+     * @param context  context
+     * @param name     the database file's name
+     * @param password the database's password
+     * @return {@link #getSQLiteDatabase(String, String)}
+     */
+    protected MySQLiteDatabase getSQLiteDatabase(Context context, String name, String password) {
+        return getSQLiteDatabase(context.getDatabasePath(name).getAbsolutePath(), password);
+    }
+
+    /**
+     * Check the {@link MySQLiteDatabase} is null
+     *
+     * @param my the checked instance
+     * @return the instance is useful then return true, other return false
+     */
+    protected boolean checkDatabaseOpenState(MySQLiteDatabase my) {
+        if (my == null || my.getStateCode() != DATABASE_OPEN_SUCCESS || my.getSQLDatabase() == null) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Wrapper the database instance and state
+     */
+    protected class MySQLiteDatabase {
+        private SQLiteDatabase mSQLDatabase = null;
+        /**
+         * {@link #DATABASE_OPEN_SUCCESS}<br>
+         * {@link #DATABASE_OPEN_FILE_EXCEPTION}<br>
+         * {@link #DATABASE_OPEN_PASSWORD}<br>
+         * {@link #DATABASE_OPEN_UNKNOW}<br>
+         */
+        private int mStateCode;
+
+        protected MySQLiteDatabase() {
+        }
+
+        public SQLiteDatabase getSQLDatabase() {
+            return mSQLDatabase;
+        }
+
+        /**
+         * return {@link #mStateCode}
+         */
+        public int getStateCode() {
+            return mStateCode;
+        }
+
+        protected void setSQL(SQLiteDatabase database, int stateCode) {
+            this.mSQLDatabase = database;
+            this.mStateCode = stateCode;
         }
     }
 

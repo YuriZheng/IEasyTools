@@ -130,9 +130,14 @@ public final class PasswordEntry implements Parcelable {
     private String p_encryption_method = BaseEncrypt.ENCRYPT_AES;// No change
 
     /**
-     * The private key
+     * Compared field, to judg the password
      */
-    private String p_encryption_private_key = "";// No change
+    public String p_test_from = "";
+
+    /**
+     * The string after encrypt
+     */
+    public String p_test_to = "";
 
     /**
      * The remark
@@ -142,7 +147,7 @@ public final class PasswordEntry implements Parcelable {
     /**
      * This app's version,Compatible version of encrypt method
      */
-    public final int p_version = Build.VERSION.SDK_INT;
+    public int p_version = Build.VERSION.SDK_INT;
 
     /**
      * @param uuid        key
@@ -169,7 +174,6 @@ public final class PasswordEntry implements Parcelable {
         } else {
             p_add_time = addTime;
         }
-        this.p_encryption_private_key = private_key;
         this.p_encryption_method = method;
     }
 
@@ -192,8 +196,10 @@ public final class PasswordEntry implements Parcelable {
         p_add_time = in.readLong();
         p_modify_time = in.readLong();
         p_encryption_method = in.readString();
-        p_encryption_private_key = in.readString();
         p_remarks = in.readString();
+        p_test_from = in.readString();
+        p_test_to = in.readString();
+        p_version = in.readInt();
     }
 
     public void writeToParcel(Parcel dest, int flags) {
@@ -215,8 +221,10 @@ public final class PasswordEntry implements Parcelable {
         dest.writeLong(p_add_time);
         dest.writeLong(p_modify_time);
         dest.writeString(p_encryption_method);
-        dest.writeString(p_encryption_private_key);
         dest.writeString(p_remarks);
+        dest.writeString(p_test_from);
+        dest.writeString(p_test_to);
+        dest.writeInt(p_version);
     }
 
     @Override
@@ -277,13 +285,6 @@ public final class PasswordEntry implements Parcelable {
      */
     public long getAddTime() {
         return p_add_time;
-    }
-
-    /**
-     * {@link #p_encryption_private_key}
-     */
-    public String getEncryptionPrivateKey() {
-        return p_encryption_private_key;
     }
 
     /**

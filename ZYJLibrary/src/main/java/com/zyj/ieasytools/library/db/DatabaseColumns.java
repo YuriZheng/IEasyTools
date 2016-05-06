@@ -8,7 +8,18 @@ import android.provider.BaseColumns;
  */
 public abstract class DatabaseColumns {
 
-    public static class PasswordColumns implements BaseColumns {
+    public static final String DATABASE_FILE_SUFFIX = "izyj";
+
+    public static class EncryptColumns implements BaseColumns {
+
+        /**
+         * The table name
+         */
+        public static final String TABLE_NAME = "encrypt";
+        /**
+         * The Encrypt database's file name
+         */
+        public static final String DATABASE_NAME = TABLE_NAME + "." + DATABASE_FILE_SUFFIX;
         /**
          * UUID only key
          */
@@ -82,13 +93,13 @@ public abstract class DatabaseColumns {
          */
         public static final String _ENCRYPTION_METHOD = "__encryption_method";
         /**
-         * Encryption public key <h1>not used
+         * The test password from
          */
-        public static final String _ENCRYPTION_PUBLIC_KEY = "__encryption_public_key";
+        public static final String _ENCRYPTION_TEST_FROM = "__encryption_test_from";
         /**
-         * Encryption private key <h1>check entry password
+         * The test password to
          */
-        public static final String _ENCRYPTION_PRIVATE_KEY = "__encryption_private_key";
+        public static final String _ENCRYPTION_TEST_TO = "__encryption_test_to";
         /**
          * Remarks
          */
@@ -117,10 +128,51 @@ public abstract class DatabaseColumns {
          * Reserve field five
          */
         public static final String _Reserve_4 = "__r_reserve_4";
+        /**
+         * The sql for create setting table
+         */
+        public static final String CREATE_SETTING_TABLE_SQL = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "( "
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + _UUID + " TEXT, "
+                + _CATEGORY + " TEXT, "
+                + _TITLE + " TEXT, "
+                + _USERNAME + " TEXT, "
+                + _PASSWORD + " TEXT, "
+                + _ADDRESS + " TEXT, "
+                + _DESCRIPTION + " TEXT, "
+                + _EMAIL + " TEXT, "
+                + _PHONE + " TEXT, "
+                + _QUESTION_1 + " TEXT, "
+                + _QUESTION_ANSWER_1 + " TEXT, "
+                + _QUESTION_2 + " TEXT, "
+                + _QUESTION_ANSWER_2 + " TEXT, "
+                + _QUESTION_3 + " TEXT, "
+                + _QUESTION_ANSWER_3 + " TEXT, "
+                + _ADD_TIME + " TEXT, "
+                + _MODIFY_TIME + " TEXT, "
+                + _ENCRYPTION_METHOD + " TEXT, "
+                + _ENCRYPTION_TEST_FROM + " TEXT, "
+                + _ENCRYPTION_TEST_TO + " TEXT, "
+                + _REMARKS + " TEXT, "
+                + _Version + " TEXT, "
+                + _Reserve_0 + " TEXT, "
+                + _Reserve_1 + " TEXT, "
+                + _Reserve_2 + " TEXT, "
+                + _Reserve_3 + " TEXT, "
+                + _Reserve_4 + " TEXT, ";
 
     }
 
     public static class SettingColumns implements BaseColumns {
+
+        /**
+         * The table name
+         */
+        public static final String TABLE_NAME = "settings";
+        /**
+         * The settings database's file name
+         */
+        public static final String DATABASE_NAME = TABLE_NAME + "." + DATABASE_FILE_SUFFIX;
         /**
          * Settings key
          */
@@ -129,6 +181,13 @@ public abstract class DatabaseColumns {
          * Settings value
          */
         public static final String _VALUE = "__value";
+        /**
+         * The sql for create setting table
+         */
+        public static final String CREATE_SETTING_TABLE_SQL = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "( "
+                + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + _KEY + " TEXT, "
+                + _VALUE + " TEXT )";
     }
 
 }

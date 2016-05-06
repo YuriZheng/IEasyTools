@@ -107,6 +107,7 @@ public abstract class BaseEncrypt {
      * Add the encrypt listener
      *
      * @param listener the listener
+     * @hide
      */
     public void addOnEncryptListener(EncryptListener listener) {
         mListener.add(listener);
@@ -116,6 +117,7 @@ public abstract class BaseEncrypt {
      * Remove the encrypt listener
      *
      * @param listener the listener
+     * @hide
      */
     public void removeOnEncryptListener(EncryptListener listener) {
         mListener.remove(listener);
