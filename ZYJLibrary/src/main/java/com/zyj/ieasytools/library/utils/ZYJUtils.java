@@ -14,7 +14,6 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by yuri.zheng on 2016/4/26.
@@ -277,12 +276,7 @@ public final class ZYJUtils {
      */
     public static String getMachineCode(Context context) {
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        final String tmDevice, tmSerial, tmPhone, androidId;
-        tmDevice = "" + tm.getDeviceId();
-        tmSerial = "" + tm.getSimSerialNumber();
-        androidId = "" + android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
-        return deviceUuid.toString();
+        return tm.getDeviceId();
     }
 
 }

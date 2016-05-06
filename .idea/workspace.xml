@@ -26,34 +26,17 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="zyj" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5c73348c-f9ce-45f5-b7b1-d302778e3b5c" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/animated_vector_drawable_23_2_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_2_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/design_23_2_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/hamcrest_core_1_3.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/junit_4_12.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/recyclerview_v7_23_2_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/sqlcipher.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/support_annotations_23_2_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_23_2_1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/support_vector_drawable_23_2_1.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/utils/ZYJConstant.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/IApplication/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/IApplication/src/main/AndroidManifest.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/IApplication/src/main/java/com/zyj/ieasytools/act/MainActivity.java" afterPath="$PROJECT_DIR$/IApplication/src/main/java/com/zyj/ieasytools/act/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/build.gradle" afterPath="$PROJECT_DIR$/ZYJLibrary/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/ZYJLibrary/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/BaseDatabase.java" afterPath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/BaseDatabase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/DatabaseColumns.java" afterPath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/DatabaseColumns.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/BaseEncrypt.java" afterPath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/BaseEncrypt.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/BlowfishEncrypt.java" afterPath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/BlowfishEncrypt.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/DESEncrypt.java" afterPath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/DESEncrypt.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/PasswordEntry.java" afterPath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/PasswordEntry.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJContentProvider.java" afterPath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJContentProvider.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJSettings.java" afterPath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJSettings.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/AESEncrypt.java" afterPath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/AESEncrypt.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/utils/ZYJUtils.java" afterPath="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/utils/ZYJUtils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/ZYJLibrary/src/main/res/values/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ZYJLibrary/src/test/java/com/zyj/ieasytools/library/ExampleUnitTest.java" afterPath="$PROJECT_DIR$/ZYJLibrary/src/test/java/com/zyj/ieasytools/library/ExampleUnitTest.java" />
     </list>
     <ignored path="IEasyTools.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -94,24 +77,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="BaseDatabase.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/BaseDatabase.java">
+      <file leaf-file-name="ZYJSettings.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJSettings.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
+              <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ZYJLibrary/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="23" column="46" selection-start-line="23" selection-start-column="46" selection-end-line="23" selection-end-column="46" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -120,32 +93,18 @@
         <entry file="file://$PROJECT_DIR$/IApplication/src/main/java/com/zyj/ieasytools/act/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="37" column="43" selection-start-line="37" selection-start-column="43" selection-end-line="37" selection-end-column="43" />
+              <caret line="65" column="64" selection-start-line="65" selection-start-column="64" selection-end-line="65" selection-end-column="64" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ZYJSettings.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJSettings.java">
+      <file leaf-file-name="AESEncrypt.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/AESEncrypt.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.10928962">
-              <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ZYJEncrypts.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJEncrypts.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.34389856">
+              <caret line="41" column="62" selection-start-line="41" selection-start-column="62" selection-end-line="41" selection-end-column="62" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -154,30 +113,8 @@
         <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/utils/ZYJUtils.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="35" column="7" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
+              <caret line="39" column="55" selection-start-line="39" selection-start-column="55" selection-end-line="39" selection-end-column="55" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AndroidManifest.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/AndroidManifest.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.15625">
-              <caret line="3" column="73" selection-start-line="3" selection-start-column="73" selection-end-line="3" selection-end-column="73" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ZYJContentProvider.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJContentProvider.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="64" column="46" selection-start-line="64" selection-start-column="46" selection-end-line="64" selection-end-column="46" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -2883,7 +2820,6 @@
         <option value="$PROJECT_DIR$/IApplication/src/main/java/com/zyj/ieasytools/utils/ZYJUtils.java" />
         <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/DatabaseConstant.java" />
         <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/EncryptFactory.java" />
-        <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/AESEncrypt.java" />
         <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/Base64Encrypt.java" />
         <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/RC4Encrypt.java" />
         <option value="$PROJECT_DIR$/.idea/libraries/sqlcipher.xml" />
@@ -2891,7 +2827,6 @@
         <option value="$PROJECT_DIR$/ZYJLibrary/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/ZYJLibrary/src/androidTest/java/com/zyj/ieasytools/library/ApplicationTest.java" />
         <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJEncrypts.java" />
-        <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/utils/ZYJUtils.java" />
         <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/DESEncrypt.java" />
         <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/BlowfishEncrypt.java" />
         <option value="$PROJECT_DIR$/ZYJLibrary/src/test/java/com/zyj/ieasytools/library/ExampleUnitTest.java" />
@@ -2901,12 +2836,15 @@
         <option value="$PROJECT_DIR$/IApplication/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/ZYJLibrary/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/IApplication/src/main/java/com/zyj/ieasytools/IEasyToolsApplication.java" />
-        <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJContentProvider.java" />
         <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/BaseDatabase.java" />
-        <option value="$PROJECT_DIR$/IApplication/src/main/java/com/zyj/ieasytools/act/MainActivity.java" />
         <option value="$PROJECT_DIR$/gradle.properties" />
         <option value="$PROJECT_DIR$/ZYJLibrary/build.gradle" />
+        <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/utils/ZYJUtils.java" />
+        <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJContentProvider.java" />
+        <option value="$PROJECT_DIR$/IApplication/src/main/java/com/zyj/ieasytools/act/MainActivity.java" />
+        <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/AESEncrypt.java" />
         <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJSettings.java" />
+        <option value="$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/utils/ZYJDatabaseUtils.java" />
       </list>
     </option>
   </component>
@@ -3056,8 +2994,142 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="ZYJLibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IEasyTools" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ZYJLibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="library" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="utils" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IEasyTools" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ZYJLibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="library" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="encrypt" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IEasyTools" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ZYJLibrary" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="library" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="db" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IEasyTools" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="IApplication" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IEasyTools" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IApplication" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IEasyTools" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IApplication" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ieasytools" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IEasyTools" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="IApplication" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ieasytools" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="act" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -3536,7 +3608,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1828" height="1096" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -3545,7 +3617,7 @@
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32908705" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.43099788" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3014862" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39978677" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
@@ -3558,7 +3630,7 @@
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32998326" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32942432" sideWeight="0.49804577" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21384701" sideWeight="0.5" order="7" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21384701" sideWeight="0.5" order="7" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32908705" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
@@ -3745,14 +3817,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/EncryptFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="27" column="9" selection-start-line="27" selection-start-column="9" selection-end-line="27" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.042124543">
@@ -3765,14 +3829,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="28" column="60" selection-start-line="28" selection-start-column="60" selection-end-line="28" selection-end-column="60" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/AESEncrypt.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.3983471">
-          <caret line="57" column="84" selection-start-line="57" selection-start-column="84" selection-end-line="57" selection-end-column="84" />
           <folding />
         </state>
       </provider>
@@ -3819,14 +3875,6 @@
           <folding>
             <element signature="imports" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/utils/ZYJConstant.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7737705">
-          <caret line="46" column="91" selection-start-line="46" selection-start-column="91" selection-end-line="46" selection-end-column="91" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3905,24 +3953,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJContentProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="64" column="46" selection-start-line="64" selection-start-column="46" selection-end-line="64" selection-end-column="46" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/utils/ZYJUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="35" column="7" selection-start-line="35" selection-start-column="7" selection-end-line="35" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/IApplication/src/main/res/layout/content_main.xml">
       <provider editor-type-id="android-designer">
         <state />
@@ -3930,14 +3960,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5082873">
           <caret line="17" column="33" selection-start-line="17" selection-start-column="33" selection-end-line="17" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/IApplication/src/main/java/com/zyj/ieasytools/act/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="37" column="43" selection-start-line="37" selection-start-column="43" selection-end-line="37" selection-end-column="43" />
           <folding />
         </state>
       </provider>
@@ -3990,20 +4012,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/BaseDatabase.java">
+    <entry file="file://E:/android/sdk/sources/android-23/android/telephony/TelephonyManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.33202356">
+          <caret line="700" column="18" selection-start-line="700" selection-start-column="18" selection-end-line="700" selection-end-column="18" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/DatabaseColumns.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.32677597">
-          <caret line="165" column="38" selection-start-line="165" selection-start-column="24" selection-end-line="165" selection-end-column="38" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="171" column="11" selection-start-line="171" selection-start-column="11" selection-end-line="171" selection-end-column="11" />
           <folding />
         </state>
       </provider>
@@ -4018,13 +4038,77 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJSettings.java">
+    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJContentProvider.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.10928962">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="46" column="7" selection-start-line="46" selection-start-column="7" selection-end-line="46" selection-end-column="7" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/BaseDatabase.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="78" column="50" selection-start-line="78" selection-start-column="50" selection-end-line="78" selection-end-column="50" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#5672#5673#0" expanded="true" />
+            <element signature="e#5713#5714#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/EncryptFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2262295">
+          <caret line="11" column="33" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/utils/ZYJUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="39" column="55" selection-start-line="39" selection-start-column="55" selection-end-line="39" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/IApplication/src/main/java/com/zyj/ieasytools/act/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="65" column="64" selection-start-line="65" selection-start-column="64" selection-end-line="65" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/db/ZYJSettings.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/utils/ZYJDatabaseUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.23454833">
+          <caret line="9" column="23" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ZYJLibrary/src/main/java/com/zyj/ieasytools/library/encrypt/AESEncrypt.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.34389856">
+          <caret line="41" column="62" selection-start-line="41" selection-start-column="62" selection-end-line="41" selection-end-column="62" />
+          <folding />
         </state>
       </provider>
     </entry>

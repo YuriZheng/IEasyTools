@@ -18,7 +18,7 @@ public class AESEncrypt extends BaseEncrypt {
     /**
      * Mode and Fill mode,{@link #MODE} can't be modified
      */
-    private final String MODE = "AES/ECB/ISO10126Padding";
+    private final String MODE = "AES";
 
     private AESEncrypt(String privateKey) {
         super(privateKey, ENCRYPT_AES);

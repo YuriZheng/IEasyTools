@@ -115,7 +115,7 @@ public class ZYJContentProvider extends ContentProvider {
             if (openSettingsDatabase()) {
                 db = mSettingDb;
             }
-            qb.setTables(DatabaseColumns.SettingColumns.DATABASE_NAME);
+            qb.setTables(DatabaseColumns.SettingColumns.TABLE_NAME);
             if (match == SETTINGS_ALARMS_ID) {
                 qb.appendWhere(DatabaseColumns.SettingColumns._ID + "=");
                 qb.appendWhere(uri.getPathSegments().get(1));
@@ -125,7 +125,7 @@ public class ZYJContentProvider extends ContentProvider {
             if (openEncryptDatabase()) {
                 db = mEncryptDb;
             }
-            qb.setTables(DatabaseColumns.EncryptColumns.DATABASE_NAME);
+            qb.setTables(DatabaseColumns.EncryptColumns.TABLE_NAME);
             if (match == ENCRYPT_ALARMS_ID) {
                 qb.appendWhere(DatabaseColumns.EncryptColumns._ID + "=");
                 qb.appendWhere(uri.getPathSegments().get(1));

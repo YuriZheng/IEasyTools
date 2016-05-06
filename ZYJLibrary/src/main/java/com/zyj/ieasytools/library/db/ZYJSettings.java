@@ -1,8 +1,13 @@
 package com.zyj.ieasytools.library.db;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.text.TextUtils;
 
+import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
+import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 import net.sqlcipher.database.SQLiteDatabase;
@@ -20,7 +25,7 @@ public class ZYJSettings extends BaseDatabase {
      */
     private static ZYJSettings mInstance;
 
-    private MySQLiteDatabase mSQLiteDatabase;
+    private BaseEncrypt mEncrypt;
 
     private final int VERSION = 1;
 
@@ -28,6 +33,7 @@ public class ZYJSettings extends BaseDatabase {
         super(c);
         openDatabase();
         creatTable(DatabaseColumns.SettingColumns.CREATE_SETTING_TABLE_SQL);
+        mEncrypt = ZYJDatabaseUtils.getSettingsEncrypt(c);
     }
 
     public static ZYJSettings getInstance(Context c) {
@@ -78,8 +84,15 @@ public class ZYJSettings extends BaseDatabase {
         if (TextUtils.isEmpty(key)) {
             throw new RuntimeException("The key is null");
         }
-        if (value == null) {
+        if (mEncrypt == null) {
+            return false;
+        }
+        key = mEncrypt.encrypt(key);
+        if (TextUtils.isEmpty(value)) {
             value = "";
+        }
+        if (value != null) {
+            value = mEncrypt.encrypt(value);
         }
         Map.Entry<String, String> entry = new AbstractMap.SimpleEntry<String, String>(key, value + "");
         return putProperties(entry);
@@ -93,13 +106,11 @@ public class ZYJSettings extends BaseDatabase {
      * @return update or insert success, then return true, others return false
      */
     private boolean putProperties(Map.Entry<String, String> entry) {
-//        if (hasEntry(entry.getKey()).equals(NOT_DATA_KEY)) {
-//            return insertEntry(entry) != null;
-//        } else {
-//            return updateEntry(entry) > 0;
-//        }
-
-        return true;
+        if (checkEntry(entry.getKey())) {
+            return updateSetting(entry) > 0;
+        } else {
+            return insertSetting(entry) != null;
+        }
     }
 
     /**
@@ -138,12 +149,16 @@ public class ZYJSettings extends BaseDatabase {
      * @see {@link #getProperties(String)}
      */
     public String getStringProperties(String key, String defaultString) {
+        if (mEncrypt == null) {
+            return defaultString;
+        }
+        key = mEncrypt.encrypt(key);
         try {
             String value = getProperties(key);
             if (TextUtils.isEmpty(value)) {
                 return defaultString;
             }
-            return value;
+            return mEncrypt.decrypt(value);
         } catch (Exception e) {
             return defaultString;
         }
@@ -157,12 +172,61 @@ public class ZYJSettings extends BaseDatabase {
      * @return if record's value is "" , return "" , others return the value
      */
     private String getProperties(String key) {
-//        String value = hasEntry(key);
-//        if (NOT_DATA_KEY.equals(value)) {
-//            value = "";
-//        }
-//        return value;
-        return "";
+        Cursor c = mContext.getContentResolver().query(ZYJContentProvider.SEETINGS_URI, null, DatabaseColumns.SettingColumns._KEY + "=?",
+                new String[]{key}, null);
+        String value = "";
+        if (c == null || c.getCount() < 1) {
+            return "";
+        } else {
+            if (c.getCount() > 1) {
+                ZYJUtils.logW(getClass(), "This properties has repeated: " + key);
+            }
+            if (c.moveToNext()) {
+                value = c.getString(c.getColumnIndex(DatabaseColumns.SettingColumns._VALUE));
+            }
+        }
+        return value;
+    }
+
+    /**
+     * Remove the key
+     */
+    public boolean remvoeEntry(String key) {
+        return mContext.getContentResolver().delete(ZYJContentProvider.SEETINGS_URI, DatabaseColumns.SettingColumns._KEY + "=?", new String[]{key}) > 0;
+    }
+
+    /**
+     * Check this entry in database
+     *
+     * @return Has this key then return true
+     */
+    public boolean checkEntry(String key) {
+        Cursor c = mContext.getContentResolver().query(ZYJContentProvider.SEETINGS_URI, null, DatabaseColumns.SettingColumns._KEY + "=?",
+                new String[]{key}, null);
+        try {
+            return c != null ? (c.getCount() == 1) : false;
+        } finally {
+            c.close();
+        }
+    }
+
+    private int updateSetting(Map.Entry<String, String> entry) {
+        ContentValues values = new ContentValues();
+        String key = entry.getKey();
+        String value = entry.getValue();
+        values.put(DatabaseColumns.SettingColumns._VALUE, value);
+        ZYJUtils.logD(getClass(), "update properties: " + key + "<" + value + ">");
+        return mContext.getContentResolver().update(ZYJContentProvider.SEETINGS_URI, values, DatabaseColumns.SettingColumns._KEY + "=?", new String[]{key});
+    }
+
+    private Uri insertSetting(Map.Entry<String, String> entry) {
+        ContentValues values = new ContentValues();
+        String key = entry.getKey();
+        String value = entry.getValue();
+        values.put(DatabaseColumns.SettingColumns._KEY, key);
+        values.put(DatabaseColumns.SettingColumns._VALUE, value);
+        ZYJUtils.logD(getClass(), "insert properties: " + key + "<" + value + ">");
+        return mContext.getContentResolver().insert(ZYJContentProvider.SEETINGS_URI, values);
     }
 
     @Override
