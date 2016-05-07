@@ -12,12 +12,12 @@ public abstract class BaseDatabase {
 
     protected Context mContext;
 
-    private MySQLiteDatabase mSQLDatabase = null;
+    protected MySQLiteDatabase mSQLDatabase;
 
     /**
      * The database open success
      */
-    public static final int DATABASE_OPEN_SUCCESS = 0XA;
+    public static final int DATABASE_OPEN_SUCCESS = -0XA;
     /**
      * The databse file is not exists or cann't read
      */
@@ -42,7 +42,7 @@ public abstract class BaseDatabase {
     protected abstract int getVersion();
 
     /**
-     * Will call when the oldVersion under the newVersion
+     * Will call when the database need upgrade
      */
     protected abstract void onUpgrade(SQLiteDatabase sqliteDatabase, int oldVersion, int newVersion);
 
@@ -76,7 +76,9 @@ public abstract class BaseDatabase {
 
     public void onDestroy() {
         if (checkDatabaseOpenState(mSQLDatabase)) {
-            mSQLDatabase.getSQLDatabase().close();
+            if (mSQLDatabase.getSQLDatabase().isOpen()) {
+                mSQLDatabase.getSQLDatabase().close();
+            }
         }
         mSQLDatabase = null;
     }

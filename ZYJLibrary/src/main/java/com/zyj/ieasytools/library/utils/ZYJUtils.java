@@ -10,6 +10,8 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -270,13 +272,32 @@ public final class ZYJUtils {
     }
 
     /**
-     * Get the machine code
+     * Get the setting password
      *
-     * @return return the mechine code
+     * @return return the password
      */
-    public static String getMachineCode(Context context) {
+    public static String getSettingPassword(Context context) {
+        long firstInstallTime = 497393102l;
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+            firstInstallTime = packageInfo.firstInstallTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        return tm.getDeviceId();
+        String code = tm.getDeviceId() + "*" + firstInstallTime;
+        StringBuilder sb = new StringBuilder(code);
+        if (sb.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN) {
+            while (code.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN) {
+                code = code + code;
+            }
+        } else if (sb.length() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
+            code = code.substring(0, BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX);
+        }
+        sb.setLength(0);
+        sb.append(code);
+        return sb.toString();
     }
 
 }

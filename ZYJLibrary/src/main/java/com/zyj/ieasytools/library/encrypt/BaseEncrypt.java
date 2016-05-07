@@ -2,6 +2,8 @@ package com.zyj.ieasytools.library.encrypt;
 
 import android.text.TextUtils;
 
+import com.zyj.ieasytools.library.utils.ZYJVersion;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,11 +129,15 @@ public abstract class BaseEncrypt {
      * Encrypt the string,the message send by {@link EncryptListener}
      *
      * @param resourceString the encrypt string
+     * @param version        the encrypt version, different version for different encrypt method
      * @return {@link #protectedEncrypt}
      */
-    public String encrypt(String resourceString) {
+    public String encrypt(String resourceString, int version) {
         startEncrypt(resourceString);
-        String after = protectedEncrypt(resourceString);
+        String after = "";
+        if (version == ZYJVersion.FIRST_VERSION) {
+            after = protectedEncrypt(resourceString);
+        }
         endEncrypt(after);
         return after;
     }
@@ -140,11 +146,15 @@ public abstract class BaseEncrypt {
      * Encrypt the string,the message send by {@link EncryptListener}
      *
      * @param encryptString the encrypt string
+     * @param version       the encrypt version, different version for different encrypt method
      * @return {@link #protectedDecrypt}
      */
-    public String decrypt(String encryptString) {
+    public String decrypt(String encryptString, int version) {
         startDecrypt(encryptString);
-        String after = protectedDecrypt(encryptString);
+        String after = "";
+        if (version == ZYJVersion.FIRST_VERSION) {
+            after = protectedDecrypt(encryptString);
+        }
         endDecrypt(after);
         return after;
     }

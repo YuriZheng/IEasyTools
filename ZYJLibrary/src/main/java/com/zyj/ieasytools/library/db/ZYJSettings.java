@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
-import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
+import com.zyj.ieasytools.library.utils.ZYJDBAndEntryptUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 import net.sqlcipher.database.SQLiteDatabase;
@@ -27,13 +27,22 @@ public class ZYJSettings extends BaseDatabase {
 
     private BaseEncrypt mEncrypt;
 
+    /**
+     * Database's version
+     */
     private final int VERSION = 1;
+
+    /**
+     * The app's version, for the encrypt method.(expanded in the future)
+     */
+    private final int APP_VERSION;
 
     private ZYJSettings(Context c) {
         super(c);
         openDatabase();
         creatTable(DatabaseColumns.SettingColumns.CREATE_SETTING_TABLE_SQL);
-        mEncrypt = ZYJDatabaseUtils.getSettingsEncrypt(c);
+        mEncrypt = ZYJDBAndEntryptUtils.getSettingsEncrypt(c);
+        APP_VERSION = Integer.parseInt(ZYJUtils.getVersion(c)[1].toString());
     }
 
     public static ZYJSettings getInstance(Context c) {
@@ -51,9 +60,9 @@ public class ZYJSettings extends BaseDatabase {
      * {@link #DATABASE_OPEN_PASSWORD}<br>
      * {@link #DATABASE_OPEN_UNKNOW}<br>
      */
-    public MySQLiteDatabase openDatabase() {
+    private MySQLiteDatabase openDatabase() {
         // Use the machine code to encrypt
-        return getSQLiteDatabase(mContext, DatabaseColumns.SettingColumns.DATABASE_NAME, ZYJUtils.getMachineCode(mContext));
+        return getSQLiteDatabase(mContext, DatabaseColumns.SettingColumns.DATABASE_NAME, ZYJUtils.getSettingPassword(mContext));
     }
 
     /**
@@ -87,12 +96,12 @@ public class ZYJSettings extends BaseDatabase {
         if (mEncrypt == null) {
             return false;
         }
-        key = mEncrypt.encrypt(key);
+        key = mEncrypt.encrypt(key, APP_VERSION);
         if (TextUtils.isEmpty(value)) {
             value = "";
         }
         if (value != null) {
-            value = mEncrypt.encrypt(value);
+            value = mEncrypt.encrypt(value, APP_VERSION);
         }
         Map.Entry<String, String> entry = new AbstractMap.SimpleEntry<String, String>(key, value + "");
         return putProperties(entry);
@@ -152,13 +161,13 @@ public class ZYJSettings extends BaseDatabase {
         if (mEncrypt == null) {
             return defaultString;
         }
-        key = mEncrypt.encrypt(key);
+        key = mEncrypt.encrypt(key, APP_VERSION);
         try {
             String value = getProperties(key);
             if (TextUtils.isEmpty(value)) {
                 return defaultString;
             }
-            return mEncrypt.decrypt(value);
+            return mEncrypt.decrypt(value, APP_VERSION);
         } catch (Exception e) {
             return defaultString;
         }
@@ -230,12 +239,18 @@ public class ZYJSettings extends BaseDatabase {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mInstance = null;
+    }
+
+    @Override
     protected int getVersion() {
         return VERSION;
     }
 
     @Override
     protected void onUpgrade(SQLiteDatabase sqliteDatabase, int oldVersion, int newVersion) {
-
+        // Never upgrade
     }
 }

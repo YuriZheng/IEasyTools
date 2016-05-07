@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.library.db.ZYJContentProvider;
+import com.zyj.ieasytools.library.db.ZYJEncrypts;
 import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextView;
 
     private ZYJSettings mSettings;
+    private ZYJEncrypts mEncrypt;
 
     private ContentObserver mListener = null;
 
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         mTextView = (TextView) findViewById(R.id.content);
 
         mSettings = ZYJSettings.getInstance(this);
+        mEncrypt = new ZYJEncrypts(this);
 
         mListener = new ContentObserver(new Handler()) {
             public void onChange(boolean selfChange, Uri uri) {
@@ -51,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         getContentResolver().registerContentObserver(ZYJContentProvider.SEETINGS_URI, true, mListener);
-        getContentResolver().registerContentObserver(ZYJContentProvider.USER_URI, true, mListener);
     }
 
     @Override
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         getContentResolver().unregisterContentObserver(mListener);
         mSettings.onDestroy();
+        ZYJEncrypts.destory();
     }
 
     public void onViewClick(View view) {
