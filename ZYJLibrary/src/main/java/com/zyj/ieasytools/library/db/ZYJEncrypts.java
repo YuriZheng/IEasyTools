@@ -1,26 +1,41 @@
 package com.zyj.ieasytools.library.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 
+import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
+import com.zyj.ieasytools.library.encrypt.EncryptFactory;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
+import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
+import com.zyj.ieasytools.library.utils.ZYJVersion;
 
+import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * <h5>principle: <h5/>
+ * Data storage after encrypted <br>
+ * Read data after decrypted <br><br>
  * Created by yuri.zheng on 2016/5/5.
  */
 public class ZYJEncrypts extends BaseDatabase {
 
+    private final int VERSION = 1;
     private static MaintainEncryptClass mMaintain;
 
+    private boolean isCurrentDatabase = false;
+
     /**
+     * Control the access permission, so It's a private constructor
+     *
      * @param context context
      */
-    public ZYJEncrypts(Context context) {
+    private ZYJEncrypts(Context context) {
         super(context);
         if (mMaintain == null) {
             mMaintain = new MaintainEncryptClass();
@@ -48,8 +63,10 @@ public class ZYJEncrypts extends BaseDatabase {
      * {@link #DATABASE_OPEN_FILE_EXCEPTION}<br>
      * {@link #DATABASE_OPEN_PASSWORD}<br>
      * {@link #DATABASE_OPEN_UNKNOW}<br>
+     * @see ZYJDBEntryptUtils#getEncryptDatabaseFromPath(Context, String, String)
      */
-    public MySQLiteDatabase openDatabase(String path, String password) {
+    private MySQLiteDatabase openDatabase(String path, String password) {
+        isCurrentDatabase = false;
         return getSQLiteDatabase(path, password);
     }
 
@@ -58,11 +75,33 @@ public class ZYJEncrypts extends BaseDatabase {
      *
      * @param password
      * @return {@link #openDatabase(String, String)}
+     * @see ZYJDBEntryptUtils#getEncryptDatabaseFromPath(Context, String, String)
      */
-    public MySQLiteDatabase openDatabase(String password) {
-        return openDatabase(mContext.getDatabasePath(DatabaseColumns.EncryptColumns.DATABASE_NAME).getAbsolutePath(), password);
+    @SuppressWarnings("unused")
+    private MySQLiteDatabase openDatabase(String password) {
+        File file = ZYJDBEntryptUtils.getCurrentDatabasePath(mContext);
+        ZYJUtils.logI(getClass(), "Path: " + file.getAbsolutePath());
+        MySQLiteDatabase my = null;
+        if (file == null) {
+            my = openDatabase(null, null);
+        } else {
+            my = openDatabase(file.getAbsolutePath(), password);
+        }
+        isCurrentDatabase = true;
+        return my;
     }
 
+    /**
+     * @see ZYJDBEntryptUtils#getEncryptDatabaseFromPath(Context, String, String)
+     */
+    @SuppressWarnings("unused")
+    private void initDatabase() {
+        creatTable(DatabaseColumns.EncryptColumns.CREATE_SETTING_TABLE_SQL);
+    }
+
+    /**
+     * Check the database state
+     */
     private int checkDatabase() {
         if (mSQLDatabase == null) {
             return DATABASE_OPEN_FILE_EXCEPTION;
@@ -70,43 +109,129 @@ public class ZYJEncrypts extends BaseDatabase {
         if (mSQLDatabase.getStateCode() != DATABASE_OPEN_SUCCESS) {
             return mSQLDatabase.getStateCode();
         }
+        if (mSQLDatabase.getStateCode() == DATABASE_OPEN_SUCCESS && mSQLDatabase.getSQLDatabase() == null) {
+            throw new RuntimeException("The state is success but the database is null");
+        }
         return DATABASE_OPEN_SUCCESS;
     }
 
-    public int insertEntry(PasswordEntry entry) {
+    /**
+     * This database weather is ours
+     *
+     * @return true if open ourself,other return false
+     */
+    public boolean isCurrentDatabase() {
+        return isCurrentDatabase;
+    }
+
+    /**
+     * Insert a entry. Insert after encrypt the entry
+     *
+     * @param entry    the entry
+     * @param password the encrypt password
+     * @return {@link SQLiteDatabase#insert(String, String, ContentValues)}
+     */
+    public long insertEntry(PasswordEntry entry, String password) {
         int state = checkDatabase();
         if (state != DATABASE_OPEN_SUCCESS) {
             return state;
         }
-
-        return 0;
+        SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
+        if (checkUUID(d, entry.getUuid())) {
+            return updateEntry(entry, password);
+        } else {
+            ContentValues v = getContentValues(entry, password);
+            return d.insert(DatabaseColumns.EncryptColumns.TABLE_NAME, null, v);
+        }
     }
 
-    public int deleteEntry(String uuid) {
+    public int deleteEntry(PasswordEntry entry, String password) {
         int state = checkDatabase();
         if (state != DATABASE_OPEN_SUCCESS) {
             return state;
         }
-
-        return 0;
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(entry.getEncryptionMethod()), password);
+        SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
+        String uuid = encrypt.encrypt(entry.getUuid(), ZYJVersion.FIRST_VERSION);
+        return d.delete(DatabaseColumns.EncryptColumns.TABLE_NAME, DatabaseColumns.EncryptColumns._UUID + "=?", new String[]{uuid});
     }
 
-    public int modifyEntry(PasswordEntry entry) {
+    public long updateEntry(PasswordEntry entry, String password) {
         int state = checkDatabase();
         if (state != DATABASE_OPEN_SUCCESS) {
             return state;
         }
-
-        return 0;
+        SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
+        ContentValues v = getContentValues(entry, password);
+        String uuid = v.getAsString(DatabaseColumns.EncryptColumns._UUID);
+        return d.update(DatabaseColumns.EncryptColumns.TABLE_NAME, v, DatabaseColumns.EncryptColumns._UUID + "=?", new String[]{uuid});
     }
 
-    public PasswordEntry queryEntry(String uuid) {
+    public PasswordEntry queryEntry(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String password) {
         int state = checkDatabase();
         if (state != DATABASE_OPEN_SUCCESS) {
             return null;
         }
-
+        // TODO: 2016/5/9
+        SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
+        Cursor c = null;
+        try {
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
         return null;
+    }
+
+    private ContentValues getContentValues(PasswordEntry entry, String password) {
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(entry.getEncryptionMethod()), password);
+        ContentValues v = new ContentValues();
+        v.put(DatabaseColumns.EncryptColumns._UUID, encrypt.encrypt(entry.getUuid(), ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._CATEGORY, encrypt.encrypt(entry.p_category, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._TITLE, encrypt.encrypt(entry.p_title, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._USERNAME, encrypt.encrypt(entry.p_username, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._PASSWORD, encrypt.encrypt(entry.p_password, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._ADDRESS, encrypt.encrypt(entry.p_address, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._DESCRIPTION, encrypt.encrypt(entry.p_description, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._EMAIL, encrypt.encrypt(entry.p_email, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._PHONE, encrypt.encrypt(entry.p_phone, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._QUESTION_1, encrypt.encrypt(entry.p_q_1, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_1, encrypt.encrypt(entry.p_q_a_1, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._QUESTION_2, encrypt.encrypt(entry.p_q_2, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_2, encrypt.encrypt(entry.p_q_a_2, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._QUESTION_3, encrypt.encrypt(entry.p_q_3, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_3, encrypt.encrypt(entry.p_q_a_3, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._ADD_TIME, entry.getAddTime());
+        v.put(DatabaseColumns.EncryptColumns._MODIFY_TIME, entry.p_modify_time);
+        v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_METHOD, encrypt.encrypt(entry.getEncryptionMethod(), ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_FROM, entry.getTestFrom());
+        v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_TO, entry.getTestTo());
+        v.put(DatabaseColumns.EncryptColumns._REMARKS, encrypt.encrypt(entry.p_remarks, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._Version, entry.p_version);
+        //Reserve
+        v.put(DatabaseColumns.EncryptColumns._Reserve_0, "");
+        v.put(DatabaseColumns.EncryptColumns._Reserve_1, "");
+        v.put(DatabaseColumns.EncryptColumns._Reserve_2, "");
+        v.put(DatabaseColumns.EncryptColumns._Reserve_3, "");
+        v.put(DatabaseColumns.EncryptColumns._Reserve_4, "");
+        return v;
+    }
+
+    /**
+     * @return return {@link Cursor#getCount()} > 0
+     */
+    private boolean checkUUID(SQLiteDatabase d, String uuid) {
+        Cursor c = null;
+        try {
+            c = d.query(DatabaseColumns.EncryptColumns.TABLE_NAME, new String[]{DatabaseColumns.EncryptColumns._UUID},
+                    DatabaseColumns.EncryptColumns._UUID + "=?", new String[]{uuid}, null, null, null);
+            return c.getCount() > 0;
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
     }
 
     @Override
@@ -116,7 +241,7 @@ public class ZYJEncrypts extends BaseDatabase {
 
     @Override
     protected int getVersion() {
-        return 0;
+        return VERSION;
     }
 
     @Override
@@ -141,7 +266,10 @@ public class ZYJEncrypts extends BaseDatabase {
          * Add a {@link ZYJEncrypts}
          */
         protected void add(String key, ZYJEncrypts z) {
-            mWeekRefresh.put(key, z);
+            ZYJEncrypts insted = mWeekRefresh.put(key, z);
+            if (insted != null) {
+                insted.onDestroy();
+            }
         }
 
         /**
@@ -161,6 +289,7 @@ public class ZYJEncrypts extends BaseDatabase {
                     z.onDestroy();
                 }
             }
+            mWeekRefresh.clear();
         }
     }
 }

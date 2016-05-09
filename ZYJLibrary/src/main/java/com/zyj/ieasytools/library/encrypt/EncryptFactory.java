@@ -11,6 +11,9 @@ import java.util.Map;
  */
 public final class EncryptFactory {
 
+    /**
+     * A singleton
+     */
     private static EncryptFactory mInstance = null;
 
     /**
@@ -29,6 +32,35 @@ public final class EncryptFactory {
         return mInstance;
     }
 
+    /**
+     * Get the class from encrypt method
+     *
+     * @param method the method
+     * @return return the class
+     */
+    public static Class<?> getClassFromMethod(String method) {
+        if (BaseEncrypt.ENCRYPT_AES.equals(method)) {
+            return AESEncrypt.class;
+        } else if (BaseEncrypt.ENCRYPT_BASE_64.equals(method)) {
+            return Base64Encrypt.class;
+        } else if (BaseEncrypt.ENCRYPT_BLOWFISH.equals(method)) {
+            return BlowfishEncrypt.class;
+        } else if (BaseEncrypt.ENCRYPT_DES.equals(method)) {
+            return DESEncrypt.class;
+        } else if (BaseEncrypt.ENCRYPT_RC4.equals(method)) {
+            return RC4Encrypt.class;
+        } else {
+            throw new RuntimeException("The method is error: " + method);
+        }
+    }
+
+    /**
+     * Get the encrypt class
+     *
+     * @param clz        the class object
+     * @param privateKey the password
+     * @return return a encrypt object
+     */
     public BaseEncrypt getInstance(Class<?> clz, String privateKey) {
         return getEncryptInstance(clz, privateKey);
     }

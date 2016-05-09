@@ -7,8 +7,9 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
-import com.zyj.ieasytools.library.utils.ZYJDBAndEntryptUtils;
+import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
+import com.zyj.ieasytools.library.utils.ZYJVersion;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -28,11 +29,6 @@ public class ZYJSettings extends BaseDatabase {
     private BaseEncrypt mEncrypt;
 
     /**
-     * Database's version
-     */
-    private final int VERSION = 1;
-
-    /**
      * The app's version, for the encrypt method.(expanded in the future)
      */
     private final int APP_VERSION;
@@ -41,8 +37,8 @@ public class ZYJSettings extends BaseDatabase {
         super(c);
         openDatabase();
         creatTable(DatabaseColumns.SettingColumns.CREATE_SETTING_TABLE_SQL);
-        mEncrypt = ZYJDBAndEntryptUtils.getSettingsEncrypt(c);
-        APP_VERSION = Integer.parseInt(ZYJUtils.getVersion(c)[1].toString());
+        mEncrypt = ZYJDBEntryptUtils.getSettingsEncrypt(c);
+        APP_VERSION = ZYJVersion.FIRST_VERSION;
     }
 
     public static ZYJSettings getInstance(Context c) {
@@ -73,14 +69,14 @@ public class ZYJSettings extends BaseDatabase {
     }
 
     /**
-     * @see {@link #putStringProperties(String, String)} vaule must above zeor
+     * @see {@link #putStringProperties(String, String)}
      */
     public boolean putIntProperties(String key, int value) {
         return putStringProperties(key, value + "");
     }
 
     /**
-     * @see {@link #putStringProperties(String, String)} vaule must above zeor
+     * @see {@link #putStringProperties(String, String)}
      */
     public boolean putLongProperties(String key, long value) {
         return putStringProperties(key, value + "");
@@ -246,7 +242,7 @@ public class ZYJSettings extends BaseDatabase {
 
     @Override
     protected int getVersion() {
-        return VERSION;
+        return Integer.MAX_VALUE;
     }
 
     @Override

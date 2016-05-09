@@ -135,8 +135,10 @@ public abstract class BaseEncrypt {
     public String encrypt(String resourceString, int version) {
         startEncrypt(resourceString);
         String after = "";
-        if (version == ZYJVersion.FIRST_VERSION) {
-            after = protectedEncrypt(resourceString);
+        switch (version) {
+            case ZYJVersion.FIRST_VERSION:
+                after = protectedEncrypt(resourceString);
+                break;
         }
         endEncrypt(after);
         return after;
@@ -152,8 +154,10 @@ public abstract class BaseEncrypt {
     public String decrypt(String encryptString, int version) {
         startDecrypt(encryptString);
         String after = "";
-        if (version == ZYJVersion.FIRST_VERSION) {
-            after = protectedDecrypt(encryptString);
+        switch (version) {
+            case ZYJVersion.FIRST_VERSION:
+                after = protectedDecrypt(encryptString);
+                break;
         }
         endDecrypt(after);
         return after;

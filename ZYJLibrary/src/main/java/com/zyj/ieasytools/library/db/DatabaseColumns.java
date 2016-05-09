@@ -8,6 +8,9 @@ import android.provider.BaseColumns;
  */
 public abstract class DatabaseColumns {
 
+    /**
+     * Database file suffix
+     */
     public static final String DATABASE_FILE_SUFFIX = "izyj";
 
     public static class EncryptColumns implements BaseColumns {

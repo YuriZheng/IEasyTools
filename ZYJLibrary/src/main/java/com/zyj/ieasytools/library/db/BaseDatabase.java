@@ -1,6 +1,7 @@
 package com.zyj.ieasytools.library.db;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
@@ -17,19 +18,19 @@ public abstract class BaseDatabase {
     /**
      * The database open success
      */
-    public static final int DATABASE_OPEN_SUCCESS = -0XA;
+    public static final int DATABASE_OPEN_SUCCESS = 0;
     /**
      * The databse file is not exists or cann't read
      */
-    public static final int DATABASE_OPEN_FILE_EXCEPTION = DATABASE_OPEN_SUCCESS << 1;
+    public static final int DATABASE_OPEN_FILE_EXCEPTION = -0xA;
     /**
      * Error password to open database
      */
-    public static final int DATABASE_OPEN_PASSWORD = DATABASE_OPEN_SUCCESS << 2;
+    public static final int DATABASE_OPEN_PASSWORD = DATABASE_OPEN_FILE_EXCEPTION << 1;
     /**
      * Unknow error
      */
-    public static final int DATABASE_OPEN_UNKNOW = DATABASE_OPEN_SUCCESS << 3;
+    public static final int DATABASE_OPEN_UNKNOW = DATABASE_OPEN_FILE_EXCEPTION << 2;
 
     public BaseDatabase(Context context) {
         this.mContext = context;
@@ -56,7 +57,7 @@ public abstract class BaseDatabase {
             ZYJUtils.logD(getClass(), "Drop table" + tableName);
             mSQLDatabase.getSQLDatabase().execSQL("DROP TABLE IF EXISTS " + tableName);
         } else {
-            ZYJUtils.logW(getClass(), "The database open faile");
+            ZYJUtils.logW(getClass(), "The database open faile" + (mSQLDatabase != null ? mSQLDatabase.getStateCode() : "MySQLiteDatabase is null"));
         }
     }
 
@@ -67,10 +68,10 @@ public abstract class BaseDatabase {
      */
     protected void creatTable(String createSql) {
         if (checkDatabaseOpenState(mSQLDatabase)) {
-            ZYJUtils.logD(getClass(), "Database onCreate: " + createSql);
+            ZYJUtils.logI(getClass(), "Database onCreate: " + createSql);
             mSQLDatabase.getSQLDatabase().execSQL(createSql);
         } else {
-            ZYJUtils.logW(getClass(), "The database open faile");
+            ZYJUtils.logW(getClass(), "The database open faile: " + (mSQLDatabase != null ? mSQLDatabase.getStateCode() : "MySQLiteDatabase is null"));
         }
     }
 
@@ -91,6 +92,9 @@ public abstract class BaseDatabase {
      * @return return the open state {@link MySQLiteDatabase}<br>
      */
     protected MySQLiteDatabase getSQLiteDatabase(String path, String password) {
+        if (TextUtils.isEmpty(path) || TextUtils.isEmpty(password)) {
+            return new MySQLiteDatabase().setSQL(null, DATABASE_OPEN_PASSWORD);
+        }
         if (mSQLDatabase != null) {
             return mSQLDatabase;
         }
@@ -183,9 +187,10 @@ public abstract class BaseDatabase {
             return mStateCode;
         }
 
-        protected void setSQL(SQLiteDatabase database, int stateCode) {
+        protected MySQLiteDatabase setSQL(SQLiteDatabase database, int stateCode) {
             this.mSQLDatabase = database;
             this.mStateCode = stateCode;
+            return this;
         }
     }
 

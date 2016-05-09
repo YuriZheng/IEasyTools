@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
-import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -147,26 +146,6 @@ public final class ZYJUtils {
     }
 
     /**
-     * Get root path<br>
-     * "/system"
-     *
-     * @return
-     */
-    public static String getRootDirectoryPath() {
-        return Environment.getRootDirectory().getPath();
-    }
-
-    /**
-     * Get data path<br>
-     * "/data"
-     *
-     * @return
-     */
-    public static String getDataDirectoryPath() {
-        return Environment.getDataDirectory().getPath();
-    }
-
-    /**
      * Judge the external card exist
      *
      * @return exist will return true, otherwise return false
@@ -187,62 +166,6 @@ public final class ZYJUtils {
             return Environment.getExternalStorageDirectory().getPath();
         } else {
             return null;
-        }
-    }
-
-    /**
-     * Get the system available memory size
-     *
-     * @return return the memory size
-     */
-    public static long getSystemAvailableMemorySize() {
-        StatFs stat = new StatFs(getDataDirectoryPath());
-        long blockSize = stat.getBlockSizeLong();
-        long availableBlocks = stat.getAvailableBlocksLong();
-        return availableBlocks * blockSize;
-    }
-
-    /**
-     * Get the system totle memory size
-     *
-     * @return
-     */
-    public static long getSystemTotleMemorySize() {
-        StatFs stat = new StatFs(getDataDirectoryPath());
-        long blockSize = stat.getBlockSizeLong();
-        long totalBlocks = stat.getBlockCountLong();
-        return totalBlocks * blockSize;
-    }
-
-    /**
-     * Get the external available memory size
-     *
-     * @return return the memory size, if the sdcard not exist ,return -1
-     */
-    public static long getExternalAvailableMemorySize() {
-        if (isExternalCardExist()) {
-            StatFs stat = new StatFs(getExternalCardPath());
-            long blockSize = stat.getBlockSizeLong();
-            long availableBlocks = stat.getAvailableBlocksLong();
-            return availableBlocks * blockSize;
-        } else {
-            return -1;
-        }
-    }
-
-    /**
-     * Get the external totle memory size
-     *
-     * @return return the totle memory size, if the sdcard not exist ,return -1
-     */
-    public static long getExternalTotalMemorySize() {
-        if (isExternalCardExist()) {
-            StatFs stat = new StatFs(getExternalCardPath());
-            long blockSize = stat.getBlockSizeLong();
-            long totalBlocks = stat.getBlockCountLong();
-            return totalBlocks * blockSize;
-        } else {
-            return -1;
         }
     }
 
@@ -272,7 +195,7 @@ public final class ZYJUtils {
     }
 
     /**
-     * Get the setting password
+     * Get the setting encrypt password
      *
      * @return return the password
      */

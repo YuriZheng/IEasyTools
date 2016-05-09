@@ -44,7 +44,6 @@ public final class ZYJVersion {
                         e.printStackTrace();
                     }
                 }
-                ZYJUtils.logD(ZYJVersion.class, "The version is " + version + ", but the max is " + max);
                 if (version != max) {
                     throw new RuntimeException("The version is " + version + ", but the max is " + max);
                 }
