@@ -46,3 +46,5 @@ ZYJLibrary/ZYJLibrary.iml
 # Igonre gradle file
 /build.gradle
 /gradle
+
+.DS_Store
