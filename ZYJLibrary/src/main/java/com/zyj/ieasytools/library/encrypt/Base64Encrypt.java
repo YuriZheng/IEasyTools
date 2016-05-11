@@ -1,5 +1,7 @@
 package com.zyj.ieasytools.library.encrypt;
 
+import android.text.TextUtils;
+
 /**
  * Base64 encrypt class
  *
@@ -29,7 +31,9 @@ public class Base64Encrypt extends BaseEncrypt {
 
     @Override
     protected String protectedEncrypt(String resourceString) {
-
+        if (TextUtils.isEmpty(resourceString)) {
+            return "";
+        }
         byte[] data = resourceString.getBytes();
         char[] out = new char[((data.length + 2) / 3) * 4];
         for (int i = 0, index = 0; i < data.length; i += 3, index += 4) {
@@ -59,8 +63,10 @@ public class Base64Encrypt extends BaseEncrypt {
 
     @Override
     protected String protectedDecrypt(String encryptString) {
+        if (TextUtils.isEmpty(encryptString)) {
+            return "";
+        }
         byte[] data = encryptString.getBytes();
-
         int len = ((data.length + 3) / 4) * 3;
         if (data.length > 0 && data[data.length - 1] == '=')
             --len;

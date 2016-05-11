@@ -3,6 +3,7 @@ package com.zyj.ieasytools.library.db;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 import net.sqlcipher.database.SQLiteDatabase;
@@ -92,7 +93,9 @@ public abstract class BaseDatabase {
      * @return return the open state {@link MySQLiteDatabase}<br>
      */
     protected MySQLiteDatabase getSQLiteDatabase(String path, String password) {
-        if (TextUtils.isEmpty(path) || TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(path) || TextUtils.isEmpty(password)
+                || password.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN
+                || password.length() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
             return new MySQLiteDatabase().setSQL(null, DATABASE_OPEN_PASSWORD);
         }
         if (mSQLDatabase != null) {

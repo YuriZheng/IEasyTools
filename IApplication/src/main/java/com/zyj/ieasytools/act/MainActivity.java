@@ -1,6 +1,5 @@
 package com.zyj.ieasytools.act;
 
-import android.app.Activity;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,20 +12,26 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
-import com.zyj.ieasytools.library.db.DatabaseColumns;
 import com.zyj.ieasytools.library.db.ZYJContentProvider;
 import com.zyj.ieasytools.library.db.ZYJEncrypts;
+import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
+import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
+import com.zyj.ieasytools.library.utils.ZYJVersion;
 
-import java.io.File;
+import java.util.List;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextView;
 
-//    private ZYJSettings mSettings;
+    //    private ZYJSettings mSettings;
     private ZYJEncrypts mEncrypt;
+
+    private String databasePassword = "12345678";
+    private String seePasswrod = "497393102";
 
     private ContentObserver mListener = null;
 
@@ -56,7 +61,10 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        mEncrypt = ZYJDBEntryptUtils.getCurrentEncryptDatabase(this, databasePassword);
+
         getContentResolver().registerContentObserver(ZYJContentProvider.SEETINGS_URI, true, mListener);
+
     }
 
     @Override
@@ -68,16 +76,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onViewClick(View view) {
-        File file = new File(getDir(DatabaseColumns.EncryptColumns.DATABASE_NAME, Activity.MODE_PRIVATE).getPath());
-        ZYJUtils.logD(getClass(),"File: " + file.exists());
-        mEncrypt = ZYJDBEntryptUtils.getCurrentEncryptDatabase(this,"123");
         if (view.getId() == R.id.encrypt) {
-            String string = ((int) (Math.random() * 1000)) + "";
-//            mSettings.putStringProperties("key", string);
-            mTextView.setText("Put " + string);
+            String[] testString = ZYJDBEntryptUtils.generateTestTo(this, BaseEncrypt.ENCRYPT_AES, seePasswrod, ZYJVersion.FIRST_VERSION);
+            PasswordEntry entry = new PasswordEntry(UUID.randomUUID().toString(), System.currentTimeMillis(), BaseEncrypt.ENCRYPT_AES, testString[0], testString[1], ZYJVersion.FIRST_VERSION);
+            entry.p_username = "username";
+            entry.p_password = "497393102";
+            long result = mEncrypt.insertEntry(entry, seePasswrod);
+            ZYJUtils.logD(getClass(), "Result: " + result);
         } else if (view.getId() == R.id.decrypt) {
 //            String string = mSettings.getStringProperties("key", "");
 //            mTextView.setText("Get " + string);
+
+            ZYJUtils.logD(getClass(), "Size: " + mEncrypt.getAllRecord());
+            List<PasswordEntry> entrys = mEncrypt.queryEntry(null, null, null, seePasswrod);
+            for (PasswordEntry e : entrys) {
+                ZYJUtils.logD(getClass(), e.toString() + ", Password: " + e.p_password);
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.zyj.ieasytools.library.encrypt;
 
+import android.text.TextUtils;
+
 import java.security.MessageDigest;
 import java.util.Random;
 
@@ -30,11 +32,17 @@ public class BlowfishEncrypt extends BaseEncrypt {
 
     @Override
     protected String protectedEncrypt(String resourceString) {
+        if (TextUtils.isEmpty(resourceString)) {
+            return "";
+        }
         return encryptString(resourceString);
     }
 
     @Override
     protected String protectedDecrypt(String encryptString) {
+        if (TextUtils.isEmpty(encryptString)) {
+            return "";
+        }
         return decryptString(encryptString);
     }
 

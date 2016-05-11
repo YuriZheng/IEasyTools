@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
  */
 public final class ZYJDBEntryptUtils {
 
+    private static final String TEST_FROM = "!@#$%^&*()_+zyj497";
+
     /**
      * Get the settings default encrypt bean
      */
@@ -28,7 +30,7 @@ public final class ZYJDBEntryptUtils {
     }
 
     /**
-     * Get our encrypt object
+     * Get our encrypt database
      *
      * @param context  context
      * @param password the database's password
@@ -102,15 +104,30 @@ public final class ZYJDBEntryptUtils {
      * @param password the password
      * @param from     the source string, the string is not encrypted
      * @param to       the decrypt string, the string is not encrypted
+     * @param version  the app's version
      * @return true if the password is right,other return false
      */
-    public static boolean checkEncryptPassword(Context context, String method, String password, String from, String to) {
-        int version = ZYJVersion.FIRST_VERSION;
-        BaseEncrypt setting = getSettingsEncrypt(context);
-        String decryptMethod = setting.decrypt(method, version);
-        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(decryptMethod), password);
+    public static boolean checkEncryptPassword(Context context, String method, String password, String from, String to, int version) {
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(method), password);
         String decryptString = encrypt.decrypt(from, version);
         return to.equals(decryptString);
+    }
+
+    /**
+     * Get the testTo string
+     *
+     * @param context  context
+     * @param method   encrypt method, the string is decrypted
+     * @param password the password
+     * @param version  the app's version
+     * @return return arrays of test string,args[0]=from,args[1]=to
+     */
+    public static String[] generateTestTo(Context context, String method, String password, int version) {
+        String[] args = new String[2];
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(method), password);
+        args[0] = TEST_FROM;
+        args[1] = encrypt.encrypt(args[0], version);
+        return args;
     }
 
 }

@@ -1,5 +1,7 @@
 package com.zyj.ieasytools.library.encrypt;
 
+import android.text.TextUtils;
+
 import java.security.Key;
 import java.security.SecureRandom;
 
@@ -40,6 +42,9 @@ public class AESEncrypt extends BaseEncrypt {
 
     @Override
     protected String protectedEncrypt(String resourceString) {
+        if (TextUtils.isEmpty(resourceString)) {
+            return "";
+        }
         try {
             Key key = generateKey(getPrivateKey());
             Cipher cipher = Cipher.getInstance(MODE);
@@ -54,6 +59,9 @@ public class AESEncrypt extends BaseEncrypt {
 
     @Override
     protected String protectedDecrypt(String encryptString) {
+        if (TextUtils.isEmpty(encryptString)) {
+            return "";
+        }
         try {
             byte[] data = Base64Encrypt.Base64Utils.parseHexStr2Byte(encryptString);
             Key key = generateKey(getPrivateKey());

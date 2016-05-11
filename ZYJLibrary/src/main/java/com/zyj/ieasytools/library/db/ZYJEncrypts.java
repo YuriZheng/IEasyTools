@@ -14,7 +14,9 @@ import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +26,15 @@ import java.util.Map;
  * Created by yuri.zheng on 2016/5/5.
  */
 public class ZYJEncrypts extends BaseDatabase {
+
+    /**
+     * Password error
+     */
+    public static final int ERROR_PASSWORD = -0x99;
+    /**
+     * Read only
+     */
+    public static final int ERROR_READ_ONLY = ERROR_PASSWORD - 1;
 
     private final int VERSION = 1;
     private static MaintainEncryptClass mMaintain;
@@ -129,9 +140,13 @@ public class ZYJEncrypts extends BaseDatabase {
      *
      * @param entry    the entry
      * @param password the encrypt password
-     * @return {@link SQLiteDatabase#insert(String, String, ContentValues)}
+     * @return If the record is in database and the password is wrong,return {@link #ERROR_PASSWORD} <br>
+     * {@link SQLiteDatabase#insert(String, String, ContentValues)}
      */
     public long insertEntry(PasswordEntry entry, String password) {
+        if (!isCurrentDatabase) {
+            return ERROR_READ_ONLY;
+        }
         int state = checkDatabase();
         if (state != DATABASE_OPEN_SUCCESS) {
             return state;
@@ -141,47 +156,116 @@ public class ZYJEncrypts extends BaseDatabase {
             return updateEntry(entry, password);
         } else {
             ContentValues v = getContentValues(entry, password);
+            ZYJUtils.logD(getClass(), "insert: " + entry);
             return d.insert(DatabaseColumns.EncryptColumns.TABLE_NAME, null, v);
         }
     }
 
+    /**
+     * Delete record by {@link PasswordEntry#uuid}
+     *
+     * @param entry    the record
+     * @param password the password
+     * @return if the password is wrong,then return {@link #ERROR_PASSWORD}, other return {@link SQLiteDatabase#delete(String, String, String[])}
+     */
     public int deleteEntry(PasswordEntry entry, String password) {
+        if (!isCurrentDatabase) {
+            return ERROR_READ_ONLY;
+        }
         int state = checkDatabase();
         if (state != DATABASE_OPEN_SUCCESS) {
             return state;
+        }
+        if (ZYJDBEntryptUtils.checkEncryptPassword(mContext, entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
+            return ERROR_PASSWORD;
         }
         BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(entry.getEncryptionMethod()), password);
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
         String uuid = encrypt.encrypt(entry.getUuid(), ZYJVersion.FIRST_VERSION);
+        ZYJUtils.logD(getClass(), "delete: " + entry);
         return d.delete(DatabaseColumns.EncryptColumns.TABLE_NAME, DatabaseColumns.EncryptColumns._UUID + "=?", new String[]{uuid});
     }
 
+    /**
+     * Update the record
+     *
+     * @param entry    the record
+     * @param password the password
+     * @return if the password is wrong,then return {@link #ERROR_PASSWORD}, other return {@link SQLiteDatabase#update(String, ContentValues, String, String[])}
+     */
     public long updateEntry(PasswordEntry entry, String password) {
+        if (!isCurrentDatabase) {
+            return ERROR_READ_ONLY;
+        }
         int state = checkDatabase();
         if (state != DATABASE_OPEN_SUCCESS) {
             return state;
         }
+        if (ZYJDBEntryptUtils.checkEncryptPassword(mContext, entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
+            return ERROR_PASSWORD;
+        }
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
         ContentValues v = getContentValues(entry, password);
         String uuid = v.getAsString(DatabaseColumns.EncryptColumns._UUID);
+        ZYJUtils.logD(getClass(), "update: " + entry);
         return d.update(DatabaseColumns.EncryptColumns.TABLE_NAME, v, DatabaseColumns.EncryptColumns._UUID + "=?", new String[]{uuid});
     }
 
-    public PasswordEntry queryEntry(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String password) {
+    /**
+     * Query records
+     *
+     * @param selection     condition
+     * @param selectionArgs condition args
+     * @param groupBy       sort
+     * @param password      password,If a record is wrong, then ignore this record
+     * @return return {@link List} of {@link PasswordEntry}
+     */
+    public List<PasswordEntry> queryEntry(String selection, String[] selectionArgs, String groupBy, String password) {
+        List<PasswordEntry> list = new ArrayList<PasswordEntry>();
         int state = checkDatabase();
         if (state != DATABASE_OPEN_SUCCESS) {
-            return null;
+            return list;
         }
         // TODO: 2016/5/9
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
         Cursor c = null;
         try {
+            c = d.query(DatabaseColumns.EncryptColumns.TABLE_NAME, null, selection, selectionArgs, groupBy, null, null);
+            while (c.moveToNext()) {
+                PasswordEntry entry = getPasswrodEntry(c, password);
+                if (entry != null) {
+                    list.add(entry);
+                }
+            }
         } finally {
             if (c != null) {
                 c.close();
             }
         }
-        return null;
+        return list;
+    }
+
+    /**
+     * Get the all datas count
+     *
+     * @return return the count
+     */
+    public int getAllRecord() {
+        int state = checkDatabase();
+        if (state != DATABASE_OPEN_SUCCESS) {
+            return state;
+        }
+        Cursor c = null;
+        try {
+            SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
+            c = d.query(DatabaseColumns.EncryptColumns.TABLE_NAME, new String[]{DatabaseColumns.EncryptColumns._UUID},
+                    null, null, null, null, null);
+            return c.getCount();
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
     }
 
     private ContentValues getContentValues(PasswordEntry entry, String password) {
@@ -204,7 +288,7 @@ public class ZYJEncrypts extends BaseDatabase {
         v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_3, encrypt.encrypt(entry.p_q_a_3, ZYJVersion.FIRST_VERSION));
         v.put(DatabaseColumns.EncryptColumns._ADD_TIME, entry.getAddTime());
         v.put(DatabaseColumns.EncryptColumns._MODIFY_TIME, entry.p_modify_time);
-        v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_METHOD, encrypt.encrypt(entry.getEncryptionMethod(), ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_METHOD, entry.getEncryptionMethod());
         v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_FROM, entry.getTestFrom());
         v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_TO, entry.getTestTo());
         v.put(DatabaseColumns.EncryptColumns._REMARKS, encrypt.encrypt(entry.p_remarks, ZYJVersion.FIRST_VERSION));
@@ -218,7 +302,49 @@ public class ZYJEncrypts extends BaseDatabase {
         return v;
     }
 
+    private PasswordEntry getPasswrodEntry(Cursor c, String password) {
+        String from = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_FROM));
+        String to = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_TO));
+        String method = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ENCRYPTION_METHOD));
+        long addTime = c.getLong(c.getColumnIndex(DatabaseColumns.EncryptColumns._ADD_TIME));
+        long modifyTime = c.getLong(c.getColumnIndex(DatabaseColumns.EncryptColumns._MODIFY_TIME));
+        int version = c.getInt(c.getColumnIndex(DatabaseColumns.EncryptColumns._Version));
+        if (ZYJDBEntryptUtils.checkEncryptPassword(mContext, method, password, from, to, version)) {
+            ZYJUtils.logW(getClass(), c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ID))
+                    + " record password wrong");
+            return null;
+        }
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(method), password);
+        String uuid = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._UUID));
+        PasswordEntry entry = new PasswordEntry(encrypt.decrypt(uuid, version), addTime, method, from, to, version);
+
+        entry.p_category = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._CATEGORY)), version);
+        entry.p_title = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._TITLE)), version);
+        entry.p_username = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._USERNAME)), version);
+        entry.p_password = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._PASSWORD)), version);
+        entry.p_address = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ADDRESS)), version);
+        entry.p_description = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._DESCRIPTION)), version);
+        entry.p_email = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._EMAIL)), version);
+        entry.p_phone = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._PHONE)), version);
+        entry.p_q_1 = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_1)), version);
+        entry.p_q_a_1 = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_1)), version);
+        entry.p_q_2 = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_2)), version);
+        entry.p_q_a_2 = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_2)), version);
+        entry.p_q_3 = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_3)), version);
+        entry.p_q_a_3 = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_3)), version);
+        entry.p_remarks = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._REMARKS)), version);
+        entry.p_modify_time = modifyTime;
+        // Reserve
+        // DatabaseColumns.EncryptColumns._Reserve_0
+        // DatabaseColumns.EncryptColumns._Reserve_1
+        // DatabaseColumns.EncryptColumns._Reserve_2
+        // DatabaseColumns.EncryptColumns._Reserve_3
+        // DatabaseColumns.EncryptColumns._Reserve_4
+        return entry;
+    }
+
     /**
+     * @param uuid decrypted string
      * @return return {@link Cursor#getCount()} > 0
      */
     private boolean checkUUID(SQLiteDatabase d, String uuid) {
