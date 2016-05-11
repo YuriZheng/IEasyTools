@@ -2,7 +2,7 @@
 <resources>
 
     <!-- 标题 -->
-    <string name="app_name">爱易工具</string>
+    <string name="app_name">易密保</string>
 
     <!-- 公共菜单 -->
     <string name="menu_setting">设置</string>

@@ -162,7 +162,7 @@ public abstract class DatabaseColumns {
                 + _Reserve_1 + " TEXT, "
                 + _Reserve_2 + " TEXT, "
                 + _Reserve_3 + " TEXT, "
-                + _Reserve_4 + " TEXT, ";
+                + _Reserve_4 + " TEXT )";
 
     }
 

@@ -1,5 +1,7 @@
 package com.zyj.ieasytools.library.encrypt;
 
+import android.text.TextUtils;
+
 /**
  * Need a password<br>
  * Finish
@@ -14,6 +16,9 @@ public class RC4Encrypt extends BaseEncrypt {
 
     @Override
     protected String protectedEncrypt(String resourceString) {
+        if (TextUtils.isEmpty(resourceString)) {
+            return "";
+        }
         String key = getPrivateKey();
         if (resourceString == null || key == null) {
             return null;
@@ -23,6 +28,9 @@ public class RC4Encrypt extends BaseEncrypt {
 
     @Override
     protected String protectedDecrypt(String encryptString) {
+        if (TextUtils.isEmpty(encryptString)) {
+            return "";
+        }
         String key = getPrivateKey();
         if (encryptString == null || key == null) {
             return null;

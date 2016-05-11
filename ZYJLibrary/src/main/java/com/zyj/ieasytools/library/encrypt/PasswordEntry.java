@@ -11,7 +11,7 @@ import android.os.Parcelable;
 public final class PasswordEntry implements Parcelable {
 
     //
-    // 五个不加密、6个不能修改
+    // 6个不加密、6个不能修改
     //
 
     /**
@@ -138,7 +138,7 @@ public final class PasswordEntry implements Parcelable {
 
     /**
      * <h1>No change</h1>
-     * The encrypt method, encrypt by setting
+     * The encrypt method, not encrypt
      */
     private String p_encryption_method = BaseEncrypt.ENCRYPT_AES;
 
@@ -250,8 +250,8 @@ public final class PasswordEntry implements Parcelable {
     @Override
     public String toString() {
         return "Title: " + p_title
-                + "UUID: " + uuid
-                + "Username: " + p_username
+                + ", UUID: " + uuid
+                + ", Username: " + p_username
                 + ", Add time: " + p_add_time
                 + ", Encrypt way: " + p_encryption_method;
     }
