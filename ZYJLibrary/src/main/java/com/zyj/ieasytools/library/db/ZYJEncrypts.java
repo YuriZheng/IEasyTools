@@ -41,6 +41,8 @@ public class ZYJEncrypts extends BaseDatabase {
 
     private boolean isCurrentDatabase = false;
 
+    private EncryptListener mListener;
+
     /**
      * Control the access permission, so It's a private constructor
      *
@@ -127,6 +129,13 @@ public class ZYJEncrypts extends BaseDatabase {
     }
 
     /**
+     * Set encrypt listener
+     */
+    public void setEncryptListener(EncryptListener l) {
+        mListener = l;
+    }
+
+    /**
      * This database weather is ours
      *
      * @return true if open ourself,other return false
@@ -157,6 +166,9 @@ public class ZYJEncrypts extends BaseDatabase {
         } else {
             ContentValues v = getContentValues(entry, password);
             ZYJUtils.logD(getClass(), "insert: " + entry);
+            if (mListener != null) {
+                mListener.finishInsert();
+            }
             return d.insert(DatabaseColumns.EncryptColumns.TABLE_NAME, null, v);
         }
     }
@@ -183,6 +195,9 @@ public class ZYJEncrypts extends BaseDatabase {
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
         String uuid = encrypt.encrypt(entry.getUuid(), ZYJVersion.FIRST_VERSION);
         ZYJUtils.logD(getClass(), "delete: " + entry);
+        if (mListener != null) {
+            mListener.finishDelete();
+        }
         return d.delete(DatabaseColumns.EncryptColumns.TABLE_NAME, DatabaseColumns.EncryptColumns._UUID + "=?", new String[]{uuid});
     }
 
@@ -208,6 +223,9 @@ public class ZYJEncrypts extends BaseDatabase {
         ContentValues v = getContentValues(entry, password);
         String uuid = v.getAsString(DatabaseColumns.EncryptColumns._UUID);
         ZYJUtils.logD(getClass(), "update: " + entry);
+        if (mListener != null) {
+            mListener.finishModify();
+        }
         return d.update(DatabaseColumns.EncryptColumns.TABLE_NAME, v, DatabaseColumns.EncryptColumns._UUID + "=?", new String[]{uuid});
     }
 
@@ -226,7 +244,6 @@ public class ZYJEncrypts extends BaseDatabase {
         if (state != DATABASE_OPEN_SUCCESS) {
             return list;
         }
-        // TODO: 2016/5/9
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
         Cursor c = null;
         try {
@@ -240,6 +257,9 @@ public class ZYJEncrypts extends BaseDatabase {
         } finally {
             if (c != null) {
                 c.close();
+            }
+            if (mListener != null) {
+                mListener.finishQuery();
             }
         }
         return list;
@@ -286,12 +306,12 @@ public class ZYJEncrypts extends BaseDatabase {
         v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_2, encrypt.encrypt(entry.p_q_a_2, ZYJVersion.FIRST_VERSION));
         v.put(DatabaseColumns.EncryptColumns._QUESTION_3, encrypt.encrypt(entry.p_q_3, ZYJVersion.FIRST_VERSION));
         v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_3, encrypt.encrypt(entry.p_q_a_3, ZYJVersion.FIRST_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._REMARKS, encrypt.encrypt(entry.p_remarks, ZYJVersion.FIRST_VERSION));
         v.put(DatabaseColumns.EncryptColumns._ADD_TIME, entry.getAddTime());
         v.put(DatabaseColumns.EncryptColumns._MODIFY_TIME, entry.p_modify_time);
         v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_METHOD, entry.getEncryptionMethod());
         v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_FROM, entry.getTestFrom());
         v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_TO, entry.getTestTo());
-        v.put(DatabaseColumns.EncryptColumns._REMARKS, encrypt.encrypt(entry.p_remarks, ZYJVersion.FIRST_VERSION));
         v.put(DatabaseColumns.EncryptColumns._Version, entry.p_version);
         //Reserve
         v.put(DatabaseColumns.EncryptColumns._Reserve_0, "");
@@ -309,6 +329,7 @@ public class ZYJEncrypts extends BaseDatabase {
         long addTime = c.getLong(c.getColumnIndex(DatabaseColumns.EncryptColumns._ADD_TIME));
         long modifyTime = c.getLong(c.getColumnIndex(DatabaseColumns.EncryptColumns._MODIFY_TIME));
         int version = c.getInt(c.getColumnIndex(DatabaseColumns.EncryptColumns._Version));
+
         if (ZYJDBEntryptUtils.checkEncryptPassword(mContext, method, password, from, to, version)) {
             ZYJUtils.logW(getClass(), c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ID))
                     + " record password wrong");
@@ -401,8 +422,11 @@ public class ZYJEncrypts extends BaseDatabase {
         /**
          * Remove {@link ZYJEncrypts}
          */
-        protected ZYJEncrypts remove(String key) {
-            return mWeekRefresh.remove(key);
+        protected void remove(String key) {
+            ZYJEncrypts insted = mWeekRefresh.remove(key);
+            if (insted != null) {
+                insted.onDestroy();
+            }
         }
 
         /**
@@ -417,5 +441,31 @@ public class ZYJEncrypts extends BaseDatabase {
             }
             mWeekRefresh.clear();
         }
+    }
+
+    /**
+     * Encrypt or Decrypt listener after finish action
+     */
+    public interface EncryptListener {
+
+        /**
+         * Insert finished callback
+         */
+        void finishInsert();
+
+        /**
+         * Delete finished callback
+         */
+        void finishDelete();
+
+        /**
+         * Modify finished callback
+         */
+        void finishModify();
+
+        /**
+         * Query a list of {@link PasswordEntry} finished callback
+         */
+        void finishQuery();
     }
 }

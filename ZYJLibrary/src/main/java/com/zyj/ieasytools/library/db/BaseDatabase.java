@@ -122,7 +122,7 @@ public abstract class BaseDatabase {
             if (database != null) {
                 int newVersion = getVersion();
                 if (database.getVersion() > newVersion) {
-                    throw new RuntimeException("The new database version cann't under the old");
+                    throw new RuntimeException("The new database version cann't below the old");
                 } else if (database.getVersion() < newVersion) {
                     onUpgrade(database, database.getVersion(), newVersion);
                 }

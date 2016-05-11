@@ -15,8 +15,25 @@ android {
         }
     }
     buildTypes {
-        release {
+
+        debug {
+            buildConfigField("boolean","LOG_DEBUG","true")
+            buildConfigField("boolean","FUNCTION_DEBUG","true")
+            buildConfigField("boolean","PASSWORD_DEBUG","true")
+
             minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+        }
+
+        release {
+            buildConfigField("boolean","LOG_DEBUG","false")
+            buildConfigField("boolean","FUNCTION_DEBUG","false")
+            buildConfigField("boolean","PASSWORD_DEBUG","false")
+
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
