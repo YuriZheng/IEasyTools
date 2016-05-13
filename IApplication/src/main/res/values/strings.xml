@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ISecretSecurity</string>
+
+    <string name="drawer_toggle_text" translatable="false"></string>
 </resources>

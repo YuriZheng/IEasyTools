@@ -53,6 +53,7 @@ public abstract class BaseDatabase {
      *
      * @param tableName the tablet name
      */
+    @SuppressWarnings("unused")
     protected void dropTable(String tableName) {
         if (checkDatabaseOpenState(mSQLDatabase)) {
             ZYJUtils.logD(getClass(), "Drop table" + tableName);
