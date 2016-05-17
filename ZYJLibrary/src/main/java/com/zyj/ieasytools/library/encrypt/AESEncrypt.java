@@ -29,11 +29,7 @@ public class AESEncrypt extends BaseEncrypt {
     private SecretKey generateKey(String keyStr) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
         SecureRandom sr = null;
-        if (android.os.Build.VERSION.SDK_INT >= 17) {
-            sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
-        } else {
-            sr = SecureRandom.getInstance("SHA1PRNG");
-        }
+        sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
         sr.setSeed(keyStr.getBytes("utf-8"));
         kgen.init(128, sr); // 192 and 256 bits may not be available
         SecretKey skey = kgen.generateKey();

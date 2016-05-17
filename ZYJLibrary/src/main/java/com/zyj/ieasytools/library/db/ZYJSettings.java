@@ -62,28 +62,28 @@ public class ZYJSettings extends BaseDatabase {
     }
 
     /**
-     * @see {@link #putStringProperties(String, String)}
+     * {@link #putStringProperties(String, String)}
      */
     public boolean putBooleanProperties(String key, boolean value) {
         return putStringProperties(key, String.valueOf(value));
     }
 
     /**
-     * @see {@link #putStringProperties(String, String)}
+     * {@link #putStringProperties(String, String)}
      */
     public boolean putIntProperties(String key, int value) {
         return putStringProperties(key, value + "");
     }
 
     /**
-     * @see {@link #putStringProperties(String, String)}
+     * {@link #putStringProperties(String, String)}
      */
     public boolean putLongProperties(String key, long value) {
         return putStringProperties(key, value + "");
     }
 
     /**
-     * @see {@link #putProperties(Map.Entry)}
+     * {@link #putProperties(Map.Entry)}
      */
     public boolean putStringProperties(String key, String value) {
         if (TextUtils.isEmpty(key)) {
@@ -151,7 +151,7 @@ public class ZYJSettings extends BaseDatabase {
     }
 
     /**
-     * @see {@link #getProperties(String)}
+     * {@link #getProperties(String)}
      */
     public String getStringProperties(String key, String defaultString) {
         if (mEncrypt == null) {

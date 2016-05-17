@@ -393,7 +393,7 @@ public class ZYJEncrypts extends BaseDatabase {
 
     @Override
     protected void onUpgrade(SQLiteDatabase sqliteDatabase, int oldVersion, int newVersion) {
-
+        // TODO: 2016/5/17
     }
 
     /**

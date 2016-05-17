@@ -4,10 +4,11 @@
     <string name="app_name">易密保</string>
 
     <!-- 设置 -->
-    <string name="settings_help">帮助</string>
-    <string name="settings_about">关于</string>
-    <string name="settings_settings">设置</string>
-    <string name="settings_feedback">反馈</string>
+    <string name="settings_help">使用手册</string>
+    <string name="settings_about">关于我们</string>
+    <string name="settings_settings">操作设置</string>
+    <string name="settings_feedback">反馈意见</string>
+    <string name="settings_view_other">查看其它</string>
     <string name="more_import">导入</string>
 
     <!-- 分组 -->

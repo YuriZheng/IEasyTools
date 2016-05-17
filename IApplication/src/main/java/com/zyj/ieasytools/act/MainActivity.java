@@ -9,14 +9,17 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
+import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
+import com.zyj.ieasytools.utils.SettingsConstant;
 
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
 
@@ -32,10 +35,14 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     private TextView mDebug;
 
+    private ZYJSettings mSettings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mSettings = ZYJSettings.getInstance(this);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("");
@@ -56,6 +63,10 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
         mNavigationView = (NavigationView) findViewById(R.id.navigationView);
         mNavigationView.setNavigationItemSelectedListener(mNavigationClick);
+
+        if (!TextUtils.isEmpty(mSettings.getStringProperties(SettingsConstant.SETTINGS_VIEW_OTHER_DATABASE, null))) {
+            mNavigationView.getMenu().removeItem(R.id.settings_view_other);
+        }
         DrawerLayout.LayoutParams lp = (DrawerLayout.LayoutParams) mNavigationView.getLayoutParams();
         lp.width = ZYJUtils.getDisplayMetrics(this)[0] * 2 / 3;
         mNavigationView.setLayoutParams(lp);
@@ -87,7 +98,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
     public void onMenuViewClick(View view) {
-        ZYJUtils.logD(getClass(), "onMenuViewClick :" + view.getId());
         switch (view.getId()) {
             case R.id.menu_more:
                 if (mMenuLayout.isShowMenu()) {
@@ -108,9 +118,10 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     private NavigationView.OnNavigationItemSelectedListener mNavigationClick = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(MenuItem item) {
-            ZYJUtils.logD(getClass(), "onNavigationItemSelected :" + item.getItemId());
             switch (item.getItemId()) {
                 case R.id.settings_settings:
+                    break;
+                case R.id.settings_view_other:
                     break;
                 case R.id.settings_feedback:
                     break;
@@ -124,7 +135,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     };
 
     public void onGroupMenuClick(View view) {
-        ZYJUtils.logD(getClass(), "onGroupMenuClick :" + view.getId());
         switch (view.getId()) {
             case R.id.group_web:
                 break;
