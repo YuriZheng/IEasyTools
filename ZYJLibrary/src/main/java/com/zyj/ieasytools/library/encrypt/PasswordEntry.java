@@ -15,10 +15,6 @@ public final class PasswordEntry implements Parcelable {
     //
 
     /**
-     * The check password resource string
-     */
-    public static final String ENCRYPT_FROM_RESOURCE_STRING = "!@#$%^&*()_+~zhengyujie497393102";
-    /**
      * Web group，default
      */
     public static final String CATEGORY_WEB = "web";

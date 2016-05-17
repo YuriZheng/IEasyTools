@@ -4,9 +4,13 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,6 +23,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
     private ActionBarDrawerToggle mDrawerToggle;
+    private NavigationView mNavigationView;
 
     private View mMenuMore;
     private View mMenuAdd;
@@ -49,6 +54,12 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
         mMenuLayout = (MenuRevealView) findViewById(R.id.menu_layout);
 
+        mNavigationView = (NavigationView) findViewById(R.id.navigationView);
+        mNavigationView.setNavigationItemSelectedListener(mNavigationClick);
+        DrawerLayout.LayoutParams lp = (DrawerLayout.LayoutParams) mNavigationView.getLayoutParams();
+        lp.width = ZYJUtils.getDisplayMetrics(this)[0] * 2 / 3;
+        mNavigationView.setLayoutParams(lp);
+
         if (ZYJUtils.isFunctionDebug) {
             mDebug = (TextView) findViewById(R.id.debug);
             Object[] versions = ZYJUtils.getVersion(this);
@@ -76,11 +87,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
     public void onMenuViewClick(View view) {
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                    .setAction("Action", null).show();
+        ZYJUtils.logD(getClass(), "onMenuViewClick :" + view.getId());
         switch (view.getId()) {
             case R.id.menu_more:
-                ZYJUtils.logD(getClass(), "menu_more");
                 if (mMenuLayout.isShowMenu()) {
                     mMenuLayout.hideMenu();
                 } else {
@@ -88,14 +97,61 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 }
                 break;
             case R.id.menu_add:
-                ZYJUtils.logD(getClass(), "menu_add");
                 break;
             case R.id.menu_seach:
-                ZYJUtils.logD(getClass(), "menu_seach");
                 break;
             case R.id.main_test:
-                ZYJUtils.logD(getClass(), "test");
                 break;
+        }
+    }
+
+    private NavigationView.OnNavigationItemSelectedListener mNavigationClick = new NavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(MenuItem item) {
+            ZYJUtils.logD(getClass(), "onNavigationItemSelected :" + item.getItemId());
+            switch (item.getItemId()) {
+                case R.id.settings_settings:
+                    break;
+                case R.id.settings_feedback:
+                    break;
+                case R.id.settings_about:
+                    break;
+                case R.id.settings_help:
+                    break;
+            }
+            return false;
+        }
+    };
+
+    public void onGroupMenuClick(View view) {
+        ZYJUtils.logD(getClass(), "onGroupMenuClick :" + view.getId());
+        switch (view.getId()) {
+            case R.id.group_web:
+                break;
+            case R.id.group_email:
+                break;
+            case R.id.group_wallet:
+                break;
+            case R.id.group_app:
+                break;
+            case R.id.group_game:
+                break;
+            case R.id.group_other:
+                break;
+        }
+    }
+
+    private void showToast(View view) {
+        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            mDrawerLayout.closeDrawer(Gravity.LEFT);
+        } else {
+            super.onBackPressed();
         }
     }
 

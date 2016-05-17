@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/settings_settings"
+            android:icon="@mipmap/ic_search"
+            android:orderInCategory="1"
+            android:title="@string/settings_settings"/>
+
+        <item
+            android:id="@+id/settings_feedback"
+            android:orderInCategory="2"
+            android:title="@string/settings_feedback"/>
+
+        <item
+            android:id="@+id/settings_about"
+            android:orderInCategory="3"
+            android:title="@string/settings_about"/>
+
+        <item
+            android:id="@+id/settings_help"
+            android:orderInCategory="4"
+            android:title="@string/settings_help"/>
+    </group>
+</menu>

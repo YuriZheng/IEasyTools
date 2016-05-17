@@ -61,98 +61,59 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:background="@android:color/transparent">
 
-        <Button
-            android:id="@+id/main_test"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/group_web"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
             android:layout_gravity="right"
-            android:onClick="onMenuViewClick"
-            android:text="111111111" />
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onGroupMenuClick"
+            android:src="@mipmap/ic_search"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/group_email"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
             android:layout_gravity="right"
-            android:text="222222222" />
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onGroupMenuClick"
+            android:src="@mipmap/ic_search"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/group_wallet"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
             android:layout_gravity="right"
-            android:text="333333333" />
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onGroupMenuClick"
+            android:src="@mipmap/ic_add"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/group_app"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
             android:layout_gravity="right"
-            android:text="444444444" />
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onGroupMenuClick"
+            android:src="@mipmap/ic_add"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/group_game"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
             android:layout_gravity="right"
-            android:text="444444444" />
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onGroupMenuClick"
+            android:src="@mipmap/ic_add"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:id="@+id/group_other"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
             android:layout_gravity="right"
-            android:text="444444444" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="444444444" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="444444444" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="444444444" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="444444444" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="444444444" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="444444444" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="444444444" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="444444444" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="444444444" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="444444444" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="444444444" />
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onGroupMenuClick"
+            android:src="@mipmap/ic_search"/>
 
     </com.zyj.ieasytools.library.views.MenuRevealView>
 

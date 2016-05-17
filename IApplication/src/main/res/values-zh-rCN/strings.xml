@@ -2,4 +2,20 @@
 <resources>
     <!-- 标题 -->
     <string name="app_name">易密保</string>
+
+    <!-- 设置 -->
+    <string name="settings_help">帮助</string>
+    <string name="settings_about">关于</string>
+    <string name="settings_settings">设置</string>
+    <string name="settings_feedback">反馈</string>
+    <string name="more_import">导入</string>
+
+    <!-- 分组 -->
+    <string name="password_catrgory_web">网页</string>
+    <string name="password_catrgory_email">邮件</string>
+    <string name="password_catrgory_wallet">钱包</string>
+    <string name="password_catrgory_app">应用</string>
+    <string name="password_catrgory_game">游戏</string>
+    <string name="password_catrgory_other">其它</string>
+
 </resources>

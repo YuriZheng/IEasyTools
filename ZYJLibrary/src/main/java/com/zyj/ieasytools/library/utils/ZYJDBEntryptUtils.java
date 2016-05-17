@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
  */
 public final class ZYJDBEntryptUtils {
 
-    private static final String TEST_FROM = "!@#$%^&*()_+zyj497";
+    private static final String TEST_FROM = "!@#$%^&*()_+~zhengyujie497393102";
 
     /**
      * Get the settings default encrypt bean
