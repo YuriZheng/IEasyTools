@@ -1,24 +1,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context=".MainActivity">
+      xmlns:tools="http://schemas.android.com/tools">
 
     <!--android:icon="@drawable/ab_edit" -->
     <item
-        android:id="@+id/action_edit"
-        android:orderInCategory="80"
+        android:id="@+id/action_seach"
+        android:orderInCategory="1"
         android:title="1"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/action_share"
-        android:orderInCategory="90"
+        android:orderInCategory="2"
         android:title="2"
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/action_share_"
-        android:orderInCategory="100"
+        android:id="@+id/action_more"
+        android:orderInCategory="3"
         android:title="3"
         app:showAsAction="always"/>
 </menu>

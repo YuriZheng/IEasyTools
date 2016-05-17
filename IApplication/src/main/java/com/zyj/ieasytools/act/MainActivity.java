@@ -7,49 +7,55 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
+import com.zyj.ieasytools.library.utils.ZYJUtils;
+import com.zyj.ieasytools.library.views.MenuRevealView;
 
-public class MainActivity extends BaseActivity {
-
-    private TextView mTextView;
+public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
 
     private DrawerLayout mDrawerLayout;
+    private Toolbar mToolbar;
     private ActionBarDrawerToggle mDrawerToggle;
+
+    private View mMenuMore;
+    private View mMenuAdd;
+    private View mMenuSeach;
+    private MenuRevealView mMenuLayout;
+
+    private TextView mDebug;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
-
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                return true;
-            }
-        });
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle("");
+        setSupportActionBar(mToolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.drawer_toggle_text, R.string.drawer_toggle_text);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_toggle_text, R.string.drawer_toggle_text);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(this);
 
-    }
+        mMenuMore = findViewById(R.id.menu_more);
+        mMenuAdd = findViewById(R.id.menu_add);
+        mMenuSeach = findViewById(R.id.menu_seach);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // 為了讓 Toolbar 的 Menu 有作用，這邊的程式不可以拿掉
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        mMenuLayout = (MenuRevealView) findViewById(R.id.menu_layout);
+
+        if (ZYJUtils.isFunctionDebug) {
+            mDebug = (TextView) findViewById(R.id.debug);
+            Object[] versions = ZYJUtils.getVersion(this);
+            mDebug.setText("Name: " + versions[0].toString() + "\nCode: " + versions[1].toString());
+            mDebug.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.mipmap.debug);
+            mDebug.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -69,8 +75,66 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    public void onViewClick(View view) {
+    public void onMenuViewClick(View view) {
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                    .setAction("Action", null).show();
+        switch (view.getId()) {
+            case R.id.menu_more:
+                ZYJUtils.logD(getClass(), "menu_more");
+                if (mMenuLayout.isShowMenu()) {
+                    mMenuLayout.hideMenu();
+                } else {
+                    mMenuLayout.showMenu();
+                }
+                break;
+            case R.id.menu_add:
+                ZYJUtils.logD(getClass(), "menu_add");
+                break;
+            case R.id.menu_seach:
+                ZYJUtils.logD(getClass(), "menu_seach");
+                break;
+            case R.id.main_test:
+                ZYJUtils.logD(getClass(), "test");
+                break;
+        }
+    }
+
+    /**
+     * Menu distance between two bt
+     */
+    private float mMenuDistance = 0.0f;
+
+    private void menuTransform(final float offset) {
+        if (mMenuDistance <= 0) {
+            int[] addLocation = new int[2];
+            int[] moreLocation = new int[2];
+            mMenuAdd.getLocationInWindow(addLocation);
+            mMenuMore.getLocationInWindow(moreLocation);
+            mMenuDistance = moreLocation[0] - addLocation[0];
+        }
+        mMenuSeach.setTranslationX(mMenuDistance * offset);
+
+        // y = 4x*x - 4*x + 1
+        mMenuMore.setScaleX((float) (4 * Math.pow(offset, 2) - 4 * offset + 1));
+        mMenuMore.setScaleY((float) (4 * Math.pow(offset, 2) - 4 * offset + 1));
+
+        mMenuAdd.setAlpha(1 - offset);
+    }
+
+    @Override
+    public void onDrawerSlide(View drawerView, float slideOffset) {
+        menuTransform(slideOffset);
+    }
+
+    @Override
+    public void onDrawerOpened(View drawerView) {
+    }
+
+    @Override
+    public void onDrawerClosed(View drawerView) {
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState) {
     }
 }

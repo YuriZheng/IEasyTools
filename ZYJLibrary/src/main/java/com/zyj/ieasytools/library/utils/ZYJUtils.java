@@ -9,7 +9,6 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-import com.zyj.ieasytools.library.BuildConfig;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 
 import java.io.File;
@@ -25,17 +24,17 @@ public final class ZYJUtils {
     /**
      * To see the database's data
      */
-    public static final boolean isPasswordDebug = BuildConfig.PASSWORD_DEBUG;
+    public static final boolean isPasswordDebug = true;
 
     /**
      * Logcat debug
      */
-    private static boolean isLogDebug = BuildConfig.LOG_DEBUG;
+    private static boolean isLogDebug = true;
 
     /**
      * Some funcation debug
      */
-    private static final boolean isFunctionDebug = BuildConfig.FUNCTION_DEBUG;
+    public static final boolean isFunctionDebug = true;
 
     private static String TAG = "zyj";
 
@@ -126,7 +125,7 @@ public final class ZYJUtils {
 
     /**
      * @param context
-     * @return one is version string, other is version
+     * @return one is version string, other is version code
      */
     public static Object[] getVersion(Context context) {
         PackageManager packageManager = context.getPackageManager();
