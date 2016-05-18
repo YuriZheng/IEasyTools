@@ -2,9 +2,11 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <!-- Action bar -->
         <item name="colorPrimary">@color/colorPrimary</item>
+        <!-- Status bar -->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- Tint widgets -->
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 

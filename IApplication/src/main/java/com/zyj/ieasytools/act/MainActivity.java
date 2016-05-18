@@ -13,6 +13,8 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
@@ -23,8 +25,11 @@ import com.zyj.ieasytools.utils.SettingsConstant;
 
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
 
+    private ViewGroup mMainViewLayout;
+
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
+    private ProgressBar mProgressBar;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
 
@@ -48,6 +53,11 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
 
+        mProgressBar = (ProgressBar) findViewById(R.id.progress);
+        mProgressBar.getIndeterminateDrawable().setTint(getResources().getColor(android.R.color.white));
+
+        mMainViewLayout = (ViewGroup) findViewById(R.id.main_view_layout);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -64,7 +74,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mNavigationView = (NavigationView) findViewById(R.id.navigationView);
         mNavigationView.setNavigationItemSelectedListener(mNavigationClick);
 
-        if (!TextUtils.isEmpty(mSettings.getStringProperties(SettingsConstant.SETTINGS_VIEW_OTHER_DATABASE, null))) {
+        if (TextUtils.isEmpty(mSettings.getStringProperties(SettingsConstant.SETTINGS_VIEW_OTHER_DATABASE, null))) {
             mNavigationView.getMenu().removeItem(R.id.settings_view_other);
         }
         DrawerLayout.LayoutParams lp = (DrawerLayout.LayoutParams) mNavigationView.getLayoutParams();
@@ -100,6 +110,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     public void onMenuViewClick(View view) {
         switch (view.getId()) {
             case R.id.menu_more:
+                if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                }
                 if (mMenuLayout.isShowMenu()) {
                     mMenuLayout.hideMenu();
                 } else {
@@ -185,6 +198,10 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mMenuMore.setScaleY((float) (4 * Math.pow(offset, 2) - 4 * offset + 1));
 
         mMenuAdd.setAlpha(1 - offset);
+
+        if (mMenuLayout.isShowMenu()) {
+            mMenuLayout.hideMenu();
+        }
     }
 
     @Override

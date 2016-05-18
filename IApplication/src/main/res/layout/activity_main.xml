@@ -20,31 +20,26 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
+            <ProgressBar
+                android:id="@+id/progress"
+                style="?android:progressBarStyleSmall"
+                android:layout_width="@dimen/main_view_progress_size"
+                android:layout_height="@dimen/main_view_progress_size"
+                android:visibility="invisible"/>
+
             <ImageButton
                 android:id="@+id/menu_more"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:onClick="onMenuViewClick"
+                style="@style/activity_main_menu_image_button_style"
                 android:src="@mipmap/ic_more"/>
 
             <ImageButton
                 android:id="@+id/menu_add"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:onClick="onMenuViewClick"
+                style="@style/activity_main_menu_image_button_style"
                 android:src="@mipmap/ic_add"/>
 
             <ImageButton
                 android:id="@+id/menu_seach"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:onClick="onMenuViewClick"
+                style="@style/activity_main_menu_image_button_style"
                 android:src="@mipmap/ic_search"/>
 
         </android.support.v7.widget.Toolbar>
@@ -55,64 +50,40 @@
 
     <com.zyj.ieasytools.library.views.MenuRevealView
         android:id="@+id/menu_layout"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="top|right"
         android:layout_marginTop="?attr/actionBarSize"
         android:background="@android:color/transparent">
 
         <ImageButton
             android:id="@+id/group_web"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="right"
-            android:background="?android:attr/selectableItemBackground"
-            android:onClick="onGroupMenuClick"
+            style="@style/activity_main_group_image_button_style"
             android:src="@mipmap/ic_search"/>
 
         <ImageButton
             android:id="@+id/group_email"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="right"
-            android:background="?android:attr/selectableItemBackground"
-            android:onClick="onGroupMenuClick"
+            style="@style/activity_main_group_image_button_style"
             android:src="@mipmap/ic_search"/>
 
         <ImageButton
             android:id="@+id/group_wallet"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="right"
-            android:background="?android:attr/selectableItemBackground"
-            android:onClick="onGroupMenuClick"
+            style="@style/activity_main_group_image_button_style"
             android:src="@mipmap/ic_add"/>
 
         <ImageButton
             android:id="@+id/group_app"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="right"
-            android:background="?android:attr/selectableItemBackground"
-            android:onClick="onGroupMenuClick"
+            style="@style/activity_main_group_image_button_style"
             android:src="@mipmap/ic_add"/>
 
         <ImageButton
             android:id="@+id/group_game"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="right"
-            android:background="?android:attr/selectableItemBackground"
-            android:onClick="onGroupMenuClick"
+            style="@style/activity_main_group_image_button_style"
             android:src="@mipmap/ic_add"/>
 
         <ImageButton
             android:id="@+id/group_other"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="right"
-            android:background="?android:attr/selectableItemBackground"
-            android:onClick="onGroupMenuClick"
+            style="@style/activity_main_group_image_button_style"
             android:src="@mipmap/ic_search"/>
 
     </com.zyj.ieasytools.library.views.MenuRevealView>

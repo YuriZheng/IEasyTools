@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Camera;
 import android.graphics.Matrix;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
@@ -41,15 +42,31 @@ public class MenuRevealView extends LinearLayout {
                 getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 for (int i = 0; i < getChildCount(); i++) {
                     getChildAt(i).setVisibility(View.INVISIBLE);
+                    setVisibility(View.INVISIBLE);
+                    setOnTouchListener(mTouchListener);
                 }
             }
         });
     }
 
+    private OnTouchListener mTouchListener = new OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                hideMenu();
+            }
+            return true;
+        }
+    };
+
+    /**
+     * Show menu,if the animation finished not yet, do nothing
+     */
     public void showMenu() {
         if (isAnimation) {
             return;
         }
+        setVisibility(View.VISIBLE);
         for (int i = 0; i < getChildCount(); i++) {
             final int index = i;
             final View view = getChildAt(index);
@@ -80,6 +97,9 @@ public class MenuRevealView extends LinearLayout {
         }
     }
 
+    /**
+     * Hide menu,if the animation finished not yet, do nothing
+     */
     public void hideMenu() {
         if (isAnimation) {
             return;
@@ -113,6 +133,11 @@ public class MenuRevealView extends LinearLayout {
         }
     }
 
+    /**
+     * Show menu
+     *
+     * @return if expansioned return true, other return false
+     */
     public boolean isShowMenu() {
         if (getChildCount() < 1) {
             return false;
@@ -130,10 +155,11 @@ public class MenuRevealView extends LinearLayout {
     }
 
     private void setAllChildViewGone() {
-        isAnimation = false;
+        setVisibility(View.INVISIBLE);
         for (int i = 0; i < getChildCount(); i++) {
             getChildAt(i).setVisibility(View.GONE);
         }
+        isAnimation = false;
     }
 
     /**
