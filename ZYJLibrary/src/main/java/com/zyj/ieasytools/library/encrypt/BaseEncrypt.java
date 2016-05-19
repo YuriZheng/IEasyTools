@@ -135,8 +135,9 @@ public abstract class BaseEncrypt {
     public String encrypt(String resourceString, int version) {
         startEncrypt(resourceString);
         String after = "";
+        // Distinguish encrypt method from diff version
         switch (version) {
-            case ZYJVersion.FIRST_VERSION:
+            case ZYJVersion.MAX_VERSION:
                 after = protectedEncrypt(resourceString);
                 break;
         }
@@ -154,8 +155,9 @@ public abstract class BaseEncrypt {
     public String decrypt(String encryptString, int version) {
         startDecrypt(encryptString);
         String after = "";
+        // Distinguish decrypt method from diff version
         switch (version) {
-            case ZYJVersion.FIRST_VERSION:
+            case ZYJVersion.MAX_VERSION:
                 after = protectedDecrypt(encryptString);
                 break;
         }

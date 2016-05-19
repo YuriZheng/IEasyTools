@@ -38,7 +38,7 @@ public class ZYJSettings extends BaseDatabase {
         openDatabase();
         creatTable(DatabaseColumns.SettingColumns.CREATE_SETTING_TABLE_SQL);
         mEncrypt = ZYJDBEntryptUtils.getSettingsEncrypt(c);
-        APP_VERSION = ZYJVersion.FIRST_VERSION;
+        APP_VERSION = ZYJVersion.MAX_VERSION;
     }
 
     public static ZYJSettings getInstance(Context c) {
@@ -181,6 +181,9 @@ public class ZYJSettings extends BaseDatabase {
                 new String[]{key}, null);
         String value = "";
         if (c == null || c.getCount() < 1) {
+            if (c != null) {
+                c.close();
+            }
             return "";
         } else {
             if (c.getCount() > 1) {
@@ -189,6 +192,9 @@ public class ZYJSettings extends BaseDatabase {
             if (c.moveToNext()) {
                 value = c.getString(c.getColumnIndex(DatabaseColumns.SettingColumns._VALUE));
             }
+        }
+        if (c != null) {
+            c.close();
         }
         return value;
     }
@@ -208,11 +214,13 @@ public class ZYJSettings extends BaseDatabase {
     public boolean checkEntry(String key) {
         Cursor c = mContext.getContentResolver().query(ZYJContentProvider.SEETINGS_URI, null, DatabaseColumns.SettingColumns._KEY + "=?",
                 new String[]{key}, null);
-        try {
-            return c != null ? (c.getCount() == 1) : false;
-        } finally {
+        if (c == null) {
+            return false;
+        }
+        if (c.getCount() >= 1) {
             c.close();
         }
+        return true;
     }
 
     private int updateSetting(Map.Entry<String, String> entry) {

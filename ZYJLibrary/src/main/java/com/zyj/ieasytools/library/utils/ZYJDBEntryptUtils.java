@@ -1,6 +1,5 @@
 package com.zyj.ieasytools.library.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -77,23 +76,28 @@ public final class ZYJDBEntryptUtils {
     }
 
     /**
-     * Get our database file
+     * Get our database file<br>
+     * "/storage/emulated/0" + {@link ZYJUtils#ROOR_PATH} + {@link com.zyj.ieasytools.library.db.DatabaseColumns.EncryptColumns#DATABASE_NAME}<br>
      *
      * @param context
      * @return the file of database, if create new file faile,then return null
      */
     public static File getCurrentDatabasePath(Context context) {
-        String dir = context.getDir("", Activity.MODE_PRIVATE).getPath();
-        File file = new File(dir + "/" + DatabaseColumns.EncryptColumns.DATABASE_NAME);
-        try {
-            if (!file.exists()) {
+        String path = ZYJUtils.getExternalRootPath() + "/" + DatabaseColumns.EncryptColumns.DATABASE_NAME;
+        File file = new File(path);
+//        String dir = context.getDir("ZYJ", Activity.MODE_PRIVATE).getPath();
+//        File file = new File(dir + "/" + DatabaseColumns.EncryptColumns.DATABASE_NAME);
+        if (!file.exists()) {
+            try {
                 file.createNewFile();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
-            return file;
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return null;
+//        file.setWritable(true);
+//        file.setReadable(true);
+        return file;
     }
 
     /**
@@ -116,13 +120,12 @@ public final class ZYJDBEntryptUtils {
     /**
      * Get the testTo string
      *
-     * @param context  context
      * @param method   encrypt method, the string is decrypted
      * @param password the password
      * @param version  the app's version
      * @return return arrays of test string,args[0]=from,args[1]=to
      */
-    public static String[] generateTestTo(Context context, String method, String password, int version) {
+    public static String[] generateTestTo(String method, String password, int version) {
         String[] args = new String[2];
         BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(method), password);
         args[0] = TEST_FROM;

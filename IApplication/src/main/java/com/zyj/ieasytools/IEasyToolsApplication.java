@@ -10,6 +10,8 @@ public class IEasyToolsApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // Init settings database
+//        ZYJSettings.getInstance(this);
     }
 
 }

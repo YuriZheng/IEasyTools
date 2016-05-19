@@ -3,12 +3,12 @@ package com.zyj.ieasytools.views;
 import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 /**
  * Created by yuri.zheng on 2016/5/18.
  */
-public class InputPasswordView extends ViewGroup {
+public class InputPasswordView extends RelativeLayout {
 
     private TextInputEditText mInputText;
 
@@ -30,11 +30,6 @@ public class InputPasswordView extends ViewGroup {
     }
 
     private void init(Context context) {
-
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
     }
 }

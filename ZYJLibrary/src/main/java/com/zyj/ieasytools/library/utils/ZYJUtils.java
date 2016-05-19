@@ -38,6 +38,8 @@ public final class ZYJUtils {
 
     private static String TAG = "zyj";
 
+    private static final String ROOR_PATH = "/.i_EasyTools/";
+
     public static void logD(Class<?> clz, String msg) {
         if (isLogDebug && msg != null) {
             Log.d(TAG, clz.getSimpleName() + ": " + msg);
@@ -152,41 +154,28 @@ public final class ZYJUtils {
 
     /**
      * Get sdcard path if sd is available<br>
-     * "/storage/emulated/0"<br>
+     * "/storage/emulated/0" + {@link #ROOR_PATH}<br>
      * "sdcard"
      *
      * @return if available, return the path, otherwise return null
      */
-    public static String getExternalCardPath() {
+    public static String getExternalRootPath() {
         if (isExternalCardExist()) {
-            return Environment.getExternalStorageDirectory().getPath();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Create file in path
-     *
-     * @param path the file's path
-     * @return create success will return true, other will return false
-     */
-    public static boolean createFile(String path) {
-        File file = new File(path);
-        if (path.contains("/")) {
-            File dir = new File(path.substring(0, path.lastIndexOf("/")));
-            if (!dir.exists()) {
-                boolean createDir = dir.mkdirs();
-                if (!createDir) {
-                    return false;
+            String root = Environment.getExternalStorageDirectory().getAbsolutePath() + ROOR_PATH;
+            File rootDir = new File(root);
+            if (!rootDir.exists()) {
+                if (!rootDir.mkdirs()) {
+                    ZYJUtils.logW(ZYJUtils.class, "Can't create dirs");
+                    return null;
                 }
             }
-        }
-        try {
-            return file.createNewFile();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            if (rootDir.canRead() && rootDir.canWrite()) {
+                return root;
+            }
+            ZYJUtils.logW(ZYJUtils.class, "Can't read or write");
+            return null;
+        } else {
+            return null;
         }
     }
 
@@ -196,7 +185,7 @@ public final class ZYJUtils {
      * @return return the password
      */
     public static String getSettingPassword(Context context) {
-        long firstInstallTime = 497393102l;
+        long firstInstallTime = 497393102;
         try {
             PackageManager packageManager = context.getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);

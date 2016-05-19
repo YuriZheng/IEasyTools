@@ -3,6 +3,9 @@ package com.zyj.ieasytools.library.encrypt;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
+import com.zyj.ieasytools.library.utils.ZYJVersion;
+
 /**
  * The password entry
  *
@@ -163,6 +166,8 @@ public final class PasswordEntry implements Parcelable {
     public int p_version;
 
     /**
+     * Instance from database
+     *
      * @param uuid    key
      * @param addTime this record add time,if addTime is -1, say this is a new entry
      * @param method  encryption method
@@ -181,6 +186,23 @@ public final class PasswordEntry implements Parcelable {
         p_encryption_method = method;
         p_test_from = from;
         p_test_to = to;
+    }
+
+    /**
+     * New from code
+     *
+     * @param uuid     key
+     * @param password the entry's password
+     * @param method   encryption method
+     */
+    public PasswordEntry(String uuid, String password, String method) {
+        String[] test = ZYJDBEntryptUtils.generateTestTo(method, password, ZYJVersion.MAX_VERSION);
+        this.uuid = uuid;
+        p_add_time = System.currentTimeMillis();
+        p_version = ZYJVersion.MAX_VERSION;
+        p_encryption_method = method;
+        p_test_from = test[0];
+        p_test_to = test[1];
     }
 
     private PasswordEntry(Parcel in) {

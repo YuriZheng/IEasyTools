@@ -18,10 +18,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
+import com.zyj.ieasytools.library.db.ZYJEncrypts;
 import com.zyj.ieasytools.library.db.ZYJSettings;
+import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
+import com.zyj.ieasytools.library.encrypt.PasswordEntry;
+import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
 import com.zyj.ieasytools.utils.SettingsConstant;
+
+import java.util.UUID;
 
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
 
@@ -41,6 +47,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     private TextView mDebug;
 
     private ZYJSettings mSettings;
+    private ZYJEncrypts mEncrypt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +95,13 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             mDebug.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.mipmap.debug);
             mDebug.setVisibility(View.VISIBLE);
         }
+
+        mEncrypt = ZYJDBEntryptUtils.getCurrentEncryptDatabase(this, "12345678");
+        PasswordEntry e = new PasswordEntry(UUID.randomUUID().toString(), "497393102", BaseEncrypt.ENCRYPT_AES);
+        if (mEncrypt != null) {
+            mEncrypt.insertEntry(e,"497393102");
+            ZYJUtils.logD(getClass(),"" + mEncrypt.getAllRecord());
+        }
     }
 
     @Override
@@ -105,6 +119,12 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mSettings != null) {
+            mSettings.onDestroy();
+        }
+        if (mEncrypt != null) {
+            mEncrypt.onDestroy();
+        }
     }
 
     public void onMenuViewClick(View view) {

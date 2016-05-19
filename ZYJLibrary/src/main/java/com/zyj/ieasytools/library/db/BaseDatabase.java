@@ -1,14 +1,17 @@
 package com.zyj.ieasytools.library.db;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
+import net.sqlcipher.SQLException;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import java.io.File;
+import java.io.IOException;
 
 public abstract class BaseDatabase {
 
@@ -59,7 +62,7 @@ public abstract class BaseDatabase {
             ZYJUtils.logD(getClass(), "Drop table" + tableName);
             mSQLDatabase.getSQLDatabase().execSQL("DROP TABLE IF EXISTS " + tableName);
         } else {
-            ZYJUtils.logW(getClass(), "The database open faile" + (mSQLDatabase != null ? mSQLDatabase.getStateCode() : "MySQLiteDatabase is null"));
+            ZYJUtils.logW(getClass(), "The database open faile" + (mSQLDatabase != null ? mSQLDatabase.getStateMessage() : "MySQLiteDatabase is null"));
         }
     }
 
@@ -73,7 +76,7 @@ public abstract class BaseDatabase {
             ZYJUtils.logI(getClass(), "Database onCreate: " + createSql);
             mSQLDatabase.getSQLDatabase().execSQL(createSql);
         } else {
-            ZYJUtils.logW(getClass(), "The database open faile: " + (mSQLDatabase != null ? mSQLDatabase.getStateCode() : "MySQLiteDatabase is null"));
+            ZYJUtils.logW(getClass(), "The database open faile: " + (mSQLDatabase != null ? mSQLDatabase.getStateMessage() : "MySQLiteDatabase is null"));
         }
     }
 
@@ -94,24 +97,24 @@ public abstract class BaseDatabase {
      * @return return the open state {@link MySQLiteDatabase}<br>
      */
     protected MySQLiteDatabase getSQLiteDatabase(String path, String password) {
-        if (TextUtils.isEmpty(path) || TextUtils.isEmpty(password)
-                || password.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN
-                || password.length() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
-            return new MySQLiteDatabase().setSQL(null, DATABASE_OPEN_PASSWORD);
-        }
         if (mSQLDatabase != null) {
             return mSQLDatabase;
         }
         mSQLDatabase = new MySQLiteDatabase();
+        if (TextUtils.isEmpty(path) || TextUtils.isEmpty(password)
+                || password.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN
+                || password.length() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
+            mSQLDatabase.setSQL(null, DATABASE_OPEN_PASSWORD);
+            return mSQLDatabase;
+        }
+        SQLiteDatabase database = null;
         try {
             File file = new File(path);
             if (!file.exists()) {
-                if (!ZYJUtils.createFile(path)) {
-                    mSQLDatabase.setSQL(null, DATABASE_OPEN_FILE_EXCEPTION);
-                    return mSQLDatabase;
-                }
+                mSQLDatabase.setSQL(null, DATABASE_OPEN_FILE_EXCEPTION);
+                return mSQLDatabase;
             }
-            if (!file.canRead()) {
+            if (!file.canRead() || !file.canWrite()) {
                 mSQLDatabase.setSQL(null, DATABASE_OPEN_FILE_EXCEPTION);
                 return mSQLDatabase;
             }
@@ -119,28 +122,32 @@ public abstract class BaseDatabase {
             if (ZYJUtils.isPasswordDebug) {
                 password = "";
             }
-            SQLiteDatabase database = SQLiteDatabase.openOrCreateDatabase(path, password, null);
+            database = SQLiteDatabase.openDatabase(path, password, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS | SQLiteDatabase.OPEN_READWRITE);
             if (database != null) {
-                int newVersion = getVersion();
-                if (database.getVersion() > newVersion) {
+                if (database.getVersion() > getVersion()) {
                     throw new RuntimeException("The new database version cann't below the old");
-                } else if (database.getVersion() < newVersion) {
-                    onUpgrade(database, database.getVersion(), newVersion);
                 }
-                database.setVersion(newVersion);
+                if (database.needUpgrade(getVersion())) {
+                    onUpgrade(database, database.getVersion(), getVersion());
+                    database.setVersion(getVersion());
+                }
                 mSQLDatabase.setSQL(database, DATABASE_OPEN_SUCCESS);
             } else {
                 mSQLDatabase.setSQL(null, DATABASE_OPEN_UNKNOW);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
+            if (database != null && database.isOpen()) {
+                database.close();
+            }
             mSQLDatabase.setSQL(null, DATABASE_OPEN_PASSWORD);
         }
         return mSQLDatabase;
     }
 
     /**
-     * Create database file in the app's cache path
+     * Create database file in the app's cache path<br>
+     * Get settings database
      *
      * @param context  context
      * @param name     the database file's name
@@ -148,7 +155,17 @@ public abstract class BaseDatabase {
      * @return {@link #getSQLiteDatabase(String, String)}
      */
     protected MySQLiteDatabase getSQLiteDatabase(Context context, String name, String password) {
-        return getSQLiteDatabase(context.getDatabasePath(name).getAbsolutePath(), password);
+        String dir = context.getDir("", Activity.MODE_PRIVATE).getPath();
+        File file = new File(dir + "/" + name);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return getSQLiteDatabase(null, null);
+            }
+        }
+        return getSQLiteDatabase(file.getAbsolutePath(), password);
     }
 
     /**
@@ -189,6 +206,21 @@ public abstract class BaseDatabase {
          */
         public int getStateCode() {
             return mStateCode;
+        }
+
+        public String getStateMessage() {
+            switch (getStateCode()) {
+                case DATABASE_OPEN_SUCCESS:
+                    return "database open success";
+                case DATABASE_OPEN_FILE_EXCEPTION:
+                    return "database open file exception";
+                case DATABASE_OPEN_PASSWORD:
+                    return "database open password wrong";
+                case DATABASE_OPEN_UNKNOW:
+                    return "database open unknow";
+                default:
+                    return "unknow";
+            }
         }
 
         protected MySQLiteDatabase setSQL(SQLiteDatabase database, int stateCode) {
