@@ -44,7 +44,8 @@ public class ZYJEncrypts extends BaseDatabase {
     private EncryptListener mListener;
 
     /**
-     * Control the access permission, so It's a private constructor
+     * Control the access permission, so It's a private constructor<br>
+     * Call {@link #destory()} to destory resources
      *
      * @param context context
      */
@@ -60,7 +61,7 @@ public class ZYJEncrypts extends BaseDatabase {
     /**
      * Destory all instance,Call when exit app
      */
-    private void destory() {
+    public static void destory() {
         if (mMaintain != null) {
             mMaintain.destory();
         }
@@ -380,7 +381,6 @@ public class ZYJEncrypts extends BaseDatabase {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        destory();
     }
 
     @Override

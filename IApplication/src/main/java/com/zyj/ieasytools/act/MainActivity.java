@@ -2,6 +2,7 @@ package com.zyj.ieasytools.act;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -99,8 +100,8 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mEncrypt = ZYJDBEntryptUtils.getCurrentEncryptDatabase(this, "12345678");
         PasswordEntry e = new PasswordEntry(UUID.randomUUID().toString(), "497393102", BaseEncrypt.ENCRYPT_AES);
         if (mEncrypt != null) {
-            mEncrypt.insertEntry(e,"497393102");
-            ZYJUtils.logD(getClass(),"" + mEncrypt.getAllRecord());
+            mEncrypt.insertEntry(e, "497393102");
+            ZYJUtils.logD(getClass(), "" + mEncrypt.getAllRecord());
         }
     }
 
@@ -117,14 +118,17 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mSettings != null) {
             mSettings.onDestroy();
         }
-        if (mEncrypt != null) {
-            mEncrypt.onDestroy();
-        }
+        ZYJEncrypts.destory();
     }
 
     public void onMenuViewClick(View view) {

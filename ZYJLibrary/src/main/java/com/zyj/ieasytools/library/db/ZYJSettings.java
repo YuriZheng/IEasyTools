@@ -33,6 +33,9 @@ public class ZYJSettings extends BaseDatabase {
      */
     private final int APP_VERSION;
 
+    /**
+     * Singleton mode, so call {@link #onDestroy()} to destory resources
+     */
     private ZYJSettings(Context c) {
         super(c);
         openDatabase();

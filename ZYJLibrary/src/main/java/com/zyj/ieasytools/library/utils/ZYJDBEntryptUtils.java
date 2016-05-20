@@ -83,10 +83,10 @@ public final class ZYJDBEntryptUtils {
      * @return the file of database, if create new file faile,then return null
      */
     public static File getCurrentDatabasePath(Context context) {
-        String path = ZYJUtils.getExternalRootPath() + "/" + DatabaseColumns.EncryptColumns.DATABASE_NAME;
-        File file = new File(path);
-//        String dir = context.getDir("ZYJ", Activity.MODE_PRIVATE).getPath();
-//        File file = new File(dir + "/" + DatabaseColumns.EncryptColumns.DATABASE_NAME);
+//        String path = ZYJUtils.getExternalRootPath() + "/" + DatabaseColumns.EncryptColumns.DATABASE_NAME;
+//        File file = new File(path);
+        String dir = context.getExternalFilesDir("ZYJ").getPath();
+        File file = new File(dir + "/" + DatabaseColumns.EncryptColumns.DATABASE_NAME);
         if (!file.exists()) {
             try {
                 file.createNewFile();
