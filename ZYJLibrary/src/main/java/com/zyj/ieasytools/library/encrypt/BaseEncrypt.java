@@ -106,7 +106,8 @@ public abstract class BaseEncrypt {
     }
 
     /**
-     * Add the encrypt listener
+     * Add the encrypt listener<br>
+     * Best not to use
      *
      * @param listener the listener
      * @hide
@@ -116,7 +117,8 @@ public abstract class BaseEncrypt {
     }
 
     /**
-     * Remove the encrypt listener
+     * Remove the encrypt listener<br>
+     * Best not to use
      *
      * @param listener the listener
      * @hide

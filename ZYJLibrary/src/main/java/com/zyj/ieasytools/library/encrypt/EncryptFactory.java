@@ -38,7 +38,7 @@ public final class EncryptFactory {
      * @param method the method
      * @return return the class
      */
-    public static Class<?> getClassFromMethod(String method) {
+    private static Class<?> getClassFromMethod(String method) {
         if (BaseEncrypt.ENCRYPT_AES.equals(method)) {
             return AESEncrypt.class;
         } else if (BaseEncrypt.ENCRYPT_BASE_64.equals(method)) {
@@ -57,12 +57,12 @@ public final class EncryptFactory {
     /**
      * Get the encrypt class
      *
-     * @param clz        the class object
+     * @param method     the method
      * @param privateKey the password
      * @return return a encrypt object
      */
-    public BaseEncrypt getInstance(Class<?> clz, String privateKey) {
-        return getEncryptInstance(clz, privateKey);
+    public BaseEncrypt getInstance(String method, String privateKey) {
+        return getEncryptInstance(getClassFromMethod(method), privateKey);
     }
 
     private BaseEncrypt getEncryptInstance(Class<?> clz, String privateKey) {

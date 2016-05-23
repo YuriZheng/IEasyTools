@@ -2,51 +2,11 @@
 <RelativeLayout
     android:id="@+id/main_view_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorPrimary"
-    android:layout_marginTop="?attr/actionBarSize">
+    android:layout_marginTop="?attr/actionBarSize"
+    android:background="?attr/colorPrimary">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="asdgasrgaergae"/>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/tttt"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        app:errorEnabled="true">
-
-        <EditText
-            android:id="@+id/your_matchcode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:digits="1234567890qwertyuiopasdfghjklzxcvbnm "
-            android:hint="请设定匹配码"
-            android:maxLength="48"
-            android:saveEnabled="false"/>
-
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.v7.widget.ButtonBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tttt"
-        android:gravity="center_horizontal">
-
-        <android.support.v7.widget.AppCompatButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="OK"/>
-
-        <android.support.v7.widget.AppCompatButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="OK"/>
-    </android.support.v7.widget.ButtonBarLayout>
+    <include layout="@layout/password_input_layout"/>
 
 </RelativeLayout>

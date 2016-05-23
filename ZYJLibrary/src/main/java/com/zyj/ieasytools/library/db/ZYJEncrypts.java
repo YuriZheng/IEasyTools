@@ -194,7 +194,7 @@ public class ZYJEncrypts extends BaseDatabase {
         if (ZYJDBEntryptUtils.checkEncryptPassword(mContext, entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
             return ERROR_PASSWORD;
         }
-        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(entry.getEncryptionMethod()), password);
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(entry.getEncryptionMethod(), password);
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
         String uuid = encrypt.encrypt(entry.getUuid(), ZYJVersion.MAX_VERSION);
         ZYJUtils.logD(getClass(), "delete: " + entry);
@@ -288,7 +288,7 @@ public class ZYJEncrypts extends BaseDatabase {
     }
 
     private ContentValues getContentValues(PasswordEntry entry, String password) {
-        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(entry.getEncryptionMethod()), password);
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(entry.getEncryptionMethod(), password);
         ContentValues v = new ContentValues();
         v.put(DatabaseColumns.EncryptColumns._UUID, encrypt.encrypt(entry.getUuid(), ZYJVersion.MAX_VERSION));
         v.put(DatabaseColumns.EncryptColumns._CATEGORY, encrypt.encrypt(entry.p_category, ZYJVersion.MAX_VERSION));
@@ -334,7 +334,7 @@ public class ZYJEncrypts extends BaseDatabase {
                     + " record password wrong");
             return null;
         }
-        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(method), password);
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(method, password);
         String uuid = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._UUID));
         PasswordEntry entry = new PasswordEntry(encrypt.decrypt(uuid, version), addTime, method, from, to, version);
 

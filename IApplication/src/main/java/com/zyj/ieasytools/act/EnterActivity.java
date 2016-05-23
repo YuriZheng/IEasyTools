@@ -3,13 +3,18 @@ package com.zyj.ieasytools.act;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.zyj.ieasytools.R;
@@ -26,21 +31,49 @@ public class EnterActivity extends BaseActivity {
 
     private final int PERMISSION_REQUEST_CODE = 0x55;
 
+    private AppCompatTextView mPasswordTitle;
+    private EditText mInputEdit;
+
     private ZYJSettings mSettings;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setTranslucentStatus();
+
         setContentView(R.layout.enter_layout);
+
+        mPasswordTitle = (AppCompatTextView) findViewById(R.id.password_title);
+        mInputEdit = (EditText) findViewById(R.id.input_edit);
+
+        mPasswordTitle.setText("请输入进入密码");
+
         insertDummyContactWrapper();
     }
 
+    private void setTranslucentStatus() {
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.TRANSPARENT);
+        window.setNavigationBarColor(Color.TRANSPARENT);
+    }
+
     public void onViewClick(View view) {
-        if (mSettings == null) {
-            mSettings = ZYJSettings.getInstance(this);
+        switch (view.getId()) {
+            case R.id.ok_id:
+                if (mSettings == null) {
+                    mSettings = ZYJSettings.getInstance(this);
+                }
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
+                break;
+            case R.id.switch_id:
+                break;
         }
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        finish();
     }
 
     /**

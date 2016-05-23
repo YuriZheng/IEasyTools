@@ -2,7 +2,7 @@ package com.zyj.ieasytools.act;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -12,10 +12,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
@@ -34,6 +36,14 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     private ViewGroup mMainViewLayout;
 
+    private View mPasswordInputView;
+    private View mGroupWebView;
+    private View mGroupEmailView;
+    private View mGroupWalletView;
+    private View mGroupAppView;
+    private View mGroupGameView;
+    private View mGroupOtherView;
+
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
     private ProgressBar mProgressBar;
@@ -50,12 +60,15 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     private ZYJSettings mSettings;
     private ZYJEncrypts mEncrypt;
 
+    private Handler mHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mSettings = ZYJSettings.getInstance(this);
+        mHandler = new Handler();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("");
@@ -89,6 +102,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         lp.width = ZYJUtils.getDisplayMetrics(this)[0] * 2 / 3;
         mNavigationView.setLayoutParams(lp);
 
+        mPasswordInputView = LayoutInflater.from(this).inflate(R.layout.password_input_layout, null);
+        mMainViewLayout.addView(mPasswordInputView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
         if (ZYJUtils.isFunctionDebug) {
             mDebug = (TextView) findViewById(R.id.debug);
             Object[] versions = ZYJUtils.getVersion(this);
@@ -103,6 +119,12 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             mEncrypt.insertEntry(e, "497393102");
             ZYJUtils.logD(getClass(), "" + mEncrypt.getAllRecord());
         }
+
+        new Thread() {
+            public void run() {
+                initContentViews();
+            }
+        }.start();
     }
 
     @Override
@@ -118,8 +140,15 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ZYJUtils.logD(getClass(), "onSaveInstanceState");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        ZYJUtils.logD(getClass(), "onRestoreInstanceState");
     }
 
     @Override
@@ -131,6 +160,21 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         ZYJEncrypts.destory();
     }
 
+    private void initContentViews() {
+//        mGroupWebView =
+//        mGroupEmailView;
+//        mGroupWalletView;
+//        mGroupAppView;
+//        mGroupGameView;
+//        mGroupOtherView;
+    }
+
+    /**
+     * Menu click, used in activity_main.xml
+     *
+     * @param view
+     */
+    @SuppressWarnings("unused")
     public void onMenuViewClick(View view) {
         switch (view.getId()) {
             case R.id.menu_more:
@@ -146,8 +190,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             case R.id.menu_add:
                 break;
             case R.id.menu_seach:
-                break;
-            case R.id.main_test:
                 break;
         }
     }
@@ -171,22 +213,58 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         }
     };
 
+    /**
+     * Menu click, used in activity_main.xml
+     *
+     * @param view
+     */
+    @SuppressWarnings("unused")
     public void onGroupMenuClick(View view) {
+        // The view not ready yet
+//        if (mGroupOtherView == null) {
+//            return;
+//        }
+        actionProgressBar(true);
         switch (view.getId()) {
             case R.id.group_web:
+                mToolbar.setTitle(R.string.password_catrgory_web);
                 break;
             case R.id.group_email:
+                mToolbar.setTitle(R.string.password_catrgory_email);
                 break;
             case R.id.group_wallet:
+                mToolbar.setTitle(R.string.password_catrgory_wallet);
                 break;
             case R.id.group_app:
+                mToolbar.setTitle(R.string.password_catrgory_app);
                 break;
             case R.id.group_game:
+                mToolbar.setTitle(R.string.password_catrgory_game);
                 break;
             case R.id.group_other:
+                mToolbar.setTitle(R.string.password_catrgory_other);
                 break;
         }
     }
+
+    public void onViewClick(View view) {
+        actionProgressBar(false);
+        showToast(view);
+        switch (view.getId()) {
+            case R.id.ok_id:
+                break;
+            case R.id.switch_id:
+                break;
+        }
+    }
+
+    private void actionProgressBar(boolean show) {
+        int visibility = show ? View.VISIBLE : View.INVISIBLE;
+        if (mProgressBar.getVisibility() != visibility) {
+            mProgressBar.setVisibility(visibility);
+        }
+    }
+
 
     private void showToast(View view) {
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)

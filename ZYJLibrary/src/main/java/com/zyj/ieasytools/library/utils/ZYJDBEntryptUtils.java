@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.zyj.ieasytools.library.db.DatabaseColumns;
 import com.zyj.ieasytools.library.db.ZYJEncrypts;
-import com.zyj.ieasytools.library.encrypt.AESEncrypt;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.EncryptFactory;
 
@@ -25,7 +24,7 @@ public final class ZYJDBEntryptUtils {
      * Get the settings default encrypt bean
      */
     public static BaseEncrypt getSettingsEncrypt(Context context) {
-        return EncryptFactory.getInstance().getInstance(AESEncrypt.class, ZYJUtils.getSettingPassword(context));
+        return EncryptFactory.getInstance().getInstance(BaseEncrypt.ENCRYPT_AES, ZYJUtils.getSettingPassword(context));
     }
 
     /**
@@ -112,7 +111,7 @@ public final class ZYJDBEntryptUtils {
      * @return true if the password is right,other return false
      */
     public static boolean checkEncryptPassword(Context context, String method, String password, String from, String to, int version) {
-        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(method), password);
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(method, password);
         String decryptString = encrypt.decrypt(from, version);
         return to.equals(decryptString);
     }
@@ -127,7 +126,7 @@ public final class ZYJDBEntryptUtils {
      */
     public static String[] generateTestTo(String method, String password, int version) {
         String[] args = new String[2];
-        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(EncryptFactory.getClassFromMethod(method), password);
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(method, password);
         args[0] = TEST_FROM;
         args[1] = encrypt.encrypt(args[0], version);
         return args;
