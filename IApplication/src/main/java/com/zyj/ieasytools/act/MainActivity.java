@@ -1,6 +1,9 @@
 package com.zyj.ieasytools.act;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +13,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -18,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -39,6 +44,7 @@ import com.zyj.ieasytools.views.GroupOtherView;
 import com.zyj.ieasytools.views.GroupWalletView;
 import com.zyj.ieasytools.views.GroupWebView;
 
+import java.lang.reflect.Field;
 import java.util.UUID;
 
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
@@ -58,7 +64,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
+    private View mToolNavigationView;
     private ProgressBar mProgressBar;
+    private SearchView mSearchView;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
 
@@ -85,9 +93,18 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
+        try {
+            Field colorFid = Toolbar.class.getDeclaredField("mNavButtonView");
+            colorFid.setAccessible(true);
+            mToolNavigationView = (View) colorFid.get(mToolbar);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         mProgressBar = (ProgressBar) findViewById(R.id.progress);
         mProgressBar.getIndeterminateDrawable().setTint(getResources().getColor(android.R.color.white));
+
+        mSearchView = (SearchView) findViewById(R.id.search_view);
 
         mMainViewLayout = (ViewGroup) findViewById(R.id.main_view_layout);
 
@@ -117,6 +134,8 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mPasswordInputView = LayoutInflater.from(this).inflate(R.layout.password_input_layout, null);
         mMainViewLayout.addView(mPasswordInputView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
+        initContentViews();
+
         if (ZYJUtils.isFunctionDebug) {
             mDebug = (TextView) findViewById(R.id.debug);
             Object[] versions = ZYJUtils.getVersion(this);
@@ -131,12 +150,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             mEncrypt.insertEntry(e, "497393102");
             ZYJUtils.logD(getClass(), "" + mEncrypt.getAllRecord());
         }
-
-        new Thread() {
-            public void run() {
-                initContentViews();
-            }
-        }.start();
     }
 
     @Override
@@ -173,12 +186,16 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
     private void initContentViews() {
-        mGroupWebView = new GroupWebView(this);
-        mGroupEmailView = new GroupEmailView(this);
-        mGroupWalletView = new GroupWalletView(this);
-        mGroupAppView = new GroupAppView(this);
-        mGroupGameView = new GroupGameView(this);
-        mGroupOtherView = new GroupOtherView(this);
+        new Thread() {
+            public void run() {
+                mGroupWebView = new GroupWebView(MainActivity.this);
+                mGroupEmailView = new GroupEmailView(MainActivity.this);
+                mGroupWalletView = new GroupWalletView(MainActivity.this);
+                mGroupAppView = new GroupAppView(MainActivity.this);
+                mGroupGameView = new GroupGameView(MainActivity.this);
+                mGroupOtherView = new GroupOtherView(MainActivity.this);
+            }
+        }.start();
     }
 
     /**
@@ -286,9 +303,35 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 }
                 break;
             case R.id.menu_add:
+                if (mMenuAdd.getAlpha() != 1) {
+                    // Show the left drawer
+                    if (mMenuLayout.isShowMenu()) {
+                        mMenuLayout.hideMenu();
+                    }
+                    if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                        mDrawerLayout.closeDrawer(Gravity.LEFT);
+                    }
+                    actionSearchView(false);
+                } else {
+
+                }
                 break;
             case R.id.menu_seach:
+                if (mMenuLayout.isShowMenu()) {
+                    mMenuLayout.hideMenu();
+                }
+                if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                }
+                if (mSearchView.getAlpha() == 1.0f) {
+                    actionSearchView(false);
+                } else {
+                    actionSearchView(true);
+                }
                 break;
+        }
+        if (mSearchView.getAlpha() != 0) {
+            ObjectAnimator.ofFloat(mSearchView, "alpha", mSearchView.getAlpha(), 0).setDuration(250).start();
         }
     }
 
@@ -297,8 +340,10 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         public boolean onNavigationItemSelected(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.settings_settings:
+                    actionProgressBar(true);
                     break;
                 case R.id.settings_view_other:
+                    actionProgressBar(false);
                     break;
                 case R.id.settings_feedback:
                     break;
@@ -369,6 +414,34 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         }
     }
 
+    private void actionSearchView(boolean show) {
+        actionProgressBar(false);
+        float alphaV = show ? 1.0f : 0.0f;
+        if (mSearchView.getAlpha() != alphaV) {
+            AnimatorSet set = new AnimatorSet();
+            ObjectAnimator alphaA = ObjectAnimator.ofFloat(mSearchView, "alpha", mSearchView.getAlpha(), alphaV);
+            ObjectAnimator scale1 = null;
+            if (mToolNavigationView != null) {
+                scale1 = getScaleAnimator(mToolNavigationView);
+            }
+            ObjectAnimator scale2 = getScaleAnimator(mMenuAdd);
+            scale2.setStartDelay(scale1 != null ? 200 : 0);
+            ObjectAnimator scale3 = getScaleAnimator(mMenuMore);
+            scale3.setStartDelay(scale1 != null ? 150 : 350);
+            set.setInterpolator(new AccelerateInterpolator());
+            set.playTogether(alphaA, scale1, scale2, scale3);
+            set.setDuration(250);
+            set.start();
+        }
+    }
+
+    private ObjectAnimator getScaleAnimator(Object view) {
+        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f, 0.0f, 0.0f, 1.0f);
+        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f, 0.0f, 0.0f, 1.0f);
+        ObjectAnimator scale = ObjectAnimator.ofPropertyValuesHolder(view, scaleX, scaleY);
+        return scale;
+    }
+
 
     private void showToast(View view) {
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -417,6 +490,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     @Override
     public void onDrawerOpened(View drawerView) {
+        if (mSearchView.getAlpha() != 0) {
+            ObjectAnimator.ofFloat(mSearchView, "alpha", mSearchView.getAlpha(), 0).setDuration(250).start();
+        }
     }
 
     @Override
