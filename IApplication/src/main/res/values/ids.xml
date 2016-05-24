@@ -2,5 +2,11 @@
 <resources>
     <item name="main_test" type="id"/>
 
+    <item name="group_web_id" type="id"/>
+    <item name="group_email_id" type="id"/>
+    <item name="group_wallet_id" type="id"/>
+    <item name="group_app_id" type="id"/>
+    <item name="group_game_id" type="id"/>
+    <item name="group_other_id" type="id"/>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.zyj.ieasytools.act;
 
+import android.animation.Animator;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +16,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,20 +32,29 @@ import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
 import com.zyj.ieasytools.utils.SettingsConstant;
+import com.zyj.ieasytools.views.GroupAppView;
+import com.zyj.ieasytools.views.GroupEmailView;
+import com.zyj.ieasytools.views.GroupGameView;
+import com.zyj.ieasytools.views.GroupOtherView;
+import com.zyj.ieasytools.views.GroupWalletView;
+import com.zyj.ieasytools.views.GroupWebView;
 
 import java.util.UUID;
 
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
 
+    /**
+     * The content main layout
+     */
     private ViewGroup mMainViewLayout;
 
     private View mPasswordInputView;
-    private View mGroupWebView;
-    private View mGroupEmailView;
-    private View mGroupWalletView;
-    private View mGroupAppView;
-    private View mGroupGameView;
-    private View mGroupOtherView;
+    private GroupWebView mGroupWebView;
+    private GroupEmailView mGroupEmailView;
+    private GroupWalletView mGroupWalletView;
+    private GroupAppView mGroupAppView;
+    private GroupGameView mGroupGameView;
+    private GroupOtherView mGroupOtherView;
 
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
@@ -161,12 +173,98 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
     private void initContentViews() {
-//        mGroupWebView =
-//        mGroupEmailView;
-//        mGroupWalletView;
-//        mGroupAppView;
-//        mGroupGameView;
-//        mGroupOtherView;
+        mGroupWebView = new GroupWebView(this);
+        mGroupEmailView = new GroupEmailView(this);
+        mGroupWalletView = new GroupWalletView(this);
+        mGroupAppView = new GroupAppView(this);
+        mGroupGameView = new GroupGameView(this);
+        mGroupOtherView = new GroupOtherView(this);
+    }
+
+    /**
+     * Record the content view width
+     */
+    private int mGroupWidth = 0;
+    /**
+     * Record the content view height
+     */
+    private int mGroupHeight = 0;
+    /**
+     * Record the anim end of radius
+     */
+    private float mEndRadius = 0;
+
+    /**
+     * Add centent view by animation
+     *
+     * @param clickView the click view
+     * @param addView   added view
+     */
+    private void addSwitchView(final View clickView, final View addView) {
+        final View[] views = new View[mMainViewLayout.getChildCount()];
+        for (int i = 0; i < views.length; i++) {
+            views[i] = mMainViewLayout.getChildAt(i);
+            if (views[i].equals(addView)) {
+                ZYJUtils.logW(getClass(), "Duplicate add view");
+                return;
+            }
+        }
+        if (mGroupWidth <= 0) {
+            mGroupWidth = mPasswordInputView.getWidth();
+        }
+        if (mGroupHeight <= 0) {
+            mGroupHeight = mPasswordInputView.getHeight();
+        }
+        if (mEndRadius <= 0) {
+            mEndRadius = (float) Math.hypot(mGroupWidth, mGroupHeight);
+        }
+        mMainViewLayout.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+            @Override
+            public void onChildViewAdded(View parent, View child) {
+                if (child.equals(addView)) {
+                    int[] location = new int[2];
+                    clickView.getLocationInWindow(location);
+                    // Modified by 50 or 100 value to correction the center of circular
+                    removeAllViewBesidesAddView(views, addView, location[1] - 100).start();
+                }
+            }
+
+            @Override
+            public void onChildViewRemoved(View parent, View child) {
+            }
+        });
+        mMainViewLayout.addView(addView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    /**
+     * Remove all child view
+     *
+     * @param views   the child view array
+     * @param addView the added view
+     * @param y       the click coordinate y
+     * @return the animator
+     */
+    private Animator removeAllViewBesidesAddView(final View[] views, final View addView, final int y) {
+        final Animator anim = ViewAnimationUtils.createCircularReveal(addView, mGroupWidth + 50, y, 0, mEndRadius);
+        anim.setDuration(600);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.addListener(new Animator.AnimatorListener() {
+            public void onAnimationStart(Animator animation) {
+            }
+
+            public void onAnimationEnd(Animator animation) {
+                for (int i = 0; i < views.length; i++) {
+                    mMainViewLayout.removeView(views[i]);
+                }
+            }
+
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        return anim;
     }
 
     /**
@@ -221,30 +319,36 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     @SuppressWarnings("unused")
     public void onGroupMenuClick(View view) {
         // The view not ready yet
-//        if (mGroupOtherView == null) {
-//            return;
-//        }
-        actionProgressBar(true);
+        if (mGroupOtherView == null) {
+            return;
+        }
         switch (view.getId()) {
             case R.id.group_web:
                 mToolbar.setTitle(R.string.password_catrgory_web);
+                addSwitchView(view, mGroupWebView.getMainView());
                 break;
             case R.id.group_email:
                 mToolbar.setTitle(R.string.password_catrgory_email);
+                addSwitchView(view, mGroupEmailView.getMainView());
                 break;
             case R.id.group_wallet:
                 mToolbar.setTitle(R.string.password_catrgory_wallet);
+                addSwitchView(view, mGroupWalletView.getMainView());
                 break;
             case R.id.group_app:
                 mToolbar.setTitle(R.string.password_catrgory_app);
+                addSwitchView(view, mGroupAppView.getMainView());
                 break;
             case R.id.group_game:
                 mToolbar.setTitle(R.string.password_catrgory_game);
+                addSwitchView(view, mGroupGameView.getMainView());
                 break;
             case R.id.group_other:
                 mToolbar.setTitle(R.string.password_catrgory_other);
+                addSwitchView(view, mGroupOtherView.getMainView());
                 break;
         }
+        mMenuLayout.hideMenu();
     }
 
     public void onViewClick(View view) {
