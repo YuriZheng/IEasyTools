@@ -313,25 +313,17 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 }
                 break;
             case R.id.menu_add:
+                ZYJUtils.logD(getClass(), "menu_add");
+                hideSildeDrawer();
                 if (mMenuAdd.getAlpha() != 1) {
                     // Show the left drawer
-                    if (mMenuLayout.isShowMenu()) {
-                        mMenuLayout.hideMenu();
-                    }
-                    if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                        mDrawerLayout.closeDrawer(Gravity.LEFT);
-                    }
                 } else {
 
                 }
                 break;
             case R.id.menu_seach:
-                if (mMenuLayout.isShowMenu()) {
-                    mMenuLayout.hideMenu();
-                }
-                if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                    mDrawerLayout.closeDrawer(Gravity.LEFT);
-                }
+                ZYJUtils.logD(getClass(), "menu_seach");
+                hideSildeDrawer();
                 break;
         }
     }
@@ -408,6 +400,15 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         }
     }
 
+    private void hideSildeDrawer() {
+        if (mMenuLayout.isShowMenu()) {
+            mMenuLayout.hideMenu();
+        }
+        if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            mDrawerLayout.closeDrawer(Gravity.LEFT);
+        }
+    }
+
     private void actionProgressBar(boolean show) {
         int visibility = show ? View.VISIBLE : View.INVISIBLE;
         if (mProgressBar.getVisibility() != visibility) {
@@ -467,17 +468,18 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         if (mMenuDistance <= 0) {
             int[] addLocation = new int[2];
             int[] moreLocation = new int[2];
-            mMenuAdd.getLocationInWindow(addLocation);
+            mMenuSeach.getLocationInWindow(addLocation);
             mMenuMore.getLocationInWindow(moreLocation);
             mMenuDistance = moreLocation[0] - addLocation[0];
         }
-        mMenuSeach.setTranslationX(mMenuDistance * offset);
+        mMenuAdd.setTranslationX(mMenuDistance * offset);
 
         // y = 4x*x - 4*x + 1
         mMenuMore.setScaleX((float) (4 * Math.pow(offset, 2) - 4 * offset + 1));
         mMenuMore.setScaleY((float) (4 * Math.pow(offset, 2) - 4 * offset + 1));
 
-        mMenuAdd.setAlpha(1 - offset);
+        mMenuSeach.setAlpha(1 - offset);
+        mMenuSeach.setVisibility(offset == 1 ? View.INVISIBLE : View.VISIBLE);
 
         if (mMenuLayout.isShowMenu()) {
             mMenuLayout.hideMenu();

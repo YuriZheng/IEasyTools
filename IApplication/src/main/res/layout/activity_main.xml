@@ -33,14 +33,14 @@
                     android:orientation="horizontal">
 
                     <ImageButton
-                        android:id="@+id/menu_seach"
-                        style="@style/activity_main_menu_image_button_style"
-                        android:src="@mipmap/ic_search"/>
-
-                    <ImageButton
                         android:id="@+id/menu_add"
                         style="@style/activity_main_menu_image_button_style"
                         android:src="@mipmap/ic_add"/>
+
+                    <ImageButton
+                        android:id="@+id/menu_seach"
+                        style="@style/activity_main_menu_image_button_style"
+                        android:src="@mipmap/ic_search"/>
 
                     <ImageButton
                         android:id="@+id/menu_more"
