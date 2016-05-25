@@ -6,6 +6,4 @@
 
     <dimen name="main_view_progress_size">20dp</dimen>
 
-    <dimen name="search_view_hight">35dp</dimen>
-
 </resources>

@@ -1,19 +1,22 @@
 package com.zyj.ieasytools.act;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -22,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -30,7 +32,6 @@ import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.library.db.ZYJEncrypts;
-import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
@@ -66,7 +67,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     private Toolbar mToolbar;
     private View mToolNavigationView;
     private ProgressBar mProgressBar;
-    private SearchView mSearchView;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
 
@@ -77,17 +77,30 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     private TextView mDebug;
 
-    private ZYJSettings mSettings;
     private ZYJEncrypts mEncrypt;
 
+    private MyServer mServer;
+
     private Handler mHandler;
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mServer = ((MyServer.MyBinder) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mSettings = ZYJSettings.getInstance(this);
+        bindService(new Intent(getApplicationContext(), MyServer.class), mConnection, Context.BIND_AUTO_CREATE);
+
         mHandler = new Handler();
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -104,11 +117,8 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mProgressBar = (ProgressBar) findViewById(R.id.progress);
         mProgressBar.getIndeterminateDrawable().setTint(getResources().getColor(android.R.color.white));
 
-        mSearchView = (SearchView) findViewById(R.id.search_view);
-
         mMainViewLayout = (ViewGroup) findViewById(R.id.main_view_layout);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_toggle_text, R.string.drawer_toggle_text);
@@ -133,6 +143,8 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
         mPasswordInputView = LayoutInflater.from(this).inflate(R.layout.password_input_layout, null);
         mMainViewLayout.addView(mPasswordInputView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         initContentViews();
 
@@ -179,9 +191,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mSettings != null) {
-            mSettings.onDestroy();
-        }
+        unbindService(mConnection);
         ZYJEncrypts.destory();
     }
 
@@ -241,8 +251,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 if (child.equals(addView)) {
                     int[] location = new int[2];
                     clickView.getLocationInWindow(location);
-                    // Modified by 50 or 100 value to correction the center of circular
-                    removeAllViewBesidesAddView(views, addView, location[1] - 100).start();
+                    removeAllViewBesidesAddView(views, addView, location[1]).start();
                 }
             }
 
@@ -262,6 +271,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
      * @return the animator
      */
     private Animator removeAllViewBesidesAddView(final View[] views, final View addView, final int y) {
+        // Modified by 50 value to correction the center of circular
         final Animator anim = ViewAnimationUtils.createCircularReveal(addView, mGroupWidth + 50, y, 0, mEndRadius);
         anim.setDuration(600);
         anim.setInterpolator(new DecelerateInterpolator());
@@ -311,7 +321,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                     if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
                         mDrawerLayout.closeDrawer(Gravity.LEFT);
                     }
-                    actionSearchView(false);
                 } else {
 
                 }
@@ -323,15 +332,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
                     mDrawerLayout.closeDrawer(Gravity.LEFT);
                 }
-                if (mSearchView.getAlpha() == 1.0f) {
-                    actionSearchView(false);
-                } else {
-                    actionSearchView(true);
-                }
                 break;
-        }
-        if (mSearchView.getAlpha() != 0) {
-            ObjectAnimator.ofFloat(mSearchView, "alpha", mSearchView.getAlpha(), 0).setDuration(250).start();
         }
     }
 
@@ -414,26 +415,26 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         }
     }
 
-    private void actionSearchView(boolean show) {
-        actionProgressBar(false);
-        float alphaV = show ? 1.0f : 0.0f;
-        if (mSearchView.getAlpha() != alphaV) {
-            AnimatorSet set = new AnimatorSet();
-            ObjectAnimator alphaA = ObjectAnimator.ofFloat(mSearchView, "alpha", mSearchView.getAlpha(), alphaV);
-            ObjectAnimator scale1 = null;
-            if (mToolNavigationView != null) {
-                scale1 = getScaleAnimator(mToolNavigationView);
-            }
-            ObjectAnimator scale2 = getScaleAnimator(mMenuAdd);
-            scale2.setStartDelay(scale1 != null ? 200 : 0);
-            ObjectAnimator scale3 = getScaleAnimator(mMenuMore);
-            scale3.setStartDelay(scale1 != null ? 150 : 350);
-            set.setInterpolator(new AccelerateInterpolator());
-            set.playTogether(alphaA, scale1, scale2, scale3);
-            set.setDuration(250);
-            set.start();
-        }
-    }
+//    private void actionSearchView(boolean show) {
+//        actionProgressBar(false);
+//        float alphaV = show ? 1.0f : 0.0f;
+//        if (mSearchView.getAlpha() != alphaV) {
+//            AnimatorSet set = new AnimatorSet();
+//            ObjectAnimator alphaA = ObjectAnimator.ofFloat(mSearchView, "alpha", mSearchView.getAlpha(), alphaV);
+//            ObjectAnimator scale1 = null;
+//            if (mToolNavigationView != null) {
+//                scale1 = getScaleAnimator(mToolNavigationView);
+//            }
+//            ObjectAnimator scale2 = getScaleAnimator(mMenuAdd);
+//            scale2.setStartDelay(scale1 != null ? 200 : 0);
+//            ObjectAnimator scale3 = getScaleAnimator(mMenuMore);
+//            scale3.setStartDelay(scale1 != null ? 150 : 350);
+//            set.setInterpolator(new AccelerateInterpolator());
+//            set.playTogether(alphaA, scale1, scale2, scale3);
+//            set.setDuration(250);
+//            set.start();
+//        }
+//    }
 
     private ObjectAnimator getScaleAnimator(Object view) {
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f, 0.0f, 0.0f, 1.0f);
@@ -490,9 +491,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     @Override
     public void onDrawerOpened(View drawerView) {
-        if (mSearchView.getAlpha() != 0) {
-            ObjectAnimator.ofFloat(mSearchView, "alpha", mSearchView.getAlpha(), 0).setDuration(250).start();
-        }
     }
 
     @Override

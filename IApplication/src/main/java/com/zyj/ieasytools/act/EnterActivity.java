@@ -18,8 +18,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.zyj.ieasytools.R;
-import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
+import com.zyj.ieasytools.utils.SettingsConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +34,15 @@ public class EnterActivity extends BaseActivity {
     private AppCompatTextView mPasswordTitle;
     private EditText mInputEdit;
 
-    private ZYJSettings mSettings;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (!checkTimeOut()) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+            return;
+        }
         setTranslucentStatus();
 
         setContentView(R.layout.enter_layout);
@@ -50,6 +53,19 @@ public class EnterActivity extends BaseActivity {
         mPasswordTitle.setText("请输入进入密码");
 
         insertDummyContactWrapper();
+    }
+
+    private boolean checkTimeOut() {
+        long lastTime = mSettings.getLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME, -1);
+        if (lastTime < 0) {
+            return true;
+        }
+        // TODO: 2016/5/25 这里的默认时间为设置里面的默认时间，一定有值
+        long timeOut = mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, 0);
+        if (lastTime + timeOut > System.currentTimeMillis()) {
+            return true;
+        }
+        return false;
     }
 
     private void setTranslucentStatus() {
@@ -65,15 +81,19 @@ public class EnterActivity extends BaseActivity {
     public void onViewClick(View view) {
         switch (view.getId()) {
             case R.id.ok_id:
-                if (mSettings == null) {
-                    mSettings = ZYJSettings.getInstance(this);
-                }
+                // TODO: 2016/5/25 在此处进行数据库密码判断，正确才能进行下一步
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
                 break;
             case R.id.switch_id:
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mSettings.onDestroy();
     }
 
     /**

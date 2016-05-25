@@ -55,14 +55,6 @@
                     android:layout_height="@dimen/main_view_progress_size"
                     android:layout_centerVertical="true"
                     android:visibility="invisible"/>
-
-                <android.support.v7.widget.SearchView
-                    android:id="@+id/search_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/search_view_hight"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/test_layout"
-                    android:alpha="0"/>
             </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>

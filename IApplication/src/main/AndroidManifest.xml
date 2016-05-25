@@ -26,6 +26,8 @@
             android:name=".act.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
+        <service android:name=".act.MyServer"/>
+
     </application>
 
 </manifest>
