@@ -74,32 +74,32 @@
         <ImageButton
             android:id="@+id/group_web"
             style="@style/activity_main_group_image_button_style"
-            android:src="@mipmap/ic_search"/>
+            android:src="@mipmap/ic_web"/>
 
         <ImageButton
             android:id="@+id/group_email"
             style="@style/activity_main_group_image_button_style"
-            android:src="@mipmap/ic_search"/>
+            android:src="@mipmap/ic_email"/>
 
         <ImageButton
             android:id="@+id/group_wallet"
             style="@style/activity_main_group_image_button_style"
-            android:src="@mipmap/ic_add"/>
+            android:src="@mipmap/ic_wallet"/>
 
         <ImageButton
             android:id="@+id/group_app"
             style="@style/activity_main_group_image_button_style"
-            android:src="@mipmap/ic_add"/>
+            android:src="@mipmap/ic_app"/>
 
         <ImageButton
             android:id="@+id/group_game"
             style="@style/activity_main_group_image_button_style"
-            android:src="@mipmap/ic_add"/>
+            android:src="@mipmap/ic_game"/>
 
         <ImageButton
             android:id="@+id/group_other"
             style="@style/activity_main_group_image_button_style"
-            android:src="@mipmap/ic_search"/>
+            android:src="@mipmap/ic_other"/>
 
     </com.zyj.ieasytools.library.views.MenuRevealView>
 
