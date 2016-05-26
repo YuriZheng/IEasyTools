@@ -20,42 +20,29 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+            <ProgressBar
+                android:id="@+id/progress"
+                style="?android:progressBarStyleSmall"
+                android:layout_width="@dimen/main_view_progress_size"
+                android:layout_height="@dimen/main_view_progress_size"
+                android:layout_centerVertical="true"
+                android:visibility="invisible"/>
 
-                <LinearLayout
-                    android:id="@+id/test_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:orientation="horizontal">
+            <ImageButton
+                android:id="@+id/menu_more"
+                style="@style/activity_main_menu_image_button_style"
+                android:src="@mipmap/ic_more"/>
 
-                    <ImageButton
-                        android:id="@+id/menu_add"
-                        style="@style/activity_main_menu_image_button_style"
-                        android:src="@mipmap/ic_add"/>
+            <ImageButton
+                android:id="@+id/menu_seach"
+                style="@style/activity_main_menu_image_button_style"
+                android:src="@mipmap/ic_search"/>
 
-                    <ImageButton
-                        android:id="@+id/menu_seach"
-                        style="@style/activity_main_menu_image_button_style"
-                        android:src="@mipmap/ic_search"/>
+            <ImageButton
+                android:id="@+id/menu_add"
+                style="@style/activity_main_menu_image_button_style"
+                android:src="@mipmap/ic_add"/>
 
-                    <ImageButton
-                        android:id="@+id/menu_more"
-                        style="@style/activity_main_menu_image_button_style"
-                        android:src="@mipmap/ic_more"/>
-                </LinearLayout>
-
-                <ProgressBar
-                    android:id="@+id/progress"
-                    style="?android:progressBarStyleSmall"
-                    android:layout_width="@dimen/main_view_progress_size"
-                    android:layout_height="@dimen/main_view_progress_size"
-                    android:layout_centerVertical="true"
-                    android:visibility="invisible"/>
-            </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
 

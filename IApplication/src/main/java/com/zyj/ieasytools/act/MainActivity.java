@@ -1,15 +1,12 @@
 package com.zyj.ieasytools.act;
 
 import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -20,7 +17,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -55,7 +51,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
      */
     private ViewGroup mMainViewLayout;
 
-    private View mPasswordInputView;
     private GroupWebView mGroupWebView;
     private GroupEmailView mGroupEmailView;
     private GroupWalletView mGroupWalletView;
@@ -81,8 +76,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     private MyServer mServer;
 
-    private Handler mHandler;
-
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -101,10 +94,8 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
         bindService(new Intent(getApplicationContext(), MyServer.class), mConnection, Context.BIND_AUTO_CREATE);
 
-        mHandler = new Handler();
-
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle("");
+        mToolbar.setTitle(R.string.password_catrgory_web);
         setSupportActionBar(mToolbar);
         try {
             Field colorFid = Toolbar.class.getDeclaredField("mNavButtonView");
@@ -116,6 +107,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
         mProgressBar = (ProgressBar) findViewById(R.id.progress);
         mProgressBar.getIndeterminateDrawable().setTint(getResources().getColor(android.R.color.white));
+        actionProgressBar(true);
 
         mMainViewLayout = (ViewGroup) findViewById(R.id.main_view_layout);
 
@@ -140,9 +132,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         DrawerLayout.LayoutParams lp = (DrawerLayout.LayoutParams) mNavigationView.getLayoutParams();
         lp.width = ZYJUtils.getDisplayMetrics(this)[0] * 2 / 3;
         mNavigationView.setLayoutParams(lp);
-
-        mPasswordInputView = LayoutInflater.from(this).inflate(R.layout.password_input_layout, null);
-        mMainViewLayout.addView(mPasswordInputView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -196,6 +185,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         ZYJEncrypts.destory();
     }
 
+    /**
+     * Init the child view and add the default view
+     */
     private void initContentViews() {
         new Thread() {
             public void run() {
@@ -205,6 +197,12 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 mGroupAppView = new GroupAppView(MainActivity.this);
                 mGroupGameView = new GroupGameView(MainActivity.this);
                 mGroupOtherView = new GroupOtherView(MainActivity.this);
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        addSwitchView(null, mGroupWebView.getMainView());
+                        actionProgressBar(false);
+                    }
+                });
             }
         }.start();
     }
@@ -221,47 +219,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
      * Record the anim end of radius
      */
     private float mEndRadius = 0;
-
-    /**
-     * Add centent view by animation
-     *
-     * @param clickView the click view
-     * @param addView   added view
-     */
-    private void addSwitchView(final View clickView, final View addView) {
-        final View[] views = new View[mMainViewLayout.getChildCount()];
-        for (int i = 0; i < views.length; i++) {
-            views[i] = mMainViewLayout.getChildAt(i);
-            if (views[i].equals(addView)) {
-                ZYJUtils.logW(getClass(), "Duplicate add view");
-                return;
-            }
-        }
-        if (mGroupWidth <= 0) {
-            mGroupWidth = mPasswordInputView.getWidth();
-        }
-        if (mGroupHeight <= 0) {
-            mGroupHeight = mPasswordInputView.getHeight();
-        }
-        if (mEndRadius <= 0) {
-            mEndRadius = (float) Math.hypot(mGroupWidth, mGroupHeight);
-        }
-        mMainViewLayout.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
-            @Override
-            public void onChildViewAdded(View parent, View child) {
-                if (child.equals(addView)) {
-                    int[] location = new int[2];
-                    clickView.getLocationInWindow(location);
-                    removeAllViewBesidesAddView(views, addView, location[1]).start();
-                }
-            }
-
-            @Override
-            public void onChildViewRemoved(View parent, View child) {
-            }
-        });
-        mMainViewLayout.addView(addView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-    }
 
     /**
      * Remove all child view
@@ -293,6 +250,51 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             }
         });
         return anim;
+    }
+
+    /**
+     * Add centent view by animation
+     *
+     * @param clickView the click view
+     * @param addView   added view
+     */
+    private void addSwitchView(final View clickView, final View addView) {
+        if (clickView == null) {
+            mMainViewLayout.addView(addView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            return;
+        }
+        final View[] views = new View[mMainViewLayout.getChildCount()];
+        for (int i = 0; i < views.length; i++) {
+            views[i] = mMainViewLayout.getChildAt(i);
+            if (views[i].equals(addView)) {
+                ZYJUtils.logW(getClass(), "Duplicate add view");
+                return;
+            }
+        }
+        if (mGroupWidth <= 0) {
+            mGroupWidth = mMainViewLayout.getWidth();
+        }
+        if (mGroupHeight <= 0) {
+            mGroupHeight = mMainViewLayout.getHeight();
+        }
+        if (mEndRadius <= 0) {
+            mEndRadius = (float) Math.hypot(mGroupWidth, mGroupHeight);
+        }
+        mMainViewLayout.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+            @Override
+            public void onChildViewAdded(View parent, View child) {
+                if (child.equals(addView)) {
+                    int[] location = new int[2];
+                    clickView.getLocationInWindow(location);
+                    removeAllViewBesidesAddView(views, addView, location[1]).start();
+                }
+            }
+
+            @Override
+            public void onChildViewRemoved(View parent, View child) {
+            }
+        });
+        mMainViewLayout.addView(addView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     /**
@@ -337,9 +339,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                     actionProgressBar(true);
                     break;
                 case R.id.settings_view_other:
-                    actionProgressBar(false);
                     break;
                 case R.id.settings_feedback:
+                    actionProgressBar(false);
                     break;
                 case R.id.settings_about:
                     break;
@@ -416,35 +418,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             mProgressBar.setVisibility(visibility);
         }
     }
-
-//    private void actionSearchView(boolean show) {
-//        actionProgressBar(false);
-//        float alphaV = show ? 1.0f : 0.0f;
-//        if (mSearchView.getAlpha() != alphaV) {
-//            AnimatorSet set = new AnimatorSet();
-//            ObjectAnimator alphaA = ObjectAnimator.ofFloat(mSearchView, "alpha", mSearchView.getAlpha(), alphaV);
-//            ObjectAnimator scale1 = null;
-//            if (mToolNavigationView != null) {
-//                scale1 = getScaleAnimator(mToolNavigationView);
-//            }
-//            ObjectAnimator scale2 = getScaleAnimator(mMenuAdd);
-//            scale2.setStartDelay(scale1 != null ? 200 : 0);
-//            ObjectAnimator scale3 = getScaleAnimator(mMenuMore);
-//            scale3.setStartDelay(scale1 != null ? 150 : 350);
-//            set.setInterpolator(new AccelerateInterpolator());
-//            set.playTogether(alphaA, scale1, scale2, scale3);
-//            set.setDuration(250);
-//            set.start();
-//        }
-//    }
-
-    private ObjectAnimator getScaleAnimator(Object view) {
-        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f, 0.0f, 0.0f, 1.0f);
-        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f, 0.0f, 0.0f, 1.0f);
-        ObjectAnimator scale = ObjectAnimator.ofPropertyValuesHolder(view, scaleX, scaleY);
-        return scale;
-    }
-
 
     private void showToast(View view) {
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)

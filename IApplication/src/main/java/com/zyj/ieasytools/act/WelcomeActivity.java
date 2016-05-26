@@ -6,66 +6,58 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
-import com.zyj.ieasytools.utils.SettingsConstant;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by yuri.zheng on 2016/5/20.
+ * Created by yuri.zheng on 2016/5/26.
  */
-public class EnterActivity extends BaseActivity {
+public class WelcomeActivity extends AppCompatActivity {
 
+    private final Class<?> TAG = getClass();
+
+    /**
+     * Permission request code
+     */
     private final int PERMISSION_REQUEST_CODE = 0x55;
 
-    private AppCompatTextView mPasswordTitle;
-    private EditText mInputEdit;
+    /**
+     * Permissions flag,mark the permissions has authorized
+     */
+    private boolean mPermissions = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (!checkTimeOut()) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
-            return;
-        }
         setTranslucentStatus();
-
-        setContentView(R.layout.enter_layout);
-
-        mPasswordTitle = (AppCompatTextView) findViewById(R.id.password_title);
-        mInputEdit = (EditText) findViewById(R.id.input_edit);
-
-        mPasswordTitle.setText("请输入进入密码");
-
+        ImageView image = new ImageView(this);
+        image.setImageResource(R.mipmap.start_up_bg);
         insertDummyContactWrapper();
-    }
+        setContentView(image);
 
-    private boolean checkTimeOut() {
-        long lastTime = mSettings.getLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME, -1);
-        ZYJUtils.logD(TAG, "LastTime: " + lastTime);
-        if (lastTime < 0) {
-            return true;
+        if (mPermissions) {
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+                    finish();
+                }
+            }, 3000);
         }
-        // TODO: 2016/5/25 这里的默认时间为设置里面的默认时间，一定有值
-        long timeOut = mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, 0);
-        long current = System.currentTimeMillis();
-        ZYJUtils.logD(TAG, "Current time: " + current + ", Time out: " + (lastTime + timeOut));
-        return lastTime + timeOut < current;
     }
 
     private void setTranslucentStatus() {
@@ -78,22 +70,18 @@ public class EnterActivity extends BaseActivity {
         window.setNavigationBarColor(Color.TRANSPARENT);
     }
 
-    public void onViewClick(View view) {
-        switch (view.getId()) {
-            case R.id.ok_id:
-                // TODO: 2016/5/25 在此处进行数据库密码判断，正确才能进行下一步
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (toastPermissions(permissions, grantResults)) {
+                    startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+                }
                 finish();
                 break;
-            case R.id.switch_id:
-                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        mSettings.onDestroy();
     }
 
     /**
@@ -111,6 +99,7 @@ public class EnterActivity extends BaseActivity {
             permissionsList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
         if (permissionsList.size() > 0) {
+            mPermissions = false;
             String[] permissionsArray = new String[permissionsList.size()];
             for (int i = 0; i < permissionsList.size(); i++) {
                 permissionsArray[i] = permissionsList.get(i);
@@ -118,45 +107,30 @@ public class EnterActivity extends BaseActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 ActivityCompat.requestPermissions(this, permissionsArray, PERMISSION_REQUEST_CODE);
             }
+        } else {
+            mPermissions = true;
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
-                toastPermissions(permissions, grantResults);
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    private void toastPermissions(@NonNull String[] permissions, @NonNull int[] grantResults) {
+    private boolean toastPermissions(@NonNull String[] permissions, @NonNull int[] grantResults) {
         ZYJUtils.logD(TAG, "Size1: " + permissions.length + ", Size2: " + grantResults.length);
         for (int i = 0; i < permissions.length; i++) {
             if (permissions[i].equals(Manifest.permission.READ_PHONE_STATE)) {
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                     // 没有读取手机信息权限
                     toastString("没有手机信息读取权限");
-                    finish();
-                    return;
+                    return false;
                 }
             }
             if (permissions[i].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE) || permissions[i].equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                     // 没有读取手机信息权限
                     toastString("没有手机SD卡读取权限");
-                    finish();
-                    return;
+                    return false;
                 }
             }
         }
+        return true;
     }
 
     private void toastString(String message) {
