@@ -54,7 +54,7 @@ public class ZYJEncrypts extends BaseDatabase {
         if (mMaintain == null) {
             mMaintain = new MaintainEncryptClass();
         }
-        ZYJUtils.logD(getClass(), "Key: " + context.getClass().getName());
+        ZYJUtils.logD(TAG, "Key: " + context.getClass().getName());
         mMaintain.add(context.getClass().getName(), this);
     }
 
@@ -96,11 +96,11 @@ public class ZYJEncrypts extends BaseDatabase {
         File file = ZYJDBEntryptUtils.getCurrentDatabasePath(mContext);
         MySQLiteDatabase my = null;
         if (file == null) {
-            ZYJUtils.logD(getClass(), "Path: null");
+            ZYJUtils.logD(TAG, "Path: null");
             my = openDatabase(null, null);
         } else {
             String path = file.getAbsolutePath();
-            ZYJUtils.logD(getClass(), "Path: " + path);
+            ZYJUtils.logD(TAG, "Path: " + path);
             my = openDatabase(path, password);
         }
         isCurrentDatabase = true;
@@ -168,7 +168,7 @@ public class ZYJEncrypts extends BaseDatabase {
             return updateEntry(entry, password);
         } else {
             ContentValues v = getContentValues(entry, password);
-            ZYJUtils.logD(getClass(), "insert: " + entry);
+            ZYJUtils.logD(TAG, "insert: " + entry);
             if (mListener != null) {
                 mListener.finishInsert();
             }
@@ -197,7 +197,7 @@ public class ZYJEncrypts extends BaseDatabase {
         BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(entry.getEncryptionMethod(), password);
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
         String uuid = encrypt.encrypt(entry.getUuid(), ZYJVersion.MAX_VERSION);
-        ZYJUtils.logD(getClass(), "delete: " + entry);
+        ZYJUtils.logD(TAG, "delete: " + entry);
         if (mListener != null) {
             mListener.finishDelete();
         }
@@ -225,7 +225,7 @@ public class ZYJEncrypts extends BaseDatabase {
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
         ContentValues v = getContentValues(entry, password);
         String uuid = v.getAsString(DatabaseColumns.EncryptColumns._UUID);
-        ZYJUtils.logD(getClass(), "update: " + entry);
+        ZYJUtils.logD(TAG, "update: " + entry);
         if (mListener != null) {
             mListener.finishModify();
         }
@@ -330,7 +330,7 @@ public class ZYJEncrypts extends BaseDatabase {
         int version = c.getInt(c.getColumnIndex(DatabaseColumns.EncryptColumns._Version));
 
         if (ZYJDBEntryptUtils.checkEncryptPassword(mContext, method, password, from, to, version)) {
-            ZYJUtils.logW(getClass(), c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ID))
+            ZYJUtils.logW(TAG, c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ID))
                     + " record password wrong");
             return null;
         }

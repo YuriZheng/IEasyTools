@@ -65,7 +65,7 @@ public class ZYJContentProvider extends ContentProvider {
     }
 
     private boolean openSettingsDatabase() {
-        if (mSettingDb == null) {
+        if (mSettingDb == null || !mSettingDb.isOpen()) {
             // The instance must be completed, otherwise occur error
             ZYJSettings settings = ZYJSettings.getInstance(getContext());
             try {

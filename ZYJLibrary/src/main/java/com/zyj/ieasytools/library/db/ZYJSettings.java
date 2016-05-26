@@ -33,23 +33,53 @@ public class ZYJSettings extends BaseDatabase {
      */
     private final int APP_VERSION;
 
+    private MySQLiteDatabase mSQLiteDatabase;
+
     /**
      * Singleton mode, so call {@link #onDestroy()} to destory resources
      */
     private ZYJSettings(Context c) {
         super(c);
-        openDatabase();
+        mSQLiteDatabase = openDatabase();
         creatTable(DatabaseColumns.SettingColumns.CREATE_SETTING_TABLE_SQL);
         mEncrypt = ZYJDBEntryptUtils.getSettingsEncrypt(c);
         APP_VERSION = ZYJVersion.MAX_VERSION;
     }
 
+    /**
+     * Get settings instance
+     */
     public static ZYJSettings getInstance(Context c) {
         if (mInstance == null) {
             mInstance = new ZYJSettings(c);
         }
         return mInstance;
     }
+
+    /**
+     * Verify the setting valid
+     *
+     * @return true is valid, other is invalid
+     */
+    public synchronized boolean verifyValidSetting() {
+        if (mInstance == null) {
+            return false;
+        }
+        if (mSQLiteDatabase == null) {
+            return false;
+        }
+        if (mSQLiteDatabase.getStateCode() != BaseDatabase.DATABASE_OPEN_SUCCESS) {
+            return false;
+        }
+        if (mSQLiteDatabase.getSQLDatabase() == null) {
+            return false;
+        }
+        if (!mSQLiteDatabase.getSQLDatabase().isOpen()) {
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * Open database
@@ -190,7 +220,7 @@ public class ZYJSettings extends BaseDatabase {
             return "";
         } else {
             if (c.getCount() > 1) {
-                ZYJUtils.logW(getClass(), "This properties has repeated: " + key);
+                ZYJUtils.logW(TAG, "This properties has repeated: " + key);
             }
             if (c.moveToNext()) {
                 value = c.getString(c.getColumnIndex(DatabaseColumns.SettingColumns._VALUE));
@@ -222,8 +252,11 @@ public class ZYJSettings extends BaseDatabase {
         }
         if (c.getCount() >= 1) {
             c.close();
+            return true;
+        } else {
+            c.close();
+            return false;
         }
-        return true;
     }
 
     private int updateSetting(Map.Entry<String, String> entry) {
@@ -231,7 +264,7 @@ public class ZYJSettings extends BaseDatabase {
         String key = entry.getKey();
         String value = entry.getValue();
         values.put(DatabaseColumns.SettingColumns._VALUE, value);
-        ZYJUtils.logD(getClass(), "update properties: " + key + "<" + value + ">");
+        ZYJUtils.logD(TAG, "update properties: " + key + "<" + value + ">");
         return mContext.getContentResolver().update(ZYJContentProvider.SEETINGS_URI, values, DatabaseColumns.SettingColumns._KEY + "=?", new String[]{key});
     }
 
@@ -241,13 +274,14 @@ public class ZYJSettings extends BaseDatabase {
         String value = entry.getValue();
         values.put(DatabaseColumns.SettingColumns._KEY, key);
         values.put(DatabaseColumns.SettingColumns._VALUE, value);
-        ZYJUtils.logD(getClass(), "insert properties: " + key + "<" + value + ">");
+        ZYJUtils.logD(TAG, "insert properties: " + key + "<" + value + ">");
         return mContext.getContentResolver().insert(ZYJContentProvider.SEETINGS_URI, values);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        ZYJUtils.logD(TAG, "Settings destory");
         mInstance = null;
     }
 

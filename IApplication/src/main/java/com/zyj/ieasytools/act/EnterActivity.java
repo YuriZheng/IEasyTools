@@ -57,15 +57,15 @@ public class EnterActivity extends BaseActivity {
 
     private boolean checkTimeOut() {
         long lastTime = mSettings.getLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME, -1);
+        ZYJUtils.logD(TAG, "LastTime: " + lastTime);
         if (lastTime < 0) {
             return true;
         }
         // TODO: 2016/5/25 这里的默认时间为设置里面的默认时间，一定有值
         long timeOut = mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, 0);
-        if (lastTime + timeOut > System.currentTimeMillis()) {
-            return true;
-        }
-        return false;
+        long current = System.currentTimeMillis();
+        ZYJUtils.logD(TAG, "Current time: " + current + ", Time out: " + (lastTime + timeOut));
+        return lastTime + timeOut < current;
     }
 
     private void setTranslucentStatus() {
@@ -132,8 +132,13 @@ public class EnterActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
     private void toastPermissions(@NonNull String[] permissions, @NonNull int[] grantResults) {
-        ZYJUtils.logD(getClass(), "Size1: " + permissions.length + ", Size2: " + grantResults.length);
+        ZYJUtils.logD(TAG, "Size1: " + permissions.length + ", Size2: " + grantResults.length);
         for (int i = 0; i < permissions.length; i++) {
             if (permissions[i].equals(Manifest.permission.READ_PHONE_STATE)) {
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {

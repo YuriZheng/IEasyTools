@@ -160,7 +160,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         PasswordEntry e = new PasswordEntry(UUID.randomUUID().toString(), "497393102", BaseEncrypt.ENCRYPT_AES);
         if (mEncrypt != null) {
             mEncrypt.insertEntry(e, "497393102");
-            ZYJUtils.logD(getClass(), "" + mEncrypt.getAllRecord());
+            ZYJUtils.logD(TAG, "" + mEncrypt.getAllRecord());
         }
     }
 
@@ -179,19 +179,20 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        ZYJUtils.logD(getClass(), "onSaveInstanceState");
+        ZYJUtils.logD(TAG, "onSaveInstanceState");
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        ZYJUtils.logD(getClass(), "onRestoreInstanceState");
+        ZYJUtils.logD(TAG, "onRestoreInstanceState");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbindService(mConnection);
+        // Only call once
         ZYJEncrypts.destory();
     }
 
@@ -313,7 +314,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 }
                 break;
             case R.id.menu_add:
-                ZYJUtils.logD(getClass(), "menu_add");
+                ZYJUtils.logD(TAG, "menu_add");
                 hideSildeDrawer();
                 if (mMenuAdd.getAlpha() != 1) {
                     // Show the left drawer
@@ -322,7 +323,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 }
                 break;
             case R.id.menu_seach:
-                ZYJUtils.logD(getClass(), "menu_seach");
+                ZYJUtils.logD(TAG, "menu_seach");
                 hideSildeDrawer();
                 break;
         }

@@ -17,6 +17,8 @@ import com.zyj.ieasytools.utils.SettingsConstant;
  */
 public class BaseActivity extends AppCompatActivity {
 
+    protected Class<?> TAG;
+
     private ContentObserver mListener;
 
     protected ZYJSettings mSettings;
@@ -26,10 +28,11 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        TAG = getClass();
         mHandler = new Handler(getMainLooper());
         mListener = new ContentObserver(mHandler) {
             public void onChange(boolean selfChange, Uri uri) {
-                ZYJUtils.logD(getClass(), uri.toString());
+                ZYJUtils.logD(TAG, uri.toString());
                 BaseActivity.this.onChange(selfChange, uri);
             }
         };
@@ -56,7 +59,10 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mSettings.putLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME, System.currentTimeMillis());
+        ZYJUtils.logD(TAG,"onPause ... ");
+        if (mSettings.verifyValidSetting()) {
+            mSettings.putLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME, System.currentTimeMillis());
+        }
     }
 
     /**

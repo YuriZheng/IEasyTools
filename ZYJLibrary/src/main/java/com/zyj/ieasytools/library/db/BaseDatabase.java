@@ -15,6 +15,8 @@ import java.io.IOException;
 
 public abstract class BaseDatabase {
 
+    protected Class<?> TAG;
+
     protected Context mContext;
 
     protected MySQLiteDatabase mSQLDatabase;
@@ -38,6 +40,7 @@ public abstract class BaseDatabase {
 
     public BaseDatabase(Context context) {
         this.mContext = context;
+        TAG = getClass();
         SQLiteDatabase.loadLibs(context);
     }
 
@@ -59,10 +62,10 @@ public abstract class BaseDatabase {
     @SuppressWarnings("unused")
     protected void dropTable(String tableName) {
         if (checkDatabaseOpenState(mSQLDatabase)) {
-            ZYJUtils.logD(getClass(), "Drop table" + tableName);
+            ZYJUtils.logD(TAG, "Drop table" + tableName);
             mSQLDatabase.getSQLDatabase().execSQL("DROP TABLE IF EXISTS " + tableName);
         } else {
-            ZYJUtils.logW(getClass(), "The database open faile" + (mSQLDatabase != null ? mSQLDatabase.getStateMessage() : "MySQLiteDatabase is null"));
+            ZYJUtils.logW(TAG, "The database open faile" + (mSQLDatabase != null ? mSQLDatabase.getStateMessage() : "MySQLiteDatabase is null"));
         }
     }
 
@@ -73,10 +76,10 @@ public abstract class BaseDatabase {
      */
     protected void creatTable(String createSql) {
         if (checkDatabaseOpenState(mSQLDatabase)) {
-            ZYJUtils.logI(getClass(), "Database onCreate: " + createSql);
+            ZYJUtils.logI(TAG, "Database onCreate: " + createSql);
             mSQLDatabase.getSQLDatabase().execSQL(createSql);
         } else {
-            ZYJUtils.logW(getClass(), "The database open faile: " + (mSQLDatabase != null ? mSQLDatabase.getStateMessage() : "MySQLiteDatabase is null"));
+            ZYJUtils.logW(TAG, "The database open faile: " + (mSQLDatabase != null ? mSQLDatabase.getStateMessage() : "MySQLiteDatabase is null"));
         }
     }
 

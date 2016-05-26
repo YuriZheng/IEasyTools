@@ -15,6 +15,8 @@ import com.zyj.ieasytools.library.utils.ZYJUtils;
  */
 public class MyServer extends Service {
 
+    private Class<?> TAG;
+
     private ZYJSettings mSetting;
     private MyBinder mBinder;
 
@@ -25,7 +27,8 @@ public class MyServer extends Service {
         super.onCreate();
         mHandler = new Handler();
         mBinder = new MyBinder();
-        ZYJUtils.logD(getClass(), "onCreate");
+        TAG = getClass();
+        ZYJUtils.logD(TAG, "onCreate");
     }
 
     private ZYJSettings getSetting() {
@@ -38,7 +41,7 @@ public class MyServer extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         getSetting();
-        ZYJUtils.logD(getClass(), "onStartCommand : " + (getSetting() != null));
+        ZYJUtils.logD(TAG, "onStartCommand : " + (getSetting() != null));
         return START_REDELIVER_INTENT;
     }
 
@@ -49,7 +52,7 @@ public class MyServer extends Service {
             // clear the password
             getSetting().onDestroy();
         }
-        ZYJUtils.logD(getClass(), "onDestroy");
+        ZYJUtils.logD(TAG, "onDestroy");
     }
 
     @Nullable

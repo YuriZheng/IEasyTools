@@ -55,10 +55,12 @@ public final class ZYJDBEntryptUtils {
             ZYJEncrypts encrypt = (ZYJEncrypts) con.newInstance(new Object[]{context});
             // open the database
             if (TextUtils.isEmpty(path)) {
+                // Current encrypt database
                 Method method = ZYJEncrypts.class.getDeclaredMethod("openDatabase", String.class);
                 method.setAccessible(true);
                 method.invoke(encrypt, password);
             } else {
+                // Other encrypt database
                 Method method = ZYJEncrypts.class.getDeclaredMethod("openDatabase", String.class, String.class);
                 method.setAccessible(true);
                 method.invoke(encrypt, path, password);
