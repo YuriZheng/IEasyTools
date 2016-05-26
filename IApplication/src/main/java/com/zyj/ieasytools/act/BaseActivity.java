@@ -22,17 +22,38 @@ import com.zyj.ieasytools.utils.SettingsConstant;
  */
 public class BaseActivity extends AppCompatActivity {
 
-    private final String LOCAL_BROADCAST = "111111111";
+    private final String LOCAL_BROADCAST = "verify_faile_finish";
 
     protected Class<?> TAG = getClass();
 
+    /**
+     * Local broadcast to finish activity when verify faile
+     */
     private LocalBroadcastManager mLocalBroadcastManager;
 
+    /**
+     * Listener settings change
+     */
     private ContentObserver mListener;
 
+    /**
+     * The setting database
+     */
     protected ZYJSettings mSettings;
+    /**
+     * The main handler
+     */
     protected Handler mHandler;
 
+    /**
+     * Verify dialog,set the callback {@link InputEnterPasswordDialog#setResultCallBack(InputEnterPasswordDialog.VerifyResultCallBack)}
+     * to handle the result
+     */
+    private InputEnterPasswordDialog mInputDialog;
+
+    /**
+     * Reveive the broadcast to finish itself
+     */
     private BroadcastReceiver mFinishReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             ZYJUtils.logD(TAG, "local broadcast finish");
@@ -85,7 +106,11 @@ public class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (checkTimeOutOrPassword()) {
-            verifyEnterPassword();
+            mHandler.postDelayed(new Runnable() {
+                public void run() {
+                    verifyEnterPassword();
+                }
+            }, 500);
         }
         ZYJUtils.logD(TAG, "onResume");
     }
@@ -99,31 +124,39 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == InputEnterPasswordActivity.REQUEST_CODE) {
-            if (resultCode == InputEnterPasswordActivity.RESULT_CODE_SUCCESS) {
+    /**
+     * Enter verify dialog and listener the result
+     */
+    private void verifyEnterPassword() {
+        if (mInputDialog != null && mInputDialog.isShowing()) {
+            ZYJUtils.logD(TAG, "verifing...");
+            return;
+        }
+        mInputDialog = new InputEnterPasswordDialog(this);
+        mInputDialog.setResultCallBack(mVerifyCallBack);
+        mInputDialog.show();
+    }
+
+    private InputEnterPasswordDialog.VerifyResultCallBack mVerifyCallBack = new InputEnterPasswordDialog.VerifyResultCallBack() {
+        @Override
+        public void verifyEnterPasswordCallBack(boolean success) {
+            if (success) {
+                ZYJUtils.logD(TAG, "verifyEnterPasswordSuccess");
                 verifyEnterPasswordSuccess();
-            } else if (resultCode == InputEnterPasswordActivity.RESULT_CODE_FAILE) {
-                // verify faile, then finish all activity
+            } else {
+                // verify faile, clear the buffer of password
+                // TODO: 2016/5/26 清空密码
+                ZYJUtils.logD(TAG, "verifyEnterPasswordFaile");
                 mLocalBroadcastManager.sendBroadcast(new Intent(LOCAL_BROADCAST));
             }
         }
-    }
-
-    /**
-     * Enter verify activity and listener the result
-     */
-    private void verifyEnterPassword() {
-        startActivityForResult(new Intent(this, InputEnterPasswordActivity.class), InputEnterPasswordActivity.REQUEST_CODE);
-    }
+    };
 
     /**
      * The password verify success
      */
     protected void verifyEnterPasswordSuccess() {
-        ZYJUtils.logD(TAG, "verifyEnterPasswordSuccess");
+        // Subclass override method
     }
 
     /**

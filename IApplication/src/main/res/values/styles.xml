@@ -21,4 +21,18 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
+    <style name="enter_password_dialog_style">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/share_dialog_animation_style</item>
+    </style>
+
+    <style name="share_dialog_animation_style" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/input_enter_password_open</item>
+        <item name="android:windowExitAnimation">@anim/input_enter_password_close</item>
+    </style>
+
 </resources>

@@ -26,10 +26,6 @@
         android:name=".act.MainActivity"
         android:theme="@style/AppTheme.NoActionBar"/>
 
-    <activity
-        android:name=".act.InputEnterPasswordActivity"
-        android:theme="@style/AppTheme.NoActionBar"/>
-
     <service android:name=".act.MyServer"/>
 
     </application>
