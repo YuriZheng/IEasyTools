@@ -94,7 +94,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
         bindService(new Intent(getApplicationContext(), MyServer.class), mConnection, Context.BIND_AUTO_CREATE);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = getViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.password_catrgory_web);
         setSupportActionBar(mToolbar);
         try {
@@ -105,25 +105,25 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             e.printStackTrace();
         }
 
-        mProgressBar = (ProgressBar) findViewById(R.id.progress);
+        mProgressBar = getViewById(R.id.progress);
         mProgressBar.getIndeterminateDrawable().setTint(getResources().getColor(android.R.color.white));
         actionProgressBar(true);
 
-        mMainViewLayout = (ViewGroup) findViewById(R.id.main_view_layout);
+        mMainViewLayout = getViewById(R.id.main_view_layout);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = getViewById(R.id.drawer_layout);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_toggle_text, R.string.drawer_toggle_text);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.addDrawerListener(this);
 
-        mMenuMore = findViewById(R.id.menu_more);
-        mMenuAdd = findViewById(R.id.menu_add);
-        mMenuSeach = findViewById(R.id.menu_seach);
+        mMenuMore = getViewById(R.id.menu_more);
+        mMenuAdd = getViewById(R.id.menu_add);
+        mMenuSeach = getViewById(R.id.menu_seach);
 
-        mMenuLayout = (MenuRevealView) findViewById(R.id.menu_layout);
+        mMenuLayout = getViewById(R.id.menu_layout);
 
-        mNavigationView = (NavigationView) findViewById(R.id.navigationView);
+        mNavigationView = getViewById(R.id.navigationView);
         mNavigationView.setNavigationItemSelectedListener(mNavigationClick);
 
         if (TextUtils.isEmpty(mSettings.getStringProperties(SettingsConstant.SETTINGS_VIEW_OTHER_DATABASE, null))) {
@@ -133,12 +133,12 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         lp.width = ZYJUtils.getDisplayMetrics(this)[0] * 2 / 3;
         mNavigationView.setLayoutParams(lp);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = getViewById(R.id.fab);
 
         initContentViews();
 
         if (ZYJUtils.isFunctionDebug) {
-            mDebug = (TextView) findViewById(R.id.debug);
+            mDebug = getViewById(R.id.debug);
             Object[] versions = ZYJUtils.getVersion(this);
             mDebug.setText("Name: " + versions[0].toString() + "\nCode: " + versions[1].toString());
             mDebug.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.mipmap.debug);

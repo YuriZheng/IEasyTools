@@ -113,6 +113,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private boolean toastPermissions(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        // TODO: 2016/5/27 权限问题
         ZYJUtils.logD(TAG, "Size1: " + permissions.length + ", Size2: " + grantResults.length);
         for (int i = 0; i < permissions.length; i++) {
             if (permissions[i].equals(Manifest.permission.READ_PHONE_STATE)) {

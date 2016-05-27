@@ -11,7 +11,9 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
+import com.zyj.ieasytools.dialog.InputEnterPasswordDialog;
 import com.zyj.ieasytools.library.db.ZYJContentProvider;
 import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
@@ -88,7 +90,7 @@ public class BaseActivity extends AppCompatActivity {
             return true;
         }
         // TODO: 2016/5/25 这里的默认时间为设置里面的默认时间，暂定10秒
-        long timeOut = mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, 1000 * 10);
+        long timeOut = mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, 1000 * 4);
         long current = System.currentTimeMillis();
         boolean time = (lastTime + timeOut) < current;
         ZYJUtils.logD(TAG, "Current time: " + current + ", Time out: " + (lastTime + timeOut) + (time ? " and time out" : ""));
@@ -151,6 +153,16 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
     };
+
+    /**
+     * Get the view by id
+     *
+     * @param id the view's id
+     * @return return the view instance
+     */
+    protected <K extends View> K getViewById(int id) {
+        return (K) getWindow().findViewById(id);
+    }
 
     /**
      * The password verify success
