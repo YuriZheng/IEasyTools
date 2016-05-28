@@ -1,7 +1,8 @@
-package com.zyj.ieasytools.library.gesture;
+package com.zyj.ieasytools.library.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 
 /**
  * PreferencesUtils, easy to get or put data
@@ -25,12 +26,17 @@ import android.content.SharedPreferences;
  * <li>get float {@link #getFloat(Context, String)}, {@link #getFloat(Context, String, float)}</li>
  * <li>get boolean {@link #getBoolean(Context, String)}, {@link #getBoolean(Context, String, boolean)}</li>
  * </ul>
+ * <p/>
  *
- * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2013-3-6
+ * @author yuri.zheng on 2016/5/27.
  */
 public class PreferencesUtils {
 
-    public static String PREFERENCE_NAME = "Demo";
+    public final String PREFERENCE_NAME;
+
+    public PreferencesUtils(String preferenceName) {
+        PREFERENCE_NAME = preferenceName;
+    }
 
     /**
      * put string preferences
@@ -40,7 +46,7 @@ public class PreferencesUtils {
      * @param value   The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putString(Context context, String key, String value) {
+    public boolean putString(Context context, String key, String value) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(key, value);
@@ -56,7 +62,7 @@ public class PreferencesUtils {
      * name that is not a string
      * @see #getString(Context, String, String)
      */
-    public static String getString(Context context, String key) {
+    public String getString(Context context, String key) {
         return getString(context, key, null);
     }
 
@@ -69,7 +75,7 @@ public class PreferencesUtils {
      * @return The preference value if it exists, or defValue. Throws ClassCastException if there is a preference with
      * this name that is not a string
      */
-    public static String getString(Context context, String key, String defaultValue) {
+    public String getString(Context context, String key, String defaultValue) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return settings.getString(key, defaultValue);
     }
@@ -82,7 +88,7 @@ public class PreferencesUtils {
      * @param value   The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putInt(Context context, String key, int value) {
+    public boolean putInt(Context context, String key, int value) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(key, value);
@@ -98,7 +104,7 @@ public class PreferencesUtils {
      * name that is not a int
      * @see #getInt(Context, String, int)
      */
-    public static int getInt(Context context, String key) {
+    public int getInt(Context context, String key) {
         return getInt(context, key, -1);
     }
 
@@ -111,7 +117,7 @@ public class PreferencesUtils {
      * @return The preference value if it exists, or defValue. Throws ClassCastException if there is a preference with
      * this name that is not a int
      */
-    public static int getInt(Context context, String key, int defaultValue) {
+    public int getInt(Context context, String key, int defaultValue) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return settings.getInt(key, defaultValue);
     }
@@ -124,7 +130,7 @@ public class PreferencesUtils {
      * @param value   The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putLong(Context context, String key, long value) {
+    public boolean putLong(Context context, String key, long value) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putLong(key, value);
@@ -140,7 +146,7 @@ public class PreferencesUtils {
      * name that is not a long
      * @see #getLong(Context, String, long)
      */
-    public static long getLong(Context context, String key) {
+    public long getLong(Context context, String key) {
         return getLong(context, key, -1);
     }
 
@@ -153,7 +159,7 @@ public class PreferencesUtils {
      * @return The preference value if it exists, or defValue. Throws ClassCastException if there is a preference with
      * this name that is not a long
      */
-    public static long getLong(Context context, String key, long defaultValue) {
+    public long getLong(Context context, String key, long defaultValue) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return settings.getLong(key, defaultValue);
     }
@@ -166,7 +172,7 @@ public class PreferencesUtils {
      * @param value   The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putFloat(Context context, String key, float value) {
+    public boolean putFloat(Context context, String key, float value) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putFloat(key, value);
@@ -182,7 +188,7 @@ public class PreferencesUtils {
      * name that is not a float
      * @see #getFloat(Context, String, float)
      */
-    public static float getFloat(Context context, String key) {
+    public float getFloat(Context context, String key) {
         return getFloat(context, key, -1);
     }
 
@@ -195,7 +201,7 @@ public class PreferencesUtils {
      * @return The preference value if it exists, or defValue. Throws ClassCastException if there is a preference with
      * this name that is not a float
      */
-    public static float getFloat(Context context, String key, float defaultValue) {
+    public float getFloat(Context context, String key, float defaultValue) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return settings.getFloat(key, defaultValue);
     }
@@ -208,7 +214,7 @@ public class PreferencesUtils {
      * @param value   The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putBoolean(Context context, String key, boolean value) {
+    public boolean putBoolean(Context context, String key, boolean value) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(key, value);
@@ -224,7 +230,7 @@ public class PreferencesUtils {
      * name that is not a boolean
      * @see #getBoolean(Context, String, boolean)
      */
-    public static boolean getBoolean(Context context, String key) {
+    public boolean getBoolean(Context context, String key) {
         return getBoolean(context, key, false);
     }
 
@@ -237,7 +243,7 @@ public class PreferencesUtils {
      * @return The preference value if it exists, or defValue. Throws ClassCastException if there is a preference with
      * this name that is not a boolean
      */
-    public static boolean getBoolean(Context context, String key, boolean defaultValue) {
+    public boolean getBoolean(Context context, String key, boolean defaultValue) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         return settings.getBoolean(key, defaultValue);
     }

@@ -7,22 +7,29 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Toast;
+
+import com.zyj.ieasytools.library.utils.PreferencesUtils;
+import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by yuri.zheng on 2016/5/27.
  */
 public class CustomLockView extends View {
+
+    private final Class TAG = getClass();
+
+    private final String KEY = TAG.getSimpleName();
+
+    private Context mContext;
     /**
      * Original state image
      */
@@ -43,7 +50,6 @@ public class CustomLockView extends View {
      * Error  arrow image
      */
     private Bitmap mLocusArrowError;
-
     /**
      * View width
      */
@@ -56,13 +62,21 @@ public class CustomLockView extends View {
      * Init the cache flag
      */
     private boolean isInitCacheFlag = false;
-    //九宫格的圆
+    /**
+     * All gesture point
+     */
     private GesturePoint[][] mPoints = new GesturePoint[3][3];
-    //圆的半径
-    private float mPaintRadius = 0;
-    //选中圆的集合
+    /**
+     * The Select point list
+     */
     private List<GesturePoint> mSelectPoints = new ArrayList<GesturePoint>();
-    //判断是否正在绘制并且未到达下一个点
+    /**
+     * Circle radius
+     */
+    private float mPaintRadius = 0;
+    /**
+     * Moving gestue point
+     */
     private boolean mMovingNoPoint = false;
     /**
      * Moving x
@@ -73,48 +87,129 @@ public class CustomLockView extends View {
      */
     private float mMoveingY;
     /**
-     *
+     * All-around padding
      */
     private float mCirclePadd = 0;
-    //是否可操作
-    private boolean isTouch = true;
-    //密码最小长度
-    private int passwordMinLength = 3;
-    //判断是否触摸屏幕
+    /**
+     * The paint stroke width
+     */
+    private int mStrokeWidth = 5;
+    /**
+     * The touch circle min count
+     */
+    private int mPasswordMinLength = 3;
+    /**
+     * The clear view delayed time
+     */
+    private int mDelayedClearView = 1500;
+    /**
+     * The select point less than {@link #mPasswordMinLength} and clear trace
+     */
+    private int mClearDelayedTime = 100;
+    /**
+     * Touching the screen
+     */
     private boolean isTouching = false;
-    //刷新
-    private TimerTask task = null;
-    //计时器
-    private Timer timer = new Timer();
-    //监听
+    /**
+     * Touch listener
+     */
     private OnCompleteListener mCompleteListener;
-    //清除痕迹的时间
-    private long CLEAR_TIME = 0;
-    //错误限制 默认为4次
-    private int errorTimes = 4;
-    //记录上一次滑动的密码
-    private int[] mIndexs = null;
-    //记录当前第几次触发 默认为0次
-    private int showTimes = 0;
-    //当前密码是否正确 默认为正确
+    /**
+     * Encrypt method implements by user
+     */
+    private EncryptPassword mEncryptMethod;
+    /**
+     * Error limits times
+     */
+    private int mErrorTimes = 4;
+    /**
+     * Record error times
+     */
+    private int mRecordErrorTimes = 0;
+    /**
+     * Up to 4 times the number of errors, then reset setting delayed time
+     */
+    private long mErrorDelayedTime = 1000 * 30;
+    /**
+     * Record last time indexs or answer
+     */
+    private int[] mIndexs;
+    /**
+     * Current select point whether is right
+     */
     private boolean isCorrect = true;
-    //是否显示滑动方向 默认为显示
+    /**
+     * Whether to display the default display sliding direction
+     */
     private boolean isDirectionImage = true;
-    //验证或者设置 0:设置 1:验证
-    private int status = 0;
-    //用于执行清除界面
-    private Handler mHandler = new Handler();
+    /**
+     * This lock view statue
+     */
+    private LOCK_STATUS mLockState = null;
 
+
+    private PreferencesUtils mSaveUtils;
+    private Handler mHandler = new Handler();
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private String mPsswordShortMessage;
+    /**
+     * Lock view status
+     */
+    public enum LOCK_STATUS {
+        /**
+         * Setting
+         */
+        LOCK_SETTING,
+        /**
+         * Verify
+         */
+        LOCK_VERIFY
+    }
 
-    //用于定时执行清除界面
-    private Runnable run = new Runnable() {
+    /**
+     * Point overlapping
+     */
+    public enum OVERLAPPING {
+        /**
+         * New point
+         */
+        OVERLAPPING_NEW_POINT,
+        /**
+         * Overlapping
+         */
+        OVERLAPPING_OVERLAPPING,
+        /**
+         * Last one no overlapping
+         */
+        OVERLAPPING_NO_LAST_ONE
+    }
+
+    /**
+     * The Circle state
+     */
+    public enum CircleState {
+        /**
+         * Normal state
+         */
+        STATE_NORMAL,
+        /**
+         * Check state
+         */
+        STATE_CHECK,
+        /**
+         * Error state
+         */
+        STATE_CHECK_ERROR
+    }
+
+    /**
+     * Clear all point in Handler
+     */
+    private Runnable mClearRunnable = new Runnable() {
         @Override
         public void run() {
-            mHandler.removeCallbacks(run);
-            reset();
+            mHandler.removeCallbacks(mClearRunnable);
+            resetPoint();
             postInvalidate();
         }
     };
@@ -133,11 +228,13 @@ public class CustomLockView extends View {
     }
 
     private void init(Context context) {
+        mContext = context;
+        mSaveUtils = new PreferencesUtils(TAG.getSimpleName());
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 if (!isInitCacheFlag) {
-                    initCache();
+                    init();
                 }
             }
         });
@@ -151,16 +248,13 @@ public class CustomLockView extends View {
         if (!isInitCacheFlag) {
             return;
         }
-        //绘制圆以及显示当前状态
         drawToCanvas(canvas);
     }
 
-    /**
-     * 初始化Cache信息
-     */
-    private void initCache() {
+    private void init() {
         mViewWidth = this.getWidth();
         mViewHeight = this.getHeight();
+        //Forcibly square
         if (mViewWidth != mViewHeight) {
             int min = (int) Math.min(mViewHeight, mViewWidth);
             ViewGroup.LayoutParams lp = getLayoutParams();
@@ -195,7 +289,29 @@ public class CustomLockView extends View {
             mPoints[2][2].index = 8;
 
             mPaintRadius = mLocusRoundOriginal.getHeight() / 2;
-            isInitCacheFlag = true;
+        }
+
+        initLockStyle();
+        isInitCacheFlag = true;
+    }
+
+    private void initLockStyle() {
+        String string = mSaveUtils.getString(mContext, KEY);
+        ZYJUtils.logD(TAG, "Is null: " + (mEncryptMethod != null));
+        if (TextUtils.isEmpty(string)) {
+            // no password, so it's setting
+            mLockState = LOCK_STATUS.LOCK_SETTING;
+            mIndexs = null;
+        } else {
+            mIndexs = stringToArray(string);
+            if (mIndexs != null) {
+                // it's verify
+                mLockState = LOCK_STATUS.LOCK_VERIFY;
+            } else {
+                mSaveUtils.putString(mContext, KEY, "");
+                mLockState = LOCK_STATUS.LOCK_SETTING;
+                mIndexs = null;
+            }
         }
     }
 
@@ -205,9 +321,7 @@ public class CustomLockView extends View {
     }
 
     /**
-     * 图像绘制
-     *
-     * @param canvas
+     * Draw all points and lines
      */
     private void drawToCanvas(Canvas canvas) {
         canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));
@@ -236,9 +350,9 @@ public class CustomLockView extends View {
             for (int j = 0; j < mPoints[i].length; j++) {
                 GesturePoint p = mPoints[i][j];
                 if (p != null) {
-                    if (p.state == GesturePoint.CircleState.STATE_CHECK) {
+                    if (p.state == CircleState.STATE_CHECK) {
                         canvas.drawBitmap(mLocusRoundClick, p.x - mPaintRadius, p.y - mPaintRadius, mPaint);
-                    } else if (p.state == GesturePoint.CircleState.STATE_CHECK_ERROR) {
+                    } else if (p.state == CircleState.STATE_CHECK_ERROR) {
                         canvas.drawBitmap(mLocusRoundError, p.x - mPaintRadius, p.y - mPaintRadius, mPaint);
                     } else {
                         canvas.drawBitmap(mLocusRoundOriginal, p.x - mPaintRadius, p.y - mPaintRadius, mPaint);
@@ -265,32 +379,28 @@ public class CustomLockView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // 不可操作
-//        if (!isTouch) {
-//            return false;
-//        }
+        if (mRecordErrorTimes >= mErrorTimes) {
+            if (mCompleteListener != null) {
+                mCompleteListener.onError(OnCompleteListener.ERROR_PASSWORD_ERROR_DELAYED);
+            }
+            return true;
+        }
         isCorrect = true;
-        mHandler.removeCallbacks(run);
+        mHandler.removeCallbacks(mClearRunnable);
         mMovingNoPoint = false;
         float ex = event.getX();
         float ey = event.getY();
-        boolean isFinish = false;
+        boolean finish = false;
         GesturePoint p = null;
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN: // 点下
-                // 如果正在清除密码,则取消
-                if (task != null) {
-                    task.cancel();
-                    task = null;
-                }
-                // 删除之前的点
-                reset();
+            case MotionEvent.ACTION_DOWN:
+                resetPoint();
                 p = checkSelectPoint(ex, ey);
                 if (p != null) {
                     isTouching = true;
                 }
                 break;
-            case MotionEvent.ACTION_MOVE: // 移动
+            case MotionEvent.ACTION_MOVE:
                 if (isTouching) {
                     p = checkSelectPoint(ex, ey);
                     if (p == null) {
@@ -300,46 +410,53 @@ public class CustomLockView extends View {
                     }
                 }
                 break;
-            case MotionEvent.ACTION_UP: // 提起
+            case MotionEvent.ACTION_UP:
                 p = checkSelectPoint(ex, ey);
                 isTouching = false;
-                isFinish = true;
+                finish = true;
                 break;
             default:
                 mMovingNoPoint = true;
                 break;
         }
-        if (!isFinish && isTouching && p != null) {
-            int rk = crossPoint(p);
-            if (rk == 2) {
-                //与非最后一重叠
+        if (!finish && isTouching && p != null) {
+            OVERLAPPING rk = crossPoint(p);
+            if (rk == OVERLAPPING.OVERLAPPING_NO_LAST_ONE) {
                 mMovingNoPoint = true;
                 mMoveingX = ex;
                 mMoveingY = ey;
-            } else if (rk == 0) {
-                //一个新点
-                p.state = GesturePoint.CircleState.STATE_CHECK;
-                addPoint(p);
+            } else if (rk == OVERLAPPING.OVERLAPPING_NEW_POINT) {
+                p.state = CircleState.STATE_CHECK;
+                mSelectPoints.add(p);
+                if (mCompleteListener != null) {
+                    int size = mSelectPoints.size();
+                    int[] points = new int[size];
+                    for (int i = 0; i < size; i++) {
+                        points[i] = mSelectPoints.get(i).index;
+                    }
+                    mCompleteListener.onSelecting(points);
+                }
             }
         }
-        if (isFinish) {
-            mHandler.postDelayed(run, 1500);
-            if (this.mSelectPoints.size() == 1) {
-                this.reset();
-            } else if (this.mSelectPoints.size() < passwordMinLength) {
-                clearPassword();
-                Toast.makeText(this.getContext(), mPsswordShortMessage, Toast.LENGTH_SHORT).show();
-            } else if (mCompleteListener != null) {
-                if (this.mSelectPoints.size() >= passwordMinLength) {
-                    int[] indexs = new int[mSelectPoints.size()];
-                    for (int i = 0; i < mSelectPoints.size(); i++) {
-                        indexs[i] = mSelectPoints.get(i).index;
-                    }
-                    if (status == 0) {
-                        invalidatePass(indexs);
-                    } else if (status == 1) {
-                        invalidateOldPsw(indexs);
-                    }
+        if (finish) {
+            mHandler.postDelayed(mClearRunnable, mDelayedClearView);
+            int selectSize = mSelectPoints.size();
+            if (selectSize == 1) {
+                resetPoint();
+            } else if (selectSize < mPasswordMinLength) {
+                mHandler.postDelayed(mClearRunnable, mClearDelayedTime);
+                if (mCompleteListener != null) {
+                    mCompleteListener.onError(OnCompleteListener.ERROR_PASSWORD_SHORT);
+                }
+            } else {
+                int[] indexs = new int[mSelectPoints.size()];
+                for (int i = 0; i < mSelectPoints.size(); i++) {
+                    indexs[i] = mSelectPoints.get(i).index;
+                }
+                if (mLockState == LOCK_STATUS.LOCK_SETTING) {
+                    settingPass(indexs);
+                } else if (mLockState == LOCK_STATUS.LOCK_VERIFY) {
+                    verifyOldPassword(indexs);
                 }
             }
         }
@@ -348,26 +465,13 @@ public class CustomLockView extends View {
     }
 
     /**
-     * 向选中点集合中添加一个点
-     *
-     * @param point
-     */
-    private void addPoint(GesturePoint point) {
-        this.mSelectPoints.add(point);
-    }
-
-    /**
-     * 检查点是否被选择
-     *
-     * @param x
-     * @param y
-     * @return
+     * Check the point whether select
      */
     private GesturePoint checkSelectPoint(float x, float y) {
         for (int i = 0; i < mPoints.length; i++) {
             for (int j = 0; j < mPoints[i].length; j++) {
                 GesturePoint p = mPoints[i][j];
-                if (LockUtil.checkInRound(p.x, p.y, mPaintRadius, (int) x, (int) y)) {
+                if (checkInRound(p.x, p.y, mPaintRadius, (int) x, (int) y)) {
                     return p;
                 }
             }
@@ -376,169 +480,104 @@ public class CustomLockView extends View {
     }
 
     /**
-     * 判断点是否有交叉 返回 0,新点 ,1 与上一点重叠 2,与非最后一点重叠
-     *
-     * @param p
-     * @return
+     * Whether cross: {@link OVERLAPPING}
      */
-    private int crossPoint(GesturePoint p) {
-        // 重叠的不最后一个则 reset
+    private OVERLAPPING crossPoint(GesturePoint p) {
         if (mSelectPoints.contains(p)) {
             if (mSelectPoints.size() > 2) {
-                // 与非最后一点重叠
                 if (mSelectPoints.get(mSelectPoints.size() - 1).index != p.index) {
-                    return 2;
+                    return OVERLAPPING.OVERLAPPING_NO_LAST_ONE;
                 }
             }
-            return 1; // 与最后一点重叠
+            return OVERLAPPING.OVERLAPPING_OVERLAPPING;
         } else {
-            return 0; // 新点
+            return OVERLAPPING.OVERLAPPING_NEW_POINT;
         }
     }
 
     /**
-     * 重置点状态
+     * Reset select point
      */
-    public void reset() {
+    private void resetPoint() {
         for (GesturePoint p : mSelectPoints) {
-            p.state = GesturePoint.CircleState.STATE_NORMAL;
+            p.state = CircleState.STATE_NORMAL;
         }
         mSelectPoints.clear();
     }
 
     /**
-     * 清空当前信息
-     */
-    public void clearCurrent() {
-        showTimes = 0;
-        errorTimes = 4;
-        isCorrect = true;
-        reset();
-        postInvalidate();
-    }
-
-    /**
-     * 画两点的连接
-     *
-     * @param canvas
-     * @param a
-     * @param b
+     * Connecting two points
      */
     private void drawLine(Canvas canvas, GesturePoint a, GesturePoint b) {
         mPaint.setColor(Color.YELLOW);
-        mPaint.setStrokeWidth(3);
+        mPaint.setStrokeWidth(mStrokeWidth);
         canvas.drawLine(a.x, a.y, b.x, b.y, mPaint);
     }
 
     /**
-     * 错误线
-     *
-     * @param canvas
-     * @param a
-     * @param b
+     * Error line
      */
     private void drawErrorLine(Canvas canvas, GesturePoint a, GesturePoint b) {
         mPaint.setColor(Color.RED);
-        mPaint.setStrokeWidth(3);
+        mPaint.setStrokeWidth(mStrokeWidth);
         canvas.drawLine(a.x, a.y, b.x, b.y, mPaint);
     }
 
     /**
-     * 绘制方向图标
-     *
-     * @param canvas
-     * @param a
-     * @param b
+     * Draw direction icon
      */
     private void drawDirection(Canvas canvas, GesturePoint a, GesturePoint b) {
-        //获取角度
-        float degrees = LockUtil.getDegrees(a, b);
-        //根据两点方向旋转
+        float degrees = getDegrees(a, b);
         canvas.rotate(degrees, a.x, a.y);
         float x = a.x + mPaintRadius / 2;
         float y = a.y - mLocusArrow.getHeight() / 2.0f;
         if (degrees == 270) {
             y = a.y - mLocusArrow.getHeight() / 2.0f;
         }
-        //绘制箭头
         canvas.drawBitmap(mLocusArrow, x, y, mPaint);
-        //旋转方向
         canvas.rotate(-degrees, a.x, a.y);
     }
 
     /**
-     * 错误方向
-     *
-     * @param canvas
-     * @param a
-     * @param b
+     * Wrong direction
      */
     private void drawErrorDirection(Canvas canvas, GesturePoint a, GesturePoint b) {
-        //获取角度
-        float degrees = LockUtil.getDegrees(a, b);
-        //根据两点方向旋转
+        // get the angle
+        float degrees = getDegrees(a, b);
+        // according to two directions of rotation
         canvas.rotate(degrees, a.x, a.y);
         float x = a.x + mPaintRadius / 2;
         float y = a.y - mLocusArrow.getHeight() / 2.0f;
         if (degrees == 270) {
             y = a.y - mLocusArrow.getHeight() / 2.0f;
         }
-        //绘制箭头
+        // draw an arrow
         canvas.drawBitmap(mLocusArrowError, x, y, mPaint);
-        //旋转方向
+        //turn around
         canvas.rotate(-degrees, a.x, a.y);
     }
 
     /**
-     * 清除密码
+     * The second verify is wrong and set the select points to error
      */
-    private void clearPassword() {
-        clearPassword(CLEAR_TIME);
-    }
-
-    /**
-     * 清除密码
-     */
-    private void clearPassword(final long time) {
-        if (time > 1) {
-            if (task != null) {
-                task.cancel();
-            }
-            postInvalidate();
-            task = new TimerTask() {
-                public void run() {
-                    reset();
-                    postInvalidate();
-                }
-            };
-            timer.schedule(task, time);
-        } else {
-            reset();
-            postInvalidate();
-        }
-    }
-
-    /**
-     * 设置已经选中的为错误
-     */
-    private void error() {
+    private void verifySecondError() {
         for (GesturePoint p : mSelectPoints) {
-            p.state = GesturePoint.CircleState.STATE_CHECK_ERROR;
+            p.state = CircleState.STATE_CHECK_ERROR;
         }
     }
 
     /**
-     * 验证设置密码，滑动两次密码是否相同
-     *
-     * @param indexs
+     * Setting the password
      */
-    private void invalidatePass(int[] indexs) {
-        if (showTimes == 0) {
+    private void settingPass(int[] indexs) {
+        if (mIndexs == null || mIndexs.length < mPasswordMinLength) {
+            // First
             mIndexs = indexs;
-            mCompleteListener.onComplete(indexs);
-            showTimes++;
-            reset();
-        } else if (showTimes == 1) {
+            if (mCompleteListener != null) {
+                mCompleteListener.onComplete(mIndexs);
+            }
+        } else if (mIndexs != null && mIndexs.length >= mPasswordMinLength) {
+            // verify the second
             if (mIndexs.length == indexs.length) {
                 for (int i = 0; i < mIndexs.length; i++) {
                     if (mIndexs[i] != indexs[i]) {
@@ -550,21 +589,28 @@ public class CustomLockView extends View {
                 isCorrect = false;
             }
             if (!isCorrect) {
-                error();
-                mCompleteListener.onError();
+                verifySecondError();
+                if (mCompleteListener != null) {
+                    mCompleteListener.onError(OnCompleteListener.ERROR_PASSWORD_VERIFY_ERROR);
+                }
                 postInvalidate();
             } else {
-                mCompleteListener.onComplete(indexs);
+                String password = arrayToString(indexs);
+                if (mSaveUtils.putString(mContext, KEY, password)) {
+                    if (mCompleteListener != null) {
+                        mCompleteListener.onCompleteSetting(indexs);
+                    }
+                }
             }
         }
     }
 
     /**
-     * 验证本地密码与当前滑动密码是否相同
+     * Verify the local password is right
      *
-     * @param indexs
+     * @param indexs the local save in file
      */
-    private void invalidateOldPsw(int[] indexs) {
+    private void verifyOldPassword(int[] indexs) {
         if (mIndexs.length == indexs.length) {
             for (int i = 0; i < mIndexs.length; i++) {
                 if (mIndexs[i] != indexs[i]) {
@@ -576,77 +622,317 @@ public class CustomLockView extends View {
             isCorrect = false;
         }
         if (!isCorrect) {
-            errorTimes--;
-            error();
-            mCompleteListener.onError();
+            mRecordErrorTimes++;
+            verifySecondError();
+            if (mCompleteListener != null) {
+                mCompleteListener.onError(OnCompleteListener.ERROR_PASSWORD_ERROR);
+            }
+            if (mRecordErrorTimes >= mErrorTimes) {
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        mRecordErrorTimes = 0;
+                    }
+                }, mErrorDelayedTime);
+            }
             postInvalidate();
         } else {
-            mCompleteListener.onComplete(indexs);
+            mRecordErrorTimes = 0;
+            if (mCompleteListener != null) {
+                mCompleteListener.onComplete(indexs);
+            }
         }
     }
 
     /**
-     * 设置监听
-     *
-     * @param mCompleteListener
+     * 1 = 30 degrees<br> 2 = 45 degrees<br> 4 = 60 degrees
      */
-    public void setOnCompleteListener(OnCompleteListener mCompleteListener) {
-        this.mCompleteListener = mCompleteListener;
+    private float switchDegrees(float x, float y) {
+        return (float) pointTotoDegrees(x, y);
+    }
+
+
+    /**
+     * Get the angle
+     */
+    private float getDegrees(GesturePoint a, GesturePoint b) {
+        float ax = a.x;// a.index % 3;
+        float ay = a.y;// a.index / 3;
+        float bx = b.x;// b.index % 3;
+        float by = b.y;// b.index / 3;
+        float degrees = 0;
+        if (bx == ax) {
+            // y-axis equal, 90 or 270
+            if (by > ay) {
+                // In the bottom of the y-axis, 90
+                degrees = 90;
+            } else if (by < ay) {
+                //Y-axis in the above, 270
+                degrees = 270;
+            }
+        } else if (by == ay) {
+            // y-axis equal, 0 or 180
+            if (bx > ax) {
+                // In the bottom of the y-axis, 90
+                degrees = 0;
+            } else if (bx < ax) {
+                // Y-axis in the above, 270
+                degrees = 180;
+            }
+        } else {
+            if (bx > ax) {
+                // In the right side of the y-axis,270~90
+                if (by > ay) {
+                    // In the bottom of the y-axis, 0~90
+                    degrees = 0;
+                    degrees = degrees + switchDegrees(Math.abs(by - ay), Math.abs(bx - ax));
+                } else if (by < ay) {
+                    // Y-axis in the above, 270~0
+                    degrees = 360;
+                    degrees = degrees - switchDegrees(Math.abs(by - ay), Math.abs(bx - ax));
+                }
+
+            } else if (bx < ax) {
+                // The left y-axis, 90~270
+                if (by > ay) {
+                    // In the bottom of the y-axis, 180 ~ 270
+                    degrees = 90;
+                    degrees = degrees + switchDegrees(Math.abs(bx - ax), Math.abs(by - ay));
+                } else if (by < ay) {
+                    // Y-axis in the above, 90~180
+                    degrees = 270;
+                    degrees = degrees - switchDegrees(Math.abs(bx - ax), Math.abs(by - ay));
+                }
+
+            }
+
+        }
+        return degrees;
     }
 
     /**
-     * 轨迹球画完监听事件
+     * Determine whether the point within a circle
+     */
+    private boolean checkInRound(float sx, float sy, float r, float x, float y) {
+        return Math.sqrt((sx - x) * (sx - x) + (sy - y) * (sy - y)) < r;
+    }
+
+    /**
+     * Calculate two coordinate angles
+     */
+    private double pointTotoDegrees(double x, double y) {
+        return Math.toDegrees(Math.atan2(x, y));
+    }
+
+    private String arrayToString(int[] array) {
+        StringBuilder sb = new StringBuilder();
+        for (int i : array) {
+            sb.append(i + ",");
+        }
+        String result = sb.toString();
+        if (mEncryptMethod != null) {
+            result = mEncryptMethod.encrypt(result);
+        }
+        return result;
+    }
+
+    private int[] stringToArray(String string) {
+        if (mEncryptMethod != null) {
+            string = mEncryptMethod.decrypt(string);
+        }
+        if (string.contains(",")) {
+            String[] subs = string.split(",");
+            List<Integer> tmp = new ArrayList<Integer>();
+            for (String sub : subs) {
+                if (!TextUtils.isEmpty(sub)) {
+                    tmp.add(Integer.parseInt(sub));
+                }
+            }
+            int size = tmp.size();
+            int[] result = new int[size];
+            for (int i = 0; i < size; i++) {
+                result[i] = tmp.get(i);
+            }
+            return result;
+        }
+        return null;
+    }
+
+    /**
+     * The touch finish listener
      */
     public interface OnCompleteListener {
-        /**
-         * 画完了
-         */
-        public void onComplete(int[] indexs);
 
         /**
-         * 绘制错误
+         * The password is short
          */
-        public void onError();
+        int ERROR_PASSWORD_SHORT = 1;
+
+        /**
+         * The second password verify faile
+         */
+        int ERROR_PASSWORD_VERIFY_ERROR = 2;
+
+        /**
+         * Enter password is wrong
+         */
+        int ERROR_PASSWORD_ERROR = 3;
+        /**
+         * Verify faile {@link #mErrorTimes} and then verify after {@link #mErrorDelayedTime} millis
+         */
+        int ERROR_PASSWORD_ERROR_DELAYED = 4;
+
+        /**
+         * Draw finish
+         *
+         * @param indexs the draw point index
+         */
+        void onComplete(int[] indexs);
+
+        /**
+         * Finish setting password
+         */
+        void onCompleteSetting(int[] indexs);
+
+        /**
+         * Selecting points
+         *
+         * @param selectPoints the points
+         */
+        void onSelecting(int[] selectPoints);
+
+        /**
+         * Draw error
+         *
+         * @param errorMessage <li>{@link #ERROR_PASSWORD_SHORT}</li>
+         *                     <li>{@link #ERROR_PASSWORD_VERIFY_ERROR}</li>
+         *                     <li>{@link #ERROR_PASSWORD_ERROR}</li>
+         */
+        void onError(int errorMessage);
+    }
+
+    /**
+     * The encrypt/decrypt method implemented by user
+     */
+    public interface EncryptPassword {
+        /**
+         * Encrypt password to save
+         *
+         * @param resourceString the resource string
+         * @return the string after encrypt
+         */
+        String encrypt(String resourceString);
+
+        /**
+         * Decrypt string to password
+         *
+         * @param encryptString the resource string of passwrod after encrypt
+         * @return the string after decrypt
+         */
+        String decrypt(String encryptString);
     }
 
     public Paint getPaint() {
         return mPaint;
     }
 
-    public int getErrorTimes() {
-        return errorTimes;
+    /**
+     * Detecting the presence or absence password
+     *
+     * @return true if the password exist, other return false
+     */
+//    public boolean checkVerifyPassword() {
+//        String password = mSaveUtils.getString(mContext, KEY);
+//        if (TextUtils.isEmpty(password)) {
+//            return false;
+//        }
+//        if (mEncryptMethod != null) {
+//            password = mEncryptMethod.decrypt(password);
+//        }
+//        if (password.contains(",")) {
+//            return password.split(",").length >= mPasswordMinLength;
+//        }
+//        return false;
+//    }
+    public void destory() {
+        if (mLocusRoundOriginal != null && !mLocusRoundOriginal.isRecycled()) {
+            mLocusRoundOriginal.recycle();
+        }
+        if (mLocusRoundClick != null && !mLocusRoundClick.isRecycled()) {
+            mLocusRoundClick.recycle();
+        }
+        if (mLocusArrow != null && !mLocusArrow.isRecycled()) {
+            mLocusArrow.recycle();
+        }
+        if (mLocusRoundError != null && !mLocusRoundError.isRecycled()) {
+            mLocusRoundError.recycle();
+        }
+        if (mLocusArrowError != null && !mLocusArrowError.isRecycled()) {
+            mLocusArrowError.recycle();
+        }
     }
 
-    public void setErrorTimes(int errorTimes) {
-        this.errorTimes = errorTimes;
+    /**
+     * Reset settings state
+     */
+    public void resetSettingState() {
+        mIndexs = null;
+        resetPoint();
+        isCorrect = true;
+        postInvalidate();
     }
 
-    public int[] getmIndexs() {
-        return mIndexs;
-    }
-
-    public void setmIndexs(int[] mIndexs) {
-        this.mIndexs = mIndexs;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public boolean isDirectionImage() {
-        return isDirectionImage;
-    }
-
-    public void setShow(boolean isDirectionImage) {
-        this.isDirectionImage = isDirectionImage;
+    public void resetPassword() {
+        mRecordErrorTimes = 0;
+        mIndexs = null;
+        resetPoint();
+        isCorrect = true;
+        postInvalidate();
+        mLockState = LOCK_STATUS.LOCK_SETTING;
+        mSaveUtils.putString(mContext, KEY, "");
     }
 
     public void setCirclePadd(float circlePadd) {
         mCirclePadd = circlePadd;
+    }
+
+    public void setStrokeWidth(int strokeWidth) {
+        mStrokeWidth = strokeWidth;
+    }
+
+    public void setDelayedClearTime(int delayedClearTime) {
+        mDelayedClearView = delayedClearTime;
+    }
+
+    public void setErrorDelayedClearTime(int errorDelayedClearTime) {
+        mClearDelayedTime = errorDelayedClearTime;
+    }
+
+    /**
+     * Set complete listener
+     */
+    public void setOnCompleteListener(OnCompleteListener mCompleteListener) {
+        this.mCompleteListener = mCompleteListener;
+    }
+
+    /**
+     * Get lock view style:
+     * <strong>Call this method after OnGlobalLayoutListener called</strong>
+     *
+     * @return
+     */
+    public LOCK_STATUS getLockViewStyle() {
+        if (mLockState == null) {
+            throw new RuntimeException("The lock state is null, you must call this method after OnGlobalLayoutListener called");
+        }
+        return mLockState;
+    }
+
+    public void setEncryptPassword(EncryptPassword method) {
+        mEncryptMethod = method;
+    }
+
+    public void setErrorTime(int times) {
+        mErrorTimes = times;
     }
 
     public void setLocusRoundOriginal(Bitmap locusRoundOriginal) {
@@ -677,4 +963,25 @@ public class CustomLockView extends View {
     public void setLocusArrowError(Bitmap locusArrowError) {
         this.mLocusArrowError = locusArrowError;
     }
+
+    private class GesturePoint {
+        public float x;
+        public float y;
+        public int index = 0;
+        /**
+         * This point state
+         */
+        public CircleState state = CircleState.STATE_NORMAL;
+
+        @SuppressWarnings("unused")
+        public GesturePoint() {
+        }
+
+        public GesturePoint(float x, float y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
 }
+
+

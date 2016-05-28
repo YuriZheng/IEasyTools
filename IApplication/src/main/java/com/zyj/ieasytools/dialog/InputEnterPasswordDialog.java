@@ -7,10 +7,15 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
+import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
+import com.zyj.ieasytools.library.encrypt.EncryptFactory;
 import com.zyj.ieasytools.library.gesture.CustomLockView;
+import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 /**
  * Created by yuri.zheng on 2016/5/26.
@@ -30,6 +35,8 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
 
     private CustomLockView mLockView;
 
+    private BaseEncrypt mEncrypt;
+
     /**
      * 暂时使用此变量调试
      */
@@ -46,7 +53,8 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View v = LayoutInflater.from(mContext).inflate(R.layout.gesture_input_layout, null);
+        mEncrypt = EncryptFactory.getInstance().getInstance(BaseEncrypt.ENCRYPT_AES, "497393102");
+        final View v = LayoutInflater.from(mContext).inflate(R.layout.gesture_input_layout, null);
         mMainView.addView(v, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 
         mLockView = (CustomLockView) v.findViewById(R.id.lock_view);
@@ -58,6 +66,67 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
         mLockView.setLocusArrowError(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.gesture_trianglebrownerror));
 
         mLockView.setCirclePadd(100);
+
+        mLockView.setEncryptPassword(new CustomLockView.EncryptPassword() {
+            @Override
+            public String encrypt(String resourceString) {
+                return mEncrypt.encrypt(resourceString, 1);
+            }
+
+            @Override
+            public String decrypt(String encryptString) {
+                return mEncrypt.decrypt(encryptString, 1);
+            }
+        });
+
+        mLockView.setOnCompleteListener(new CustomLockView.OnCompleteListener() {
+            @Override
+            public void onComplete(int[] indexs) {
+                if (mLockView.getLockViewStyle() == CustomLockView.LOCK_STATUS.LOCK_VERIFY) {
+                    dismiss();
+                    ZYJUtils.logD(TAG, "验证通过");
+                }
+            }
+
+            @Override
+            public void onError(int errorMessage) {
+                ZYJUtils.logD(TAG, "Error: " + errorMessage);
+            }
+
+            @Override
+            public void onCompleteSetting(int[] indexs) {
+                ZYJUtils.logD(TAG, "onCompleteSetting: " + indexs.length);
+                dismiss();
+            }
+
+            @Override
+            public void onSelecting(int[] selectPoints) {
+                StringBuilder sb = new StringBuilder();
+                for (int index : selectPoints) {
+                    sb.append(index + ", ");
+                }
+                ZYJUtils.logD(TAG, "onSelecting: " + sb.toString());
+            }
+        });
+        final TextView text = (TextView) v.findViewById(R.id.title);
+        v.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mLockView.resetPassword();
+                text.setText(mLockView.getLockViewStyle() == CustomLockView.LOCK_STATUS.LOCK_SETTING ? "设置密码页面" : "验证密码页面");
+            }
+        });
+        v.findViewById(R.id.cancle).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
+
+        mLockView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                mLockView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                text.setText(mLockView.getLockViewStyle() == CustomLockView.LOCK_STATUS.LOCK_SETTING ? "设置密码页面" : "验证密码页面");
+            }
+        });
 
         setContentView(mMainView);
     }
