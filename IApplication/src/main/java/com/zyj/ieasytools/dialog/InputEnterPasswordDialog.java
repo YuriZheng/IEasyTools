@@ -8,7 +8,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.library.db.ZYJSettings;
@@ -57,7 +59,7 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
      * 暂时使用此变量调试
      */
     // TODO: 2016/5/26 暂留
-    private boolean mSuccess = false;
+    private boolean mSuccess = true;
 
     public InputEnterPasswordDialog(Context context) {
         super(context, R.style.enter_password_dialog_style);
@@ -76,31 +78,48 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(mMainView);
-
         View v = null;
+        int title = -1;
         switch (mEnterStyle) {
             case ENTER_PASSWORD_GESTURE:
                 v = LayoutInflater.from(mContext).inflate(R.layout.gesture_input_layout, null);
+                title = R.string.verify_enterpassword_gesture;
                 break;
             case ENTER_PASSWORD_IMITATE_IOS:
                 v = LayoutInflater.from(mContext).inflate(R.layout.ios_input_layout, null);
+                title = R.string.verify_enterpassword_ios;
                 break;
             case ENTER_PASSWORD_FINGERPRINT:
                 v = LayoutInflater.from(mContext).inflate(R.layout.fingerprint_input_layout, null);
+                title = R.string.verify_enterpassword_fingerprint;
                 break;
             case ENTER_PASSWORD_INPUT:
                 v = LayoutInflater.from(mContext).inflate(R.layout.input_input_layout, null);
+                title = R.string.verify_enterpassword_input;
                 break;
         }
-        mMainView.addView(v, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-//
-//        EffectButtonView view = (EffectButtonView) findViewById(R.id.test);
-//        view.setRimVisible(false);
-//
-//        view.setCircle(true);
-//        view.setTextColor(Color.GREEN);
-//        view.setText("好");
-//        view.setTextSize(60);
+        addToolbar(title);
+        if (v != null) {
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+            lp.addRule(RelativeLayout.BELOW, R.id.toolbar);
+            mMainView.addView(v, lp);
+        }
+    }
+
+    private void addToolbar(int title) {
+        // 修改toolbar，不能直接使用原生的，需要修改
+        View toolbarLayout = LayoutInflater.from(mContext).inflate(R.layout.toolbar_layout, null);
+        ImageView button = (ImageView) toolbarLayout.findViewById(R.id.back);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        TextView titleView = (TextView) toolbarLayout.findViewById(R.id.title);
+        titleView.setText(title);
+        toolbarLayout.measure(0, 0);
+        mMainView.addView(toolbarLayout, RelativeLayout.LayoutParams.MATCH_PARENT, toolbarLayout.getMeasuredHeight());
     }
 
     private void test1() {

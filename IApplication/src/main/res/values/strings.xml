@@ -10,6 +10,11 @@
     <string name="settings_view_other">Other Database</string>
     <string name="more_import">Import Database</string>
 
+    <string name="verify_enterpassword_input">Key Input</string>
+    <string name="verify_enterpassword_ios">Verify Number</string>
+    <string name="verify_enterpassword_fingerprint">Verify Finger</string>
+    <string name="verify_enterpassword_gesture">Verify gesture</string>
+
     <!-- Password group -->
     <string name="password_catrgory_web">Web</string>
     <string name="password_catrgory_email">Email</string>

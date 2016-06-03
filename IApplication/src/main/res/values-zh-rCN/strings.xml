@@ -11,6 +11,11 @@
     <string name="settings_view_other">查看其它</string>
     <string name="more_import">导入</string>
 
+    <string name="verify_enterpassword_input">键盘输入</string>
+    <string name="verify_enterpassword_ios">数字验证</string>
+    <string name="verify_enterpassword_fingerprint">指纹验证</string>
+    <string name="verify_enterpassword_gesture">手势验证</string>
+
     <!-- 分组 -->
     <string name="password_catrgory_web">网页</string>
     <string name="password_catrgory_email">邮件</string>
