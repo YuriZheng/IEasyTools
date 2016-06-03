@@ -4,18 +4,17 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
-import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
-import com.zyj.ieasytools.library.encrypt.EncryptFactory;
+import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.gesture.CustomLockView;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
+import com.zyj.ieasytools.utils.SettingsConstant;
 
 /**
  * Created by yuri.zheng on 2016/5/26.
@@ -24,6 +23,23 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
 
     private final Class TAG = getClass();
 
+    /**
+     * Enter password style: gesture
+     */
+    public static final int ENTER_PASSWORD_GESTURE = 0XC1;
+    /**
+     * Enter password style: imitate ios
+     */
+    public static final int ENTER_PASSWORD_IMITATE_IOS = 0XC2;
+    /**
+     * Enter password style: fingerprint
+     */
+    public static final int ENTER_PASSWORD_FINGERPRINT = 0XC3;
+    /**
+     * Enter password style: input
+     */
+    public static final int ENTER_PASSWORD_INPUT = 0XC4;
+
     private final Context mContext;
 
     /**
@@ -31,11 +47,11 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
      */
     private final RelativeLayout mMainView;
 
+    private ZYJSettings mSettings;
+
     private VerifyResultCallBack mResultCallBack;
 
-    private CustomLockView mLockView;
-
-    private BaseEncrypt mEncrypt;
+    private final int mEnterStyle;
 
     /**
      * 暂时使用此变量调试
@@ -45,20 +61,69 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
 
     public InputEnterPasswordDialog(Context context) {
         super(context, R.style.enter_password_dialog_style);
+        mSettings = ZYJSettings.getInstance(context);
+        if (mSettings == null) {
+            ZYJUtils.logW(TAG, "Settings is null");
+            dismiss();
+        }
         mContext = context;
         mMainView = new RelativeLayout(mContext);
         setOnDismissListener(this);
+        mEnterStyle = mSettings.getIntProperties(SettingsConstant.SETTINGS_PASSWORD_INPUT_STYLE, ENTER_PASSWORD_INPUT);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEncrypt = EncryptFactory.getInstance().getInstance(BaseEncrypt.ENCRYPT_AES, "497393102");
-        final View v = LayoutInflater.from(mContext).inflate(R.layout.gesture_input_layout, null);
+        setContentView(mMainView);
+
+        View v = null;
+        switch (mEnterStyle) {
+            case ENTER_PASSWORD_GESTURE:
+                v = LayoutInflater.from(mContext).inflate(R.layout.gesture_input_layout, null);
+                break;
+            case ENTER_PASSWORD_IMITATE_IOS:
+                v = LayoutInflater.from(mContext).inflate(R.layout.ios_input_layout, null);
+                break;
+            case ENTER_PASSWORD_FINGERPRINT:
+                v = LayoutInflater.from(mContext).inflate(R.layout.fingerprint_input_layout, null);
+                break;
+            case ENTER_PASSWORD_INPUT:
+                v = LayoutInflater.from(mContext).inflate(R.layout.input_input_layout, null);
+                break;
+        }
         mMainView.addView(v, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+//
+//        EffectButtonView view = (EffectButtonView) findViewById(R.id.test);
+//        view.setRimVisible(false);
+//
+//        view.setCircle(true);
+//        view.setTextColor(Color.GREEN);
+//        view.setText("好");
+//        view.setTextSize(60);
+    }
 
-        mLockView = (CustomLockView) v.findViewById(R.id.lock_view);
+    private void test1() {
+        android.support.v4.hardware.fingerprint.FingerprintManagerCompat compat = android.support.v4.hardware.fingerprint.FingerprintManagerCompat.from(mContext);
+        // 获取是否支持指纹
+        boolean exit = compat.isHardwareDetected();
+        // 获取是否至少有一个指纹
+        compat.hasEnrolledFingerprints();
 
+        android.hardware.fingerprint.FingerprintManager manager = (android.hardware.fingerprint.FingerprintManager) mContext.getSystemService(Context.FINGERPRINT_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            boolean exit = manager.isHardwareDetected();
+//            ZYJUtils.logD(TAG, "Exit: " + exit);
+//            if (exit) {
+//                ZYJUtils.logD(TAG, "至少一个：" + manager.hasEnrolledFingerprints());
+//            }
+        }
+    }
+
+    private CustomLockView mLockView;
+
+    private void test() {
+//        mLockView = (CustomLockView) v.findViewById(R.id.lock_view);
         mLockView.setLocusRoundOriginal(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.gesture_unselected));
         mLockView.setLocusRoundClick(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.gesture_selected));
         mLockView.setLocusArrow(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.gesture_trianglebrown));
@@ -70,12 +135,14 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
         mLockView.setEncryptPassword(new CustomLockView.EncryptPassword() {
             @Override
             public String encrypt(String resourceString) {
-                return mEncrypt.encrypt(resourceString, 1);
+//                return mEncrypt.encrypt(resourceString, 1);
+                return resourceString;
             }
 
             @Override
             public String decrypt(String encryptString) {
-                return mEncrypt.decrypt(encryptString, 1);
+//                return mEncrypt.decrypt(encryptString, 1);
+                return encryptString;
             }
         });
 
@@ -108,27 +175,7 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
                 ZYJUtils.logD(TAG, "onSelecting: " + sb.toString());
             }
         });
-        final TextView text = (TextView) v.findViewById(R.id.title);
-        v.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mLockView.resetPassword();
-                text.setText(mLockView.getLockViewStyle() == CustomLockView.LOCK_STATUS.LOCK_SETTING ? "设置密码页面" : "验证密码页面");
-            }
-        });
-        v.findViewById(R.id.cancle).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-            }
-        });
-
-        mLockView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            public void onGlobalLayout() {
-                mLockView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                text.setText(mLockView.getLockViewStyle() == CustomLockView.LOCK_STATUS.LOCK_SETTING ? "设置密码页面" : "验证密码页面");
-            }
-        });
-
-        setContentView(mMainView);
+        mLockView.resetPassword();
     }
 
     /**

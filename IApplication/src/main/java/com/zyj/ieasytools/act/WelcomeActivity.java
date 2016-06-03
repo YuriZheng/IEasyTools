@@ -98,6 +98,11 @@ public class WelcomeActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             permissionsList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+                permissionsList.add(Manifest.permission.USE_FINGERPRINT);
+            }
+        }
         if (permissionsList.size() > 0) {
             mPermissions = false;
             String[] permissionsArray = new String[permissionsList.size()];

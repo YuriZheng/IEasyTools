@@ -21,4 +21,10 @@ public final class SettingsConstant {
      */
     public static final String SETTINGS_PASSWORD_TIME_OUT = "settings_password_time_out";
 
+    /**
+     * Enter password style: gesture<br>
+     * {@link Long}
+     */
+    public static final String SETTINGS_PASSWORD_INPUT_STYLE = "settings_password_input_style";
+
 }

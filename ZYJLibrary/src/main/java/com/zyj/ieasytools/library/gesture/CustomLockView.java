@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import com.zyj.ieasytools.library.utils.PreferencesUtils;
-import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -296,8 +295,10 @@ public class CustomLockView extends View {
     }
 
     private void initLockStyle() {
+        if (mLockState != null) {
+            return;
+        }
         String string = mSaveUtils.getString(mContext, KEY);
-        ZYJUtils.logD(TAG, "Is null: " + (mEncryptMethod != null));
         if (TextUtils.isEmpty(string)) {
             // no password, so it's setting
             mLockState = LOCK_STATUS.LOCK_SETTING;
@@ -806,6 +807,7 @@ public class CustomLockView extends View {
          * @param errorMessage <li>{@link #ERROR_PASSWORD_SHORT}</li>
          *                     <li>{@link #ERROR_PASSWORD_VERIFY_ERROR}</li>
          *                     <li>{@link #ERROR_PASSWORD_ERROR}</li>
+         *                     <li>{@link #ERROR_PASSWORD_ERROR_DELAYED}</li>
          */
         void onError(int errorMessage);
     }
@@ -840,19 +842,20 @@ public class CustomLockView extends View {
      *
      * @return true if the password exist, other return false
      */
-//    public boolean checkVerifyPassword() {
-//        String password = mSaveUtils.getString(mContext, KEY);
-//        if (TextUtils.isEmpty(password)) {
-//            return false;
-//        }
-//        if (mEncryptMethod != null) {
-//            password = mEncryptMethod.decrypt(password);
-//        }
-//        if (password.contains(",")) {
-//            return password.split(",").length >= mPasswordMinLength;
-//        }
-//        return false;
-//    }
+    public boolean checkVerifyPassword() {
+        String password = mSaveUtils.getString(mContext, KEY);
+        if (TextUtils.isEmpty(password)) {
+            return false;
+        }
+        if (mEncryptMethod != null) {
+            password = mEncryptMethod.decrypt(password);
+        }
+        if (password.contains(",")) {
+            return password.split(",").length >= mPasswordMinLength;
+        }
+        return false;
+    }
+
     public void destory() {
         if (mLocusRoundOriginal != null && !mLocusRoundOriginal.isRecycled()) {
             mLocusRoundOriginal.recycle();
@@ -872,15 +875,8 @@ public class CustomLockView extends View {
     }
 
     /**
-     * Reset settings state
+     * Change the state to {@link LOCK_STATUS#LOCK_SETTING}
      */
-    public void resetSettingState() {
-        mIndexs = null;
-        resetPoint();
-        isCorrect = true;
-        postInvalidate();
-    }
-
     public void resetPassword() {
         mRecordErrorTimes = 0;
         mIndexs = null;
@@ -891,20 +887,39 @@ public class CustomLockView extends View {
         mSaveUtils.putString(mContext, KEY, "");
     }
 
+    /**
+     * Set the main boundary padding
+     */
     public void setCirclePadd(float circlePadd) {
         mCirclePadd = circlePadd;
     }
 
+    /**
+     * Set the touch line sreoke width
+     */
     public void setStrokeWidth(int strokeWidth) {
         mStrokeWidth = strokeWidth;
     }
 
+    /**
+     * Set clear view delayed time after finish draw
+     */
     public void setDelayedClearTime(int delayedClearTime) {
         mDelayedClearView = delayedClearTime;
     }
 
+    /**
+     * Set the time after draw error
+     */
     public void setErrorDelayedClearTime(int errorDelayedClearTime) {
         mClearDelayedTime = errorDelayedClearTime;
+    }
+
+    /**
+     * Whether show arrow image
+     */
+    public void setDirectionImage(boolean showDirectionImage) {
+        isDirectionImage = showDirectionImage;
     }
 
     /**
@@ -915,20 +930,18 @@ public class CustomLockView extends View {
     }
 
     /**
-     * Get lock view style:
-     * <strong>Call this method after OnGlobalLayoutListener called</strong>
-     *
-     * @return
+     * Get lock view style<br>
+     * This method called after {@link #setEncryptPassword(EncryptPassword)}<br>
+     * If have no {@link EncryptPassword} then call this method immediate
      */
     public LOCK_STATUS getLockViewStyle() {
-        if (mLockState == null) {
-            throw new RuntimeException("The lock state is null, you must call this method after OnGlobalLayoutListener called");
-        }
+        initLockStyle();
         return mLockState;
     }
 
     public void setEncryptPassword(EncryptPassword method) {
         mEncryptMethod = method;
+        initLockStyle();
     }
 
     public void setErrorTime(int times) {

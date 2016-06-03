@@ -130,7 +130,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             mNavigationView.getMenu().removeItem(R.id.settings_view_other);
         }
         DrawerLayout.LayoutParams lp = (DrawerLayout.LayoutParams) mNavigationView.getLayoutParams();
-        lp.width = ZYJUtils.getDisplayMetrics(this)[0] * 2 / 3;
+        lp.width = ZYJUtils.getDisplayMetrics(this).widthPixels * 2 / 3;
         mNavigationView.setLayoutParams(lp);
 
         FloatingActionButton fab = getViewById(R.id.fab);

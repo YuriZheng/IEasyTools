@@ -1,6 +1,5 @@
 package com.zyj.ieasytools.library.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -116,13 +115,8 @@ public final class ZYJUtils {
      * @param context interface quote
      * @return return a array, one is width, other is height
      */
-    public static int[] getDisplayMetrics(Activity context) {
-        DisplayMetrics dm = new DisplayMetrics();
-        context.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int pixels[] = new int[2];
-        pixels[0] = dm.widthPixels;
-        pixels[1] = dm.heightPixels;
-        return pixels;
+    public static DisplayMetrics getDisplayMetrics(Context context) {
+        return context.getResources().getDisplayMetrics();
     }
 
     /**
