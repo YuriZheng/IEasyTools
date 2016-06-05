@@ -3,16 +3,20 @@ package com.zyj.ieasytools.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
+import com.zyj.ieasytools.act.MainActivity;
 import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.gesture.CustomLockView;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
@@ -72,6 +76,12 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
         mMainView = new RelativeLayout(mContext);
         setOnDismissListener(this);
         mEnterStyle = mSettings.getIntProperties(SettingsConstant.SETTINGS_PASSWORD_INPUT_STYLE, ENTER_PASSWORD_INPUT);
+
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.gravity = Gravity.BOTTOM;
+        lp.height = ZYJUtils.getDisplayMetrics(mContext).heightPixels - mContext.getResources().getDimensionPixelSize
+                (Resources.getSystem().getIdentifier("status_bar_height", "dimen", "android"));
+        getWindow().setAttributes(lp);
     }
 
     @Override
@@ -107,19 +117,27 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
     }
 
     private void addToolbar(int title) {
-        // 修改toolbar，不能直接使用原生的，需要修改
         View toolbarLayout = LayoutInflater.from(mContext).inflate(R.layout.toolbar_layout, null);
-        ImageView button = (ImageView) toolbarLayout.findViewById(R.id.back);
-        button.setOnClickListener(new View.OnClickListener() {
+        toolbarLayout.findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                onBackPressed();
             }
         });
         TextView titleView = (TextView) toolbarLayout.findViewById(R.id.title);
+        if (MainActivity.mToolbarTextSize > 0) {
+            titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainActivity.mToolbarTextSize);
+//            titleView.setTextSize(MainActivity.mToolbarTextSize);
+        }
         titleView.setText(title);
         toolbarLayout.measure(0, 0);
         mMainView.addView(toolbarLayout, RelativeLayout.LayoutParams.MATCH_PARENT, toolbarLayout.getMeasuredHeight());
+    }
+
+    @Override
+    public void onBackPressed() {
+        mSuccess = false;
+        super.onBackPressed();
     }
 
     private void test1() {

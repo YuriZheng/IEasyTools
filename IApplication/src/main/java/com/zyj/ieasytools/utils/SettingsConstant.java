@@ -22,9 +22,20 @@ public final class SettingsConstant {
     public static final String SETTINGS_PASSWORD_TIME_OUT = "settings_password_time_out";
 
     /**
-     * Enter password style: gesture<br>
+     * Enter password style: <br>
      * {@link Long}
+     * <li>{@link com.zyj.ieasytools.dialog.InputEnterPasswordDialog#ENTER_PASSWORD_GESTURE}</li>
+     * <li>{@link com.zyj.ieasytools.dialog.InputEnterPasswordDialog#ENTER_PASSWORD_IMITATE_IOS}</li>
+     * <li>{@link com.zyj.ieasytools.dialog.InputEnterPasswordDialog#ENTER_PASSWORD_FINGERPRINT}</li>
+     * <li>{@link com.zyj.ieasytools.dialog.InputEnterPasswordDialog#ENTER_PASSWORD_INPUT}</li>
      */
     public static final String SETTINGS_PASSWORD_INPUT_STYLE = "settings_password_input_style";
+
+    /**
+     * Save the enter password <br>
+     * {@link String}
+     */
+    public static final String SETTINGS_SAVE_ENTER_PASSWORD = "settings_save_enter_password";
+
 
 }

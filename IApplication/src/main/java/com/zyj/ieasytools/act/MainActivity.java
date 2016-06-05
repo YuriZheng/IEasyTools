@@ -51,6 +51,11 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
      */
     private ViewGroup mMainViewLayout;
 
+    /**
+     * Record toolbar text size:{@link com.zyj.ieasytools.dialog.InputEnterPasswordDialog}
+     */
+    public static float mToolbarTextSize = -1;
+
     private GroupWebView mGroupWebView;
     private GroupEmailView mGroupEmailView;
     private GroupWalletView mGroupWalletView;
@@ -101,6 +106,15 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             Field colorFid = Toolbar.class.getDeclaredField("mNavButtonView");
             colorFid.setAccessible(true);
             mToolNavigationView = (View) colorFid.get(mToolbar);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Field colorFid = Toolbar.class.getDeclaredField("mTitleTextView");
+            colorFid.setAccessible(true);
+            TextView titleTextView = (TextView) colorFid.get(mToolbar);
+            mToolbarTextSize = titleTextView.getTextSize();
         } catch (Exception e) {
             e.printStackTrace();
         }

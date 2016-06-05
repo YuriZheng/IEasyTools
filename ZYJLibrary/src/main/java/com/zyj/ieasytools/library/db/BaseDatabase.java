@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public abstract class BaseDatabase {
 
-    protected Class<?> TAG;
+    protected Class<?> TAG = getClass();
 
     protected Context mContext;
 
@@ -40,7 +40,6 @@ public abstract class BaseDatabase {
 
     public BaseDatabase(Context context) {
         this.mContext = context;
-        TAG = getClass();
         SQLiteDatabase.loadLibs(context);
     }
 

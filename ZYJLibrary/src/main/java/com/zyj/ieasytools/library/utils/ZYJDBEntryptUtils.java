@@ -104,7 +104,6 @@ public final class ZYJDBEntryptUtils {
     /**
      * Check encrypt password
      *
-     * @param context  context
      * @param method   encrypt method, the string is decrypted
      * @param password the password
      * @param from     the source string, the string is not encrypted
@@ -112,7 +111,7 @@ public final class ZYJDBEntryptUtils {
      * @param version  the app's version
      * @return true if the password is right,other return false
      */
-    public static boolean checkEncryptPassword(Context context, String method, String password, String from, String to, int version) {
+    public static boolean checkEncryptPassword(String method, String password, String from, String to, int version) {
         BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(method, password);
         String decryptString = encrypt.decrypt(from, version);
         return to.equals(decryptString);

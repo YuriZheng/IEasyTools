@@ -191,7 +191,7 @@ public class ZYJEncrypts extends BaseDatabase {
         if (state != DATABASE_OPEN_SUCCESS) {
             return state;
         }
-        if (ZYJDBEntryptUtils.checkEncryptPassword(mContext, entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
+        if (ZYJDBEntryptUtils.checkEncryptPassword(entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
             return ERROR_PASSWORD;
         }
         BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(entry.getEncryptionMethod(), password);
@@ -219,7 +219,7 @@ public class ZYJEncrypts extends BaseDatabase {
         if (state != DATABASE_OPEN_SUCCESS) {
             return state;
         }
-        if (ZYJDBEntryptUtils.checkEncryptPassword(mContext, entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
+        if (ZYJDBEntryptUtils.checkEncryptPassword(entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
             return ERROR_PASSWORD;
         }
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
@@ -329,7 +329,7 @@ public class ZYJEncrypts extends BaseDatabase {
         long modifyTime = c.getLong(c.getColumnIndex(DatabaseColumns.EncryptColumns._MODIFY_TIME));
         int version = c.getInt(c.getColumnIndex(DatabaseColumns.EncryptColumns._Version));
 
-        if (ZYJDBEntryptUtils.checkEncryptPassword(mContext, method, password, from, to, version)) {
+        if (ZYJDBEntryptUtils.checkEncryptPassword(method, password, from, to, version)) {
             ZYJUtils.logW(TAG, c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ID))
                     + " record password wrong");
             return null;
