@@ -1,1 +1,1 @@
-include ':ZYJLibrary', ':IApplication'
+include ':ZYJLibrary', ':IApplication', ':ZYJJniLib'
