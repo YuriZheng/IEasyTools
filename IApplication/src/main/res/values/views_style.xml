@@ -22,4 +22,15 @@
         <item name="android:layout_gravity">right</item>
         <item name="android:onClick">onGroupMenuClick</item>
     </style>
+
+    <style name="input_enter_password_dialog_sub_title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/input_enter_dialog_sub_padd</item>
+        <item name="android:layout_marginTop">@dimen/input_enter_dialog_sub_padd</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+
 </resources>

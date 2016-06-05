@@ -358,6 +358,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                     actionProgressBar(false);
                     break;
                 case R.id.settings_about:
+                    verifyEnterPassword();
                     break;
                 case R.id.settings_help:
                     break;

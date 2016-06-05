@@ -90,7 +90,7 @@ public class BaseActivity extends AppCompatActivity {
             return true;
         }
         // TODO: 2016/5/25 这里的默认时间为设置里面的默认时间，暂定10秒
-        long timeOut = mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, 1000 * 4);
+        long timeOut = mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, 1000 * 60 * 24);
         long current = System.currentTimeMillis();
         boolean time = (lastTime + timeOut) < current;
         ZYJUtils.logD(TAG, "Current time: " + current + ", Time out: " + (lastTime + timeOut) + (time ? " and time out" : ""));
@@ -129,7 +129,7 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * Enter verify dialog and listener the result
      */
-    private void verifyEnterPassword() {
+    protected void verifyEnterPassword() {
         if (mInputDialog != null && mInputDialog.isShowing()) {
             ZYJUtils.logD(TAG, "verifing...");
             return;

@@ -6,4 +6,6 @@
 
     <dimen name="main_view_progress_size">20dp</dimen>
 
+    <dimen name="input_enter_dialog_sub_padd">16dp</dimen>
+
 </resources>

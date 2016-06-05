@@ -15,6 +15,8 @@
     <string name="verify_enterpassword_ios">数字验证</string>
     <string name="verify_enterpassword_fingerprint">指纹验证</string>
     <string name="verify_enterpassword_gesture">手势验证</string>
+    <string name="enter_password_setting">设置密码</string>
+    <string name="enter_password_verify">验证密码</string>
 
     <!-- 分组 -->
     <string name="password_catrgory_web">网页</string>

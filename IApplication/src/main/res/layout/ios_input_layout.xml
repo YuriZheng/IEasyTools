@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent">
+    android:background="@color/colorAccent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/sub_title"
+        style="@style/input_enter_password_dialog_sub_title"/>
 
     <com.zyj.ieasytools.library.views.EffectButtonView
         android:layout_width="45dp"
         android:layout_height="45dp"/>
 
-</RelativeLayout>
+</LinearLayout>

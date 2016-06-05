@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -55,9 +56,21 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
 
     private ZYJSettings mSettings;
 
+    /**
+     * Setting or Verify call back
+     */
     private VerifyResultCallBack mResultCallBack;
-
+    /**
+     * <li>{@link #ENTER_PASSWORD_INPUT}</li>
+     * <li>{@link #ENTER_PASSWORD_GESTURE}</li>
+     * <li>{@link #ENTER_PASSWORD_IMITATE_IOS}</li>
+     * <li>{@link #ENTER_PASSWORD_FINGERPRINT}</li>
+     */
     private final int mEnterStyle;
+    /**
+     * Setting or Verify: true is setting password, false is verify password
+     */
+    private boolean isSettingPassword;
 
     /**
      * 暂时使用此变量调试
@@ -82,6 +95,8 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
         lp.height = ZYJUtils.getDisplayMetrics(mContext).heightPixels - mContext.getResources().getDimensionPixelSize
                 (Resources.getSystem().getIdentifier("status_bar_height", "dimen", "android"));
         getWindow().setAttributes(lp);
+
+        isSettingPassword = TextUtils.isEmpty(mSettings.getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null));
     }
 
     @Override
@@ -92,23 +107,32 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
         int title = -1;
         switch (mEnterStyle) {
             case ENTER_PASSWORD_GESTURE:
-                v = LayoutInflater.from(mContext).inflate(R.layout.gesture_input_layout, null);
+                v = getGestureLayout();
                 title = R.string.verify_enterpassword_gesture;
                 break;
             case ENTER_PASSWORD_IMITATE_IOS:
-                v = LayoutInflater.from(mContext).inflate(R.layout.ios_input_layout, null);
+                v = getIosLayout();
                 title = R.string.verify_enterpassword_ios;
                 break;
             case ENTER_PASSWORD_FINGERPRINT:
-                v = LayoutInflater.from(mContext).inflate(R.layout.fingerprint_input_layout, null);
+                v = getFingerprintLayout();
                 title = R.string.verify_enterpassword_fingerprint;
                 break;
             case ENTER_PASSWORD_INPUT:
-                v = LayoutInflater.from(mContext).inflate(R.layout.input_input_layout, null);
+                v = getInputLayout();
                 title = R.string.verify_enterpassword_input;
                 break;
         }
         addToolbar(title);
+        TextView subTitle = (TextView) v.findViewById(R.id.sub_title);
+        if (MainActivity.mToolbarTextSize > 0) {
+            subTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainActivity.mToolbarTextSize - 10);
+        }
+        if (isSettingPassword) {
+            subTitle.setText(R.string.enter_password_setting);
+        } else {
+            subTitle.setText(R.string.enter_password_verify);
+        }
         if (v != null) {
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             lp.addRule(RelativeLayout.BELOW, R.id.toolbar);
@@ -127,16 +151,35 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
         TextView titleView = (TextView) toolbarLayout.findViewById(R.id.title);
         if (MainActivity.mToolbarTextSize > 0) {
             titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainActivity.mToolbarTextSize);
-//            titleView.setTextSize(MainActivity.mToolbarTextSize);
         }
         titleView.setText(title);
         toolbarLayout.measure(0, 0);
         mMainView.addView(toolbarLayout, RelativeLayout.LayoutParams.MATCH_PARENT, toolbarLayout.getMeasuredHeight());
     }
 
+    private View getGestureLayout() {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.gesture_input_layout, null);
+        return view;
+    }
+
+    private View getIosLayout() {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.ios_input_layout, null);
+        return view;
+    }
+
+    private View getFingerprintLayout() {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.fingerprint_input_layout, null);
+        return view;
+    }
+
+    private View getInputLayout() {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.input_input_layout, null);
+        return view;
+    }
+
     @Override
     public void onBackPressed() {
-        mSuccess = false;
+        mSuccess = true;
         super.onBackPressed();
     }
 
@@ -218,8 +261,9 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
     /**
      * Set the callback: {@link VerifyResultCallBack}
      */
-    public void setResultCallBack(VerifyResultCallBack callBack) {
+    public InputEnterPasswordDialog setResultCallBack(VerifyResultCallBack callBack) {
         mResultCallBack = callBack;
+        return this;
     }
 
     @Override
