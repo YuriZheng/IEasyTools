@@ -9,16 +9,7 @@ public final class ZYJJniLib {
         System.loadLibrary("zyj_ndk_itools");
     }
 
-    private static ZYJJniLib sInstance;
-
-    public static ZYJJniLib getInstance() {
-        if (sInstance == null) {
-            sInstance = new ZYJJniLib();
-        }
-        return sInstance;
-    }
-
-    private ZYJJniLib() {
+    protected ZYJJniLib() {
     }
 
     public native String generateSettingCode(String resourceCode);

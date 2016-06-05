@@ -9,7 +9,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
-import com.zyj.jni.ZYJJniLib;
 
 import java.io.File;
 import java.text.ParseException;
@@ -188,7 +187,6 @@ public final class ZYJUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ZYJUtils.logD(ZYJUtils.class,"Jni: " + ZYJJniLib.getInstance().generateSettingCode("1"));
         final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String code = tm.getDeviceId() + "*" + firstInstallTime;
         StringBuilder sb = new StringBuilder(code);
