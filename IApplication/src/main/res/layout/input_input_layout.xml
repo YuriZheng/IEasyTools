@@ -19,12 +19,12 @@
         app:errorEnabled="true">
 
         <EditText
-            android:id="@+id/your_matchcode"
+            android:id="@+id/input_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:digits="1234567890"
+            android:digits="123456789"
             android:hint="请设定匹配码"
-            android:inputType="number"
+            android:inputType="number|numberPassword"
             android:maxLength="32"
             android:saveEnabled="false"/>
 

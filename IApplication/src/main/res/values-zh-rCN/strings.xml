@@ -18,6 +18,16 @@
     <string name="enter_password_setting">设置密码</string>
     <string name="enter_password_verify">验证密码</string>
     <string name="verify_enter_clear">清除</string>
+    <string name="verify_enter_copy">请再次输入密码</string>
+    <string name="verify_enter_faile">验证失败</string>
+    <string name="verify_password_no_match">密码不匹配</string>
+    <string name="verify_passed">验证通过</string>
+    <string name="verify_five_minutes_later">%1$s分钟之后再试</string>
+    <string name="verify_error_count">错误%1$s次</string>
+
+    <string name="password_short">密码太短</string>
+    <string name="password_long">密码太长</string>
+    <string name="setting_password_finish">密码设置完成</string>
 
     <!-- 分组 -->
     <string name="password_catrgory_web">网页</string>
@@ -26,7 +36,5 @@
     <string name="password_catrgory_app">应用</string>
     <string name="password_catrgory_game">游戏</string>
     <string name="password_catrgory_other">其它</string>
-    <string name="verify_enter_copy">请再次输入密码</string>
-    <string name="verify_enter_faile">验证失败</string>
 
 </resources>

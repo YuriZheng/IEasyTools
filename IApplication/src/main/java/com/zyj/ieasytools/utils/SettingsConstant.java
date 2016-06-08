@@ -20,6 +20,12 @@ public final class SettingsConstant {
      * {@link Long}
      */
     public static final String SETTINGS_PASSWORD_TIME_OUT = "settings_password_time_out";
+    /**
+     * Verify state last time<br>
+     * If verify faile then record the time, if verify success then set this value is -1 or blew zero， default is -1<br>
+     * {@link Long}
+     */
+    public static final String SETTINGS_VERIFY_STATE_LAST_TIME = "settings_verify_state_last_time";
 
     /**
      * Enter password style: <br>

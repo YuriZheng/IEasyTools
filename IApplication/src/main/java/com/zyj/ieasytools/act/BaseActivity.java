@@ -81,16 +81,16 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private boolean checkTimeOutOrPassword() {
-        // TODO: 2016/5/26 首先判断密码是否为空，暂留
-
-
-        long lastTime = mSettings.getLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME, -1);
-        if (lastTime < 0) {
-            ZYJUtils.logD(TAG, "LastTime: " + lastTime + " and time out");
+        if (mSettings.getLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, -1) > 0) {
             return true;
         }
-        // TODO: 2016/5/25 这里的默认时间为设置里面的默认时间，暂定10秒
-        long timeOut = mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, 1000 * 60 * 24);
+        long lastTime = mSettings.getLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME, -1);
+        if (lastTime < 0) {
+            ZYJUtils.logD(TAG, "LastTime: " + lastTime + " and init");
+            return true;
+        }
+        // TODO: 2016/5/25 这里的默认时间为设置里面的默认时间，暂定1分钟
+        long timeOut = mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, 1000 * 60 * 1);
         long current = System.currentTimeMillis();
         boolean time = (lastTime + timeOut) < current;
         ZYJUtils.logD(TAG, "Current time: " + current + ", Time out: " + (lastTime + timeOut) + (time ? " and time out" : ""));
@@ -160,8 +160,8 @@ public class BaseActivity extends AppCompatActivity {
      * @param id the view's id
      * @return return the view instance
      */
-    protected <K extends View> K getViewById(int id) {
-        return (K) getWindow().findViewById(id);
+    protected <T extends View> T getViewById(int id) {
+        return (T) getWindow().findViewById(id);
     }
 
     /**

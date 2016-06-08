@@ -4,29 +4,29 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.MainActivity;
 import com.zyj.ieasytools.library.db.ZYJSettings;
-import com.zyj.ieasytools.library.gesture.CustomLockView;
+import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.utils.SettingsConstant;
 
 /**
  * Created by yuri.zheng on 2016/5/26.
  */
-public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismissListener {
+public class InputEnterPasswordDialog extends Dialog {
 
     private final Class TAG = getClass();
 
@@ -47,22 +47,19 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
      */
     public static final int ENTER_PASSWORD_INPUT = 0XC4;
 
+    // Verify faile and verify again delayed time
+    private final int mTimeOut = 1000 * 60 * 1;
+
     private final Context mContext;
 
-    /**
-     * Main view, switch views in it
-     */
+    // Main view, switch views in it
     private final RelativeLayout mMainView;
-    /**
-     * The verify main view
-     */
+    // The verify main view
     private BaseVerifyView mVerifyView;
-
+    // The setting
     private ZYJSettings mSettings;
 
-    /**
-     * Setting or Verify call back
-     */
+    // Setting or Verify call back
     private VerifyResultCallBack mResultCallBack;
     /**
      * <li>{@link #ENTER_PASSWORD_INPUT}</li>
@@ -70,11 +67,11 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
      * <li>{@link #ENTER_PASSWORD_IMITATE_IOS}</li>
      * <li>{@link #ENTER_PASSWORD_FINGERPRINT}</li>
      */
-    private final int mEnterStyle;
-    /**
-     * Setting or Verify: true is setting password, false is verify password
-     */
+    private int mEnterStyle;
+    // Setting or Verify: true is setting password, false is verify password
     private boolean isSettingPassword;
+
+    private Handler mHandler;
 
     public InputEnterPasswordDialog(Context context) {
         super(context, R.style.enter_password_dialog_style);
@@ -84,8 +81,8 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
             dismiss();
         }
         mContext = context;
+        mHandler = new Handler(mContext.getMainLooper());
         mMainView = new RelativeLayout(mContext);
-        setOnDismissListener(this);
         mEnterStyle = mSettings.getIntProperties(SettingsConstant.SETTINGS_PASSWORD_INPUT_STYLE, ENTER_PASSWORD_INPUT);
 
         WindowManager.LayoutParams lp = getWindow().getAttributes();
@@ -95,6 +92,10 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
         getWindow().setAttributes(lp);
 
         isSettingPassword = TextUtils.isEmpty(mSettings.getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null));
+        if (isSettingPassword && mEnterStyle == ENTER_PASSWORD_FINGERPRINT) {
+            // Fingerprint can't to setting password
+            mEnterStyle = ENTER_PASSWORD_INPUT;
+        }
     }
 
     @Override
@@ -102,40 +103,50 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
         super.onCreate(savedInstanceState);
         setContentView(mMainView);
         int title = -1;
-        switch (mEnterStyle) {
-            case ENTER_PASSWORD_GESTURE:
-                mVerifyView = new VerifyGestureView();
-                title = R.string.verify_enterpassword_gesture;
-                break;
-            case ENTER_PASSWORD_IMITATE_IOS:
-                mVerifyView = new VerifyIosView();
-                title = R.string.verify_enterpassword_ios;
-                break;
-            case ENTER_PASSWORD_FINGERPRINT:
-                mVerifyView = new VerifyFingerprintView();
-                title = R.string.verify_enterpassword_fingerprint;
-                break;
-            case ENTER_PASSWORD_INPUT:
-                mVerifyView = new VerifyInputView();
-                title = R.string.verify_enterpassword_input;
-                break;
+        long lastTime = mSettings.getLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, -1);
+        if (lastTime > 0 && ((lastTime + mTimeOut) > System.currentTimeMillis())) {
+            mVerifyView = new VerifyTimeOut();
+            title = R.string.verify_password_no_match;
+        } else {
+            switch (mEnterStyle) {
+                case ENTER_PASSWORD_GESTURE:
+                    mVerifyView = new VerifyGestureView();
+                    title = R.string.verify_enterpassword_gesture;
+                    break;
+                case ENTER_PASSWORD_IMITATE_IOS:
+                    mVerifyView = new VerifyIosView();
+                    title = R.string.verify_enterpassword_ios;
+                    break;
+                case ENTER_PASSWORD_FINGERPRINT:
+                    mVerifyView = new VerifyFingerprintView();
+                    title = R.string.verify_enterpassword_fingerprint;
+                    break;
+                case ENTER_PASSWORD_INPUT:
+                    mVerifyView = new VerifyInputView();
+                    title = R.string.verify_enterpassword_input;
+                    break;
+            }
         }
         addToolbar(title);
-        TextView subTitle = (TextView) mVerifyView.iMain.findViewById(R.id.sub_title);
-        if (MainActivity.mToolbarTextSize > 0) {
-            subTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainActivity.mToolbarTextSize - 5);
-        }
-        if (isSettingPassword) {
-            subTitle.setText(R.string.enter_password_setting);
-        } else {
-            subTitle.setText(R.string.enter_password_verify);
-        }
         if (mVerifyView != null) {
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             lp.addRule(RelativeLayout.BELOW, R.id.toolbar);
-            mVerifyView.iVerifyCallBack = mResultCallBack;
             mMainView.addView(mVerifyView.iMain, lp);
         }
+        setOnShowListener(new OnShowListener() {
+            public void onShow(DialogInterface dialog) {
+                if (mResultCallBack != null) {
+                    mVerifyView.iVerifyCallBack = mResultCallBack;
+                }
+            }
+        });
+        setOnDismissListener(new OnDismissListener() {
+            public void onDismiss(DialogInterface dialog) {
+                if (mVerifyView != null) {
+                    mVerifyView.dismiss();
+                }
+            }
+        });
     }
 
     private void addToolbar(int title) {
@@ -143,7 +154,7 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
         toolbarLayout.findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                dismiss();
             }
         });
         TextView titleView = (TextView) toolbarLayout.findViewById(R.id.title);
@@ -155,109 +166,6 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
         mMainView.addView(toolbarLayout, RelativeLayout.LayoutParams.MATCH_PARENT, toolbarLayout.getMeasuredHeight());
     }
 
-    private View getGestureLayout() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.gesture_input_layout, null);
-        return view;
-    }
-
-    private View getIosLayout() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.ios_input_layout, null);
-        return view;
-    }
-
-    private View getFingerprintLayout() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.fingerprint_input_layout, null);
-        return view;
-    }
-
-    private View getInputLayout() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.input_input_layout, null);
-        return view;
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (mVerifyView != null) {
-            mVerifyView.onBackPressed();
-        }
-    }
-
-    private void test1() {
-        android.support.v4.hardware.fingerprint.FingerprintManagerCompat compat = android.support.v4.hardware.fingerprint.FingerprintManagerCompat.from(mContext);
-        // 获取是否支持指纹
-        boolean exit = compat.isHardwareDetected();
-        // 获取是否至少有一个指纹
-        compat.hasEnrolledFingerprints();
-
-        android.hardware.fingerprint.FingerprintManager manager = (android.hardware.fingerprint.FingerprintManager) mContext.getSystemService(Context.FINGERPRINT_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            boolean exit = manager.isHardwareDetected();
-//            ZYJUtils.logD(TAG, "Exit: " + exit);
-//            if (exit) {
-//                ZYJUtils.logD(TAG, "至少一个：" + manager.hasEnrolledFingerprints());
-//            }
-        }
-    }
-
-    private CustomLockView mLockView;
-
-    private void test() {
-//        mLockView = (CustomLockView) v.findViewById(R.id.lock_view);
-        mLockView.setLocusRoundOriginal(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.gesture_unselected));
-        mLockView.setLocusRoundClick(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.gesture_selected));
-        mLockView.setLocusArrow(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.gesture_trianglebrown));
-        mLockView.setLocusRoundError(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.gesture_selected_error));
-        mLockView.setLocusArrowError(BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.gesture_trianglebrownerror));
-
-        mLockView.setCirclePadd(100);
-
-        mLockView.setEncryptPassword(new CustomLockView.EncryptPassword() {
-            @Override
-            public String encrypt(String resourceString) {
-//                return mEncrypt.encrypt(resourceString, 1);
-                return resourceString;
-            }
-
-            @Override
-            public String decrypt(String encryptString) {
-//                return mEncrypt.decrypt(encryptString, 1);
-                return encryptString;
-            }
-        });
-
-        mLockView.setOnCompleteListener(new CustomLockView.OnCompleteListener() {
-            @Override
-            public void onComplete(int[] indexs) {
-                if (mLockView.getLockViewStyle() == CustomLockView.LOCK_STATUS.LOCK_VERIFY) {
-                    dismiss();
-                    ZYJUtils.logD(TAG, "验证通过");
-                }
-            }
-
-            @Override
-            public void onError(int errorMessage) {
-                ZYJUtils.logD(TAG, "Error: " + errorMessage);
-            }
-
-            @Override
-            public void onCompleteSetting(int[] indexs) {
-                ZYJUtils.logD(TAG, "onCompleteSetting: " + indexs.length);
-                dismiss();
-            }
-
-            @Override
-            public void onSelecting(int[] selectPoints) {
-                StringBuilder sb = new StringBuilder();
-                for (int index : selectPoints) {
-                    sb.append(index + ", ");
-                }
-                ZYJUtils.logD(TAG, "onSelecting: " + sb.toString());
-            }
-        });
-        mLockView.resetPassword();
-    }
-
     /**
      * Set the callback: {@link VerifyResultCallBack}
      */
@@ -266,31 +174,55 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
         return this;
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-
-    }
-
     /**
      * The base view to verify password
      */
-    private class BaseVerifyView {
+    private abstract class BaseVerifyView implements View.OnClickListener {
+        // The max count of wrong number
+        protected final int WRONG_COUNT = 5;
+        // The delayed time to dismiss this dialog
+        protected final int Delayed = 1000 * 1;
         // The main view
         protected final View iMain;
+        // The Sub title view
+        protected final TextView iSubTitle;
         // Verify result call back
         protected VerifyResultCallBack iVerifyCallBack;
+        // Record input password last time
+        protected String iRecordPassword;
+        // Record the count of wrong number
+        protected int iRecordCount = 0;
 
-        // TODO: 2016/5/26 暂时使用此变量调试
-        private boolean mSuccess = true;
+        protected boolean iSuccess = false;
 
-        protected void onBackPressed() {
+        protected void dismiss() {
             if (mResultCallBack != null) {
-                mResultCallBack.verifyEnterPasswordCallBack(mSuccess);
+                mResultCallBack.verifyEnterPasswordCallBack(iSuccess);
+            }
+            if (iSuccess) {
+                mSettings.putLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, -1);
             }
         }
 
-        BaseVerifyView(int layoutRes) {
+        protected BaseVerifyView(int layoutRes) {
             iMain = LayoutInflater.from(mContext).inflate(layoutRes, null);
+            iSubTitle = (TextView) iMain.findViewById(R.id.sub_title);
+            if (MainActivity.mToolbarTextSize > 0) {
+                iSubTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainActivity.mToolbarTextSize - 5);
+            }
+            if (isSettingPassword) {
+                iSubTitle.setText(R.string.enter_password_setting);
+            } else {
+                iSubTitle.setText(R.string.enter_password_verify);
+            }
+        }
+
+        protected void verifyFinish() {
+            mHandler.postDelayed(new Runnable() {
+                public void run() {
+                    InputEnterPasswordDialog.this.dismiss();
+                }
+            }, Delayed);
         }
     }
 
@@ -298,8 +230,98 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
      * Input view to verify password
      */
     private class VerifyInputView extends BaseVerifyView {
-        public VerifyInputView() {
+
+        private EditText mInputText;
+
+        private VerifyInputView() {
             super(R.layout.input_input_layout);
+
+            mInputText = findViewById(R.id.input_password);
+
+            iMain.findViewById(R.id.sure).setOnClickListener(this);
+
+            View clear = findViewById(R.id.clear);
+            if (!isSettingPassword) {
+                clear.setVisibility(View.GONE);
+            } else {
+                clear.setOnClickListener(this);
+            }
+        }
+
+        private <T extends View> T findViewById(int resId) {
+            return (T) iMain.findViewById(resId);
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.clear:
+                    clear();
+                    break;
+                case R.id.sure:
+                    verify(v);
+                    break;
+            }
+        }
+
+        private void verify(final View v) {
+            String input = mInputText.getText().toString();
+            mInputText.setText("");
+            if (input.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN) {
+                iSubTitle.setText(R.string.password_short);
+                return;
+            }
+            if (input.length() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
+                iSubTitle.setText(R.string.password_long);
+                return;
+            }
+            if (isSettingPassword) {
+                if (TextUtils.isEmpty(iRecordPassword)) {
+                    iRecordPassword = input;
+                    iSubTitle.setText(R.string.verify_enter_copy);
+                } else {
+                    if (iRecordPassword.equals(input)) {
+                        if (mSettings.putStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, input)) {
+                            iSuccess = true;
+                            iSubTitle.setText(R.string.setting_password_finish);
+                            mInputText.setEnabled(false);
+                            v.setOnClickListener(null);
+                            verifyFinish();
+                        }
+                    } else {
+                        iSubTitle.setText(R.string.verify_password_no_match);
+                    }
+                }
+            } else {
+                String password = mSettings.getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null);
+                if (!TextUtils.isEmpty(password) && password.equals(input)) {
+                    iSuccess = true;
+                    iSubTitle.setText(R.string.verify_passed);
+                    mInputText.setEnabled(false);
+                    v.setOnClickListener(null);
+                    verifyFinish();
+                } else {
+                    iRecordCount++;
+                    if (iRecordCount >= WRONG_COUNT) {
+                        iSuccess = false;
+                        iSubTitle.setText(mContext.getResources().getString(R.string.verify_five_minutes_later, mTimeOut / 1000 / 60));
+                        // 输入五次，mTimeOut分钟之后再试
+                        mSettings.putLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, System.currentTimeMillis());
+                        mInputText.setEnabled(false);
+                        v.setOnClickListener(null);
+                        verifyFinish();
+                    } else {
+                        iSubTitle.setText(mContext.getResources().getString(R.string.verify_error_count, iRecordCount));
+                    }
+                }
+            }
+        }
+
+        private void clear() {
+            iSubTitle.setText(R.string.enter_password_setting);
+            mInputText.setText("");
+            iRecordPassword = "";
+            iRecordCount = 0;
         }
     }
 
@@ -307,8 +329,17 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
      * Gesture view to verify password
      */
     private class VerifyGestureView extends BaseVerifyView {
-        public VerifyGestureView() {
+        private VerifyGestureView() {
             super(R.layout.gesture_input_layout);
+        }
+
+        @Override
+        public void onClick(View v) {
+
+        }
+
+        private void verify() {
+
         }
     }
 
@@ -316,8 +347,17 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
      * Imitate ios view to verify password
      */
     private class VerifyIosView extends BaseVerifyView {
-        public VerifyIosView() {
+        private VerifyIosView() {
             super(R.layout.ios_input_layout);
+        }
+
+        @Override
+        public void onClick(View v) {
+
+        }
+
+        private void verify() {
+
         }
     }
 
@@ -325,8 +365,28 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
      * Fingerprint ios view to verify password
      */
     private class VerifyFingerprintView extends BaseVerifyView {
-        public VerifyFingerprintView() {
+        private VerifyFingerprintView() {
             super(R.layout.fingerprint_input_layout);
+        }
+
+        @Override
+        public void onClick(View v) {
+
+        }
+
+        private void verify() {
+
+        }
+    }
+
+    private class VerifyTimeOut extends BaseVerifyView {
+        public VerifyTimeOut() {
+            super(R.layout.verify_time_out_input_layout);
+        }
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
 

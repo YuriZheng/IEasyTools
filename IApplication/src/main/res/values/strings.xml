@@ -17,6 +17,16 @@
     <string name="enter_password_setting">Setting Password</string>
     <string name="enter_password_verify">Verify Password</string>
     <string name="verify_enter_clear">Clear</string>
+    <string name="verify_enter_copy">Input Again</string>
+    <string name="verify_enter_faile">Verify Faile</string>
+    <string name="verify_password_no_match">Passwords do not match</string>
+    <string name="verify_passed">Validation passed</string>
+    <string name="verify_five_minutes_later">Try %1$s minutes later</string>
+    <string name="verify_error_count">Error:%1$s</string>
+
+    <string name="password_short">Password is too short</string>
+    <string name="password_long">Password is too long</string>
+    <string name="setting_password_finish">Setup is complete</string>
 
     <!-- Password group -->
     <string name="password_catrgory_web">Web</string>
@@ -28,7 +38,5 @@
 
     <!-- No translatable-->
     <string name="drawer_toggle_text" translatable="false"></string>
-    <string name="verify_enter_copy">Input Again</string>
-    <string name="verify_enter_faile">Verify Faile</string>
 
 </resources>
