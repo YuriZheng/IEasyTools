@@ -16,7 +16,7 @@ public class BlowfishEncrypt extends BaseEncrypt {
     private BlowfishCBC m_bfish;
     private Random m_rndGen = new Random();
 
-    private BlowfishEncrypt(String privateKey) {
+    protected BlowfishEncrypt(String privateKey) {
         super(privateKey, ENCRYPT_BLOWFISH);
         MessageDigest digest = null;
         try {

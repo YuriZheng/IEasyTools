@@ -53,6 +53,10 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
      * Main view, switch views in it
      */
     private final RelativeLayout mMainView;
+    /**
+     * The verify main view
+     */
+    private BaseVerifyView mVerifyView;
 
     private ZYJSettings mSettings;
 
@@ -71,12 +75,6 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
      * Setting or Verify: true is setting password, false is verify password
      */
     private boolean isSettingPassword;
-
-    /**
-     * 暂时使用此变量调试
-     */
-    // TODO: 2016/5/26 暂留
-    private boolean mSuccess = true;
 
     public InputEnterPasswordDialog(Context context) {
         super(context, R.style.enter_password_dialog_style);
@@ -103,40 +101,40 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(mMainView);
-        View v = null;
         int title = -1;
         switch (mEnterStyle) {
             case ENTER_PASSWORD_GESTURE:
-                v = getGestureLayout();
+                mVerifyView = new VerifyGestureView();
                 title = R.string.verify_enterpassword_gesture;
                 break;
             case ENTER_PASSWORD_IMITATE_IOS:
-                v = getIosLayout();
+                mVerifyView = new VerifyIosView();
                 title = R.string.verify_enterpassword_ios;
                 break;
             case ENTER_PASSWORD_FINGERPRINT:
-                v = getFingerprintLayout();
+                mVerifyView = new VerifyFingerprintView();
                 title = R.string.verify_enterpassword_fingerprint;
                 break;
             case ENTER_PASSWORD_INPUT:
-                v = getInputLayout();
+                mVerifyView = new VerifyInputView();
                 title = R.string.verify_enterpassword_input;
                 break;
         }
         addToolbar(title);
-        TextView subTitle = (TextView) v.findViewById(R.id.sub_title);
+        TextView subTitle = (TextView) mVerifyView.iMain.findViewById(R.id.sub_title);
         if (MainActivity.mToolbarTextSize > 0) {
-            subTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainActivity.mToolbarTextSize - 10);
+            subTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainActivity.mToolbarTextSize - 5);
         }
         if (isSettingPassword) {
             subTitle.setText(R.string.enter_password_setting);
         } else {
             subTitle.setText(R.string.enter_password_verify);
         }
-        if (v != null) {
+        if (mVerifyView != null) {
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             lp.addRule(RelativeLayout.BELOW, R.id.toolbar);
-            mMainView.addView(v, lp);
+            mVerifyView.iVerifyCallBack = mResultCallBack;
+            mMainView.addView(mVerifyView.iMain, lp);
         }
     }
 
@@ -179,8 +177,10 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
 
     @Override
     public void onBackPressed() {
-        mSuccess = true;
         super.onBackPressed();
+        if (mVerifyView != null) {
+            mVerifyView.onBackPressed();
+        }
     }
 
     private void test1() {
@@ -268,8 +268,65 @@ public class InputEnterPasswordDialog extends Dialog implements Dialog.OnDismiss
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        if (mResultCallBack != null) {
-            mResultCallBack.verifyEnterPasswordCallBack(mSuccess);
+
+    }
+
+    /**
+     * The base view to verify password
+     */
+    private class BaseVerifyView {
+        // The main view
+        protected final View iMain;
+        // Verify result call back
+        protected VerifyResultCallBack iVerifyCallBack;
+
+        // TODO: 2016/5/26 暂时使用此变量调试
+        private boolean mSuccess = true;
+
+        protected void onBackPressed() {
+            if (mResultCallBack != null) {
+                mResultCallBack.verifyEnterPasswordCallBack(mSuccess);
+            }
+        }
+
+        BaseVerifyView(int layoutRes) {
+            iMain = LayoutInflater.from(mContext).inflate(layoutRes, null);
+        }
+    }
+
+    /**
+     * Input view to verify password
+     */
+    private class VerifyInputView extends BaseVerifyView {
+        public VerifyInputView() {
+            super(R.layout.input_input_layout);
+        }
+    }
+
+    /**
+     * Gesture view to verify password
+     */
+    private class VerifyGestureView extends BaseVerifyView {
+        public VerifyGestureView() {
+            super(R.layout.gesture_input_layout);
+        }
+    }
+
+    /**
+     * Imitate ios view to verify password
+     */
+    private class VerifyIosView extends BaseVerifyView {
+        public VerifyIosView() {
+            super(R.layout.ios_input_layout);
+        }
+    }
+
+    /**
+     * Fingerprint ios view to verify password
+     */
+    private class VerifyFingerprintView extends BaseVerifyView {
+        public VerifyFingerprintView() {
+            super(R.layout.fingerprint_input_layout);
         }
     }
 

@@ -36,6 +36,12 @@
         android:gravity="center_horizontal">
 
         <android.support.v7.widget.AppCompatButton
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/verify_enter_clear"/>
+
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/sure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

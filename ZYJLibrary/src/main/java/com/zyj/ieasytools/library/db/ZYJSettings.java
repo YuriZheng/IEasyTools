@@ -156,7 +156,7 @@ public class ZYJSettings extends BaseDatabase {
      *
      * @param key
      * @return find this properties and return the value, others return -1
-     * @throws Exception The value must is -1 or below zero
+     * @throws NumberFormatException if {@code string} cannot be parsed as an integer value.
      */
     public int getIntProperties(String key, int defaultValue) {
         return Integer.parseInt(getStringProperties(key, String.valueOf(defaultValue)));
@@ -167,7 +167,7 @@ public class ZYJSettings extends BaseDatabase {
      *
      * @param key
      * @return find this properties and return the value, others return -1
-     * @throws Exception The value must is -1 or below zero
+     * @throws NumberFormatException if {@code string} cannot be parsed as a long value.
      */
     public long getLongProperties(String key, long defaultValue) {
         return Long.parseLong(getStringProperties(key, String.valueOf(defaultValue)));
@@ -198,6 +198,7 @@ public class ZYJSettings extends BaseDatabase {
             }
             return mEncrypt.decrypt(value, APP_VERSION);
         } catch (Exception e) {
+            e.printStackTrace();
             return defaultString;
         }
     }

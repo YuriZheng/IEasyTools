@@ -24,7 +24,7 @@ public final class ZYJDBEntryptUtils {
      * Get the settings default encrypt bean
      */
     public static BaseEncrypt getSettingsEncrypt(Context context) {
-        return EncryptFactory.getInstance().getInstance(BaseEncrypt.ENCRYPT_AES, ZYJUtils.getSettingPassword(context));
+        return EncryptFactory.getInstance().getEncryptInstance(BaseEncrypt.ENCRYPT_AES, ZYJUtils.getSettingPassword(context));
     }
 
     /**
@@ -112,7 +112,7 @@ public final class ZYJDBEntryptUtils {
      * @return true if the password is right,other return false
      */
     public static boolean checkEncryptPassword(String method, String password, String from, String to, int version) {
-        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(method, password);
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getEncryptInstance(method, password);
         String decryptString = encrypt.decrypt(from, version);
         return to.equals(decryptString);
     }
@@ -127,7 +127,7 @@ public final class ZYJDBEntryptUtils {
      */
     public static String[] generateTestTo(String method, String password, int version) {
         String[] args = new String[2];
-        BaseEncrypt encrypt = EncryptFactory.getInstance().getInstance(method, password);
+        BaseEncrypt encrypt = EncryptFactory.getInstance().getEncryptInstance(method, password);
         args[0] = TEST_FROM;
         args[1] = encrypt.encrypt(args[0], version);
         return args;

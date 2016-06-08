@@ -17,6 +17,7 @@
     <string name="verify_enterpassword_gesture">手势验证</string>
     <string name="enter_password_setting">设置密码</string>
     <string name="enter_password_verify">验证密码</string>
+    <string name="verify_enter_clear">清除</string>
 
     <!-- 分组 -->
     <string name="password_catrgory_web">网页</string>
@@ -25,5 +26,7 @@
     <string name="password_catrgory_app">应用</string>
     <string name="password_catrgory_game">游戏</string>
     <string name="password_catrgory_other">其它</string>
+    <string name="verify_enter_copy">请再次输入密码</string>
+    <string name="verify_enter_faile">验证失败</string>
 
 </resources>

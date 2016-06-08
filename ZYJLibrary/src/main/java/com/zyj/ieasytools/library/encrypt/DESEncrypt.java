@@ -21,7 +21,7 @@ public class DESEncrypt extends BaseEncrypt {
      */
     private final String MODE = "DES/ECB/ISO10126Padding";
 
-    private DESEncrypt(String privateKey) {
+    protected DESEncrypt(String privateKey) {
         super(privateKey, ENCRYPT_DES);
     }
 

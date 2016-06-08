@@ -22,7 +22,7 @@ public class AESEncrypt extends BaseEncrypt {
      */
     private final String MODE = "AES";
 
-    private AESEncrypt(String privateKey) {
+    protected AESEncrypt(String privateKey) {
         super(privateKey, ENCRYPT_AES);
     }
 

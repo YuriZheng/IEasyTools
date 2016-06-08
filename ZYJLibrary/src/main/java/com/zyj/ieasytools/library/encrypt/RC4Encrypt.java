@@ -10,7 +10,7 @@ import android.text.TextUtils;
  */
 public class RC4Encrypt extends BaseEncrypt {
 
-    private RC4Encrypt(String privateKey) {
+    protected RC4Encrypt(String privateKey) {
         super(privateKey, ENCRYPT_RC4);
     }
 

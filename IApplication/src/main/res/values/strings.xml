@@ -16,6 +16,7 @@
     <string name="verify_enterpassword_gesture">Verify gesture</string>
     <string name="enter_password_setting">Setting Password</string>
     <string name="enter_password_verify">Verify Password</string>
+    <string name="verify_enter_clear">Clear</string>
 
     <!-- Password group -->
     <string name="password_catrgory_web">Web</string>
@@ -27,5 +28,7 @@
 
     <!-- No translatable-->
     <string name="drawer_toggle_text" translatable="false"></string>
+    <string name="verify_enter_copy">Input Again</string>
+    <string name="verify_enter_faile">Verify Faile</string>
 
 </resources>
