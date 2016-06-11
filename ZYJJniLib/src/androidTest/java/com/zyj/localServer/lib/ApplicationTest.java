@@ -1,4 +1,4 @@
-package com.zyj.jni.lib;
+package com.zyj.localserver.lib;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

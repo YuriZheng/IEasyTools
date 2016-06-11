@@ -61,6 +61,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     }
 
     private boolean handleException(Throwable ex) {
+        ZYJUtils.logW(TAG, "error : \n" + Log.getStackTraceString(ex));
         return true;
     }
 

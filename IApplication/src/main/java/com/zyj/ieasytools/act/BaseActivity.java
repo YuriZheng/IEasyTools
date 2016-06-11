@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 
 import com.zyj.ieasytools.dialog.InputEnterPasswordDialog;
 import com.zyj.ieasytools.library.db.ZYJContentProvider;
@@ -67,6 +68,9 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+
         mHandler = new Handler(getMainLooper());
         mListener = new ContentObserver(mHandler) {
             public void onChange(boolean selfChange, Uri uri) {
@@ -81,7 +85,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private boolean checkTimeOutOrPassword() {
-        if (mSettings.getLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, -1) > 0) {
+        long verifyLastTime = mSettings.getLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, -1);
+        if (verifyLastTime > 0 || verifyLastTime == InputEnterPasswordDialog.VERIFY_STATE_FAILE) {
+            ZYJUtils.logD(TAG, "verify last time: " + verifyLastTime);
             return true;
         }
         long lastTime = mSettings.getLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME, -1);

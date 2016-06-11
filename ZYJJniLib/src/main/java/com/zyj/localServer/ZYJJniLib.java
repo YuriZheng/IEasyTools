@@ -1,4 +1,4 @@
-package com.zyj.jni;
+package com.zyj.localserver;
 
 /**
  * Created by yuri.zheng on 2016/6/5.

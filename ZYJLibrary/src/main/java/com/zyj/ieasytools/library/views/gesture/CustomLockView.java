@@ -1,4 +1,4 @@
-package com.zyj.ieasytools.library.gesture;
+package com.zyj.ieasytools.library.views.gesture;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -148,7 +148,7 @@ public class CustomLockView extends View {
 
 
     private PreferencesUtils mSaveUtils;
-    private Handler mHandler = new Handler();
+    private Handler mHandler;
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     /**
@@ -228,6 +228,7 @@ public class CustomLockView extends View {
 
     private void init(Context context) {
         mContext = context;
+        mHandler = new Handler(mContext.getMainLooper());
         mSaveUtils = new PreferencesUtils(TAG.getSimpleName());
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {

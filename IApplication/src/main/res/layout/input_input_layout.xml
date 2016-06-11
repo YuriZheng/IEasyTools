@@ -23,7 +23,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:digits="123456789"
-            android:hint="请设定匹配码"
             android:inputType="number|numberPassword"
             android:maxLength="32"
             android:saveEnabled="false"/>

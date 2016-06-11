@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 
 import com.zyj.ieasytools.R;
-import com.zyj.ieasytools.library.gesture.CustomLockView;
+import com.zyj.ieasytools.library.views.gesture.CustomLockView;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 /**

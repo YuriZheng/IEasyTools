@@ -1,6 +1,7 @@
 package com.zyj.ieasytools.act;
 
 import android.animation.Animator;
+import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -332,11 +333,12 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             case R.id.menu_add:
                 ZYJUtils.logD(TAG, "menu_add");
                 hideSildeDrawer();
-                if (mMenuAdd.getAlpha() != 1) {
-                    // Show the left drawer
-                } else {
-
-                }
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        startActivity(new Intent(getApplicationContext(), AddEntryActivity.class)
+                                , ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
+                    }
+                }, 300);
                 break;
             case R.id.menu_seach:
                 ZYJUtils.logD(TAG, "menu_seach");
@@ -358,7 +360,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                     actionProgressBar(false);
                     break;
                 case R.id.settings_about:
-                    verifyEnterPassword();
                     break;
                 case R.id.settings_help:
                     break;

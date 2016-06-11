@@ -11,7 +11,7 @@
         android:id="@+id/sub_title"
         style="@style/input_enter_password_dialog_sub_title"/>
 
-    <com.zyj.ieasytools.library.gesture.CustomLockView
+    <com.zyj.ieasytools.library.views.gesture.CustomLockView
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

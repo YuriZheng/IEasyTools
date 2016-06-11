@@ -144,7 +144,7 @@ public class ZYJSettings extends BaseDatabase {
      * @return update or insert success, then return true, others return false
      */
     private boolean putProperties(Map.Entry<String, String> entry) {
-        if (checkEntry(entry.getKey())) {
+        if (checkEncryptEntry(entry.getKey())) {
             return updateSetting(entry) > 0;
         } else {
             return insertSetting(entry) != null;
@@ -237,7 +237,21 @@ public class ZYJSettings extends BaseDatabase {
      * Remove the key
      */
     public boolean remvoeEntry(String key) {
-        return mContext.getContentResolver().delete(ZYJContentProvider.SEETINGS_URI, DatabaseColumns.SettingColumns._KEY + "=?", new String[]{key}) > 0;
+        if (TextUtils.isEmpty(key)) {
+            throw new RuntimeException("The key is null");
+        }
+        if (mEncrypt == null) {
+            return false;
+        }
+        key = mEncrypt.encrypt(key, APP_VERSION);
+        if (checkEncryptEntry(key)) {
+            int count = mContext.getContentResolver().delete(ZYJContentProvider.SEETINGS_URI, DatabaseColumns.SettingColumns._KEY + "=?", new String[]{key});
+            ZYJUtils.logD(TAG, "Delete: " + count);
+            return count > 0;
+        } else {
+            ZYJUtils.logW(TAG, "No such column: " + key);
+            return true;
+        }
     }
 
     /**
@@ -246,8 +260,22 @@ public class ZYJSettings extends BaseDatabase {
      * @return Has this key then return true
      */
     public boolean checkEntry(String key) {
-        Cursor c = mContext.getContentResolver().query(ZYJContentProvider.SEETINGS_URI, null, DatabaseColumns.SettingColumns._KEY + "=?",
-                new String[]{key}, null);
+        if (TextUtils.isEmpty(key)) {
+            throw new RuntimeException("The key is null");
+        }
+        if (mEncrypt == null) {
+            return false;
+        }
+        key = mEncrypt.encrypt(key, APP_VERSION);
+        return checkEncryptEntry(key);
+    }
+
+    /**
+     * {@link #checkEntry(String)}
+     */
+    private boolean checkEncryptEntry(String key) {
+        Cursor c = mContext.getContentResolver().query(ZYJContentProvider.SEETINGS_URI, new String[]{DatabaseColumns.SettingColumns._KEY},
+                DatabaseColumns.SettingColumns._KEY + "=?", new String[]{key}, null);
         if (c == null) {
             return false;
         }

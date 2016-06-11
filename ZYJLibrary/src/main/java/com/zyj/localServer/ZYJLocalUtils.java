@@ -1,19 +1,19 @@
-package com.zyj.jni;
+package com.zyj.localserver;
 
 import java.io.UnsupportedEncodingException;
 
 /**
  * Created by yuri.zheng on 2016/6/5.
  */
-public final class ZYJJniUtils {
+public final class ZYJLocalUtils {
 
-    private static ZYJJniUtils sInstance;
+    private static ZYJLocalUtils sInstance;
 
     private static ZYJJniLib sJniLib;
 
-    public static ZYJJniUtils getInstance() {
+    public static ZYJLocalUtils getInstance() {
         if (sInstance == null) {
-            sInstance = new ZYJJniUtils();
+            sInstance = new ZYJLocalUtils();
         }
         return sInstance;
     }
@@ -25,7 +25,7 @@ public final class ZYJJniUtils {
         return sJniLib;
     }
 
-    private ZYJJniUtils() {
+    private ZYJLocalUtils() {
     }
 
     public String generateSettingCode(String resourceCode) {

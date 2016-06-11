@@ -9,13 +9,6 @@
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
 
-    <style name="activity_main_menu_image_button_style" parent="base_button_background_less">
-        <item name="android:layout_width">?attr/actionBarSize</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_gravity">right</item>
-        <item name="android:onClick">onMenuViewClick</item>
-    </style>
-
     <style name="activity_main_group_image_button_style" parent="base_button_background">
         <item name="android:layout_width">?attr/actionBarSize</item>
         <item name="android:layout_height">?attr/actionBarSize</item>

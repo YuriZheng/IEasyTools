@@ -30,6 +30,7 @@ public class InputEnterPasswordDialog extends Dialog {
 
     private final Class TAG = getClass();
 
+    // TODO: 6/11/16 修改默认的验证方法
     /**
      * Enter password style: gesture
      */
@@ -46,6 +47,14 @@ public class InputEnterPasswordDialog extends Dialog {
      * Enter password style: input
      */
     public static final int ENTER_PASSWORD_INPUT = 0XC4;
+    /**
+     * Verify more than {@link BaseVerifyView#WRONG_COUNT}
+     */
+//    public static final int VERIFY_STATE_TIME_OUT = -0XA;
+    /**
+     * Direct return, verify fail
+     */
+    public static final int VERIFY_STATE_FAILE = -0XB;
 
     // Verify faile and verify again delayed time
     private final int mTimeOut = 1000 * 60 * 1;
@@ -199,8 +208,15 @@ public class InputEnterPasswordDialog extends Dialog {
             if (mResultCallBack != null) {
                 mResultCallBack.verifyEnterPasswordCallBack(iSuccess);
             }
-            if (iSuccess) {
-                mSettings.putLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, -1);
+            if (!iSuccess) {
+                long lastTime = mSettings.getLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, -1);
+                if (lastTime > 0) {
+                    // verify time out, do nothing
+                } else if (lastTime == -1) {
+                    mSettings.putLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, VERIFY_STATE_FAILE);
+                }
+            } else if (iSuccess) {
+                ZYJUtils.logD(TAG, "Verify success: " + mSettings.remvoeEntry(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME));
             }
         }
 
