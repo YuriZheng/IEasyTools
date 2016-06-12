@@ -29,6 +29,33 @@
     <string name="password_long">密码太长</string>
     <string name="setting_password_finish">密码设置完成</string>
 
+    <string name="add_input_title">标题</string>
+    <string name="add_input_title_hint">请输入标题，2-10个字符</string>
+    <string name="add_input_user">用户</string>
+    <string name="add_input_user_hint">请输入用户名</string>
+    <string name="add_input_password">密码</string>
+    <string name="add_input_password_hint">请输入密码</string>
+    <string name="add_input_method">方式</string>
+    <string name="add_input_method_hint">请选择加密\解密方法</string>
+    <string name="add_input_a_1">答案1</string>
+    <string name="add_input_a_2">答案2</string>
+    <string name="add_input_a_3">答案3</string>
+    <string name="add_input_a_hint">请输入问题答案</string>
+    <string name="add_input_address">地址</string>
+    <string name="add_input_address_hint">请输入帐号相关地址</string>
+    <string name="add_input_description">描述</string>
+    <string name="add_input_description_hint">请输入帐号相关描述</string>
+    <string name="add_input_email">邮件</string>
+    <string name="add_input_email_hint">请输入帐号绑定邮箱</string>
+    <string name="add_input_phone">电话</string>
+    <string name="add_input_phone_hint">请输入帐号绑定电话</string>
+    <string name="add_input_q_1">问题1</string>
+    <string name="add_input_q_2">问题2</string>
+    <string name="add_input_q_3">问题3</string>
+    <string name="add_input_q_hint">请输入帐号相关问题</string>
+    <string name="add_input_remark">备注</string>
+    <string name="add_input_remark_hint">请输入相关备注</string>
+
     <!-- 分组 -->
     <string name="password_catrgory_web">网页</string>
     <string name="password_catrgory_email">邮件</string>

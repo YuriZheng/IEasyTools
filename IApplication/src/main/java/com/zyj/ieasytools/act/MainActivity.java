@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,7 +43,6 @@ import com.zyj.ieasytools.views.GroupOtherView;
 import com.zyj.ieasytools.views.GroupWalletView;
 import com.zyj.ieasytools.views.GroupWebView;
 
-import java.lang.reflect.Field;
 import java.util.UUID;
 
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
@@ -67,6 +67,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
     private View mToolNavigationView;
+    private View mTitleTextView;
     private ProgressBar mProgressBar;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
@@ -75,6 +76,17 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     private View mMenuAdd;
     private View mMenuSeach;
     private MenuRevealView mMenuLayout;
+
+    /**
+     * Record the category
+     * <li>{@link PasswordEntry#CATEGORY_WEB}</li>
+     * <li>{@link PasswordEntry#CATEGORY_EMAIL}</li>
+     * <li>{@link PasswordEntry#CATEGORY_WALLET}</li>
+     * <li>{@link PasswordEntry#CATEGORY_APP}</li>
+     * <li>{@link PasswordEntry#CATEGORY_GAME}</li>
+     * <li>{@link PasswordEntry#CATEGORY_OTHER}</li>
+     */
+    private String mCategory = PasswordEntry.CATEGORY_WEB;
 
     private TextView mDebug;
 
@@ -103,21 +115,10 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mToolbar = getViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.password_catrgory_web);
         setSupportActionBar(mToolbar);
-        try {
-            Field colorFid = Toolbar.class.getDeclaredField("mNavButtonView");
-            colorFid.setAccessible(true);
-            mToolNavigationView = (View) colorFid.get(mToolbar);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            Field colorFid = Toolbar.class.getDeclaredField("mTitleTextView");
-            colorFid.setAccessible(true);
-            TextView titleTextView = (TextView) colorFid.get(mToolbar);
-            mToolbarTextSize = titleTextView.getTextSize();
-        } catch (Exception e) {
-            e.printStackTrace();
+        mToolNavigationView = getToolbarChildView(mToolbar, "mNavButtonView", View.class);
+        mTitleTextView = getToolbarChildView(mToolbar, "mTitleTextView", View.class);
+        if (mTitleTextView != null) {
+            mToolbarTextSize = ((TextView) mTitleTextView).getTextSize();
         }
 
         mProgressBar = getViewById(R.id.progress);
@@ -335,8 +336,16 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 hideSildeDrawer();
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
-                        startActivity(new Intent(getApplicationContext(), AddEntryActivity.class)
-                                , ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
+                        Intent intent = new Intent(getApplicationContext(), AddEntryActivity.class);
+                        intent.putExtra(AddEntryActivity.PASSWORD_ENTRY, mCategory);
+                        if (mTitleTextView != null) {
+                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this
+                                    , Pair.create(mTitleTextView, "share")).toBundle());
+                        } else {
+                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this
+                            ).toBundle());
+                        }
+
                     }
                 }, 300);
                 break;
@@ -383,26 +392,32 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             case R.id.group_web:
                 mToolbar.setTitle(R.string.password_catrgory_web);
                 addSwitchView(view, mGroupWebView.getMainView());
+                mCategory = PasswordEntry.CATEGORY_WEB;
                 break;
             case R.id.group_email:
                 mToolbar.setTitle(R.string.password_catrgory_email);
                 addSwitchView(view, mGroupEmailView.getMainView());
+                mCategory = PasswordEntry.CATEGORY_EMAIL;
                 break;
             case R.id.group_wallet:
                 mToolbar.setTitle(R.string.password_catrgory_wallet);
                 addSwitchView(view, mGroupWalletView.getMainView());
+                mCategory = PasswordEntry.CATEGORY_WALLET;
                 break;
             case R.id.group_app:
                 mToolbar.setTitle(R.string.password_catrgory_app);
                 addSwitchView(view, mGroupAppView.getMainView());
+                mCategory = PasswordEntry.CATEGORY_APP;
                 break;
             case R.id.group_game:
                 mToolbar.setTitle(R.string.password_catrgory_game);
                 addSwitchView(view, mGroupGameView.getMainView());
+                mCategory = PasswordEntry.CATEGORY_GAME;
                 break;
             case R.id.group_other:
                 mToolbar.setTitle(R.string.password_catrgory_other);
                 addSwitchView(view, mGroupOtherView.getMainView());
+                mCategory = PasswordEntry.CATEGORY_OTHER;
                 break;
         }
         mMenuLayout.hideMenu();

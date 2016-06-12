@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 
@@ -19,6 +20,8 @@ import com.zyj.ieasytools.library.db.ZYJContentProvider;
 import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.utils.SettingsConstant;
+
+import java.lang.reflect.Field;
 
 /**
  * Created by yuri.zheng on 2016/5/11.
@@ -159,6 +162,20 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
     };
+
+    /**
+     * Get toolbar fields
+     */
+    protected <T> T getToolbarChildView(Toolbar toolbar, String value, Class<T> clz) {
+        try {
+            Field colorFid = Toolbar.class.getDeclaredField(value);
+            colorFid.setAccessible(true);
+            return (T) colorFid.get(toolbar);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /**
      * Get the view by id

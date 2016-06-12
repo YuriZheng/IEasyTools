@@ -26,12 +26,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
 
-        <TextView
+        <com.zyj.ieasytools.views.VerticalViewPager
+            android:id="@+id/vertical_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="1111111111" />
+            android:layout_height="match_parent" />
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

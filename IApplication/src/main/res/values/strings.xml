@@ -28,6 +28,33 @@
     <string name="password_long">Password is too long</string>
     <string name="setting_password_finish">Setup is complete</string>
 
+    <string name="add_input_title">Title</string>
+    <string name="add_input_title_hint">Input title between 2 and 10 chars</string>
+    <string name="add_input_user">User</string>
+    <string name="add_input_user_hint">Input user</string>
+    <string name="add_input_password">Password</string>
+    <string name="add_input_password_hint">Input password</string>
+    <string name="add_input_method">Method</string>
+    <string name="add_input_method_hint">Encrypt method</string>
+    <string name="add_input_email">Email</string>
+    <string name="add_input_email_hint">Input email for this user</string>
+    <string name="add_input_phone">Phone</string>
+    <string name="add_input_phone_hint">Input phone for this user</string>
+    <string name="add_input_address">Address</string>
+    <string name="add_input_address_hint">Input address for this user</string>
+    <string name="add_input_description">Description</string>
+    <string name="add_input_description_hint">Description for this user</string>
+    <string name="add_input_q_1">Question 1</string>
+    <string name="add_input_q_hint">Input the question for this user</string>
+    <string name="add_input_a_1">Answe 1</string>
+    <string name="add_input_a_hint">Input the answe for this user</string>
+    <string name="add_input_q_2">Question 2</string>
+    <string name="add_input_q_3">Question 3</string>
+    <string name="add_input_a_2">Answe 2</string>
+    <string name="add_input_a_3">Answe 3</string>
+    <string name="add_input_remark">Remark</string>
+    <string name="add_input_remark_hint">Input remark</string>
+
     <!-- Password group -->
     <string name="password_catrgory_web">Web</string>
     <string name="password_catrgory_email">Email</string>

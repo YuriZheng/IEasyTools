@@ -20,6 +20,7 @@ import java.util.Date;
  */
 public final class ZYJUtils {
 
+    // TODO: 6/11/16 这种全局变量，全部放入c语言中
     /**
      * To see the database's data
      */
