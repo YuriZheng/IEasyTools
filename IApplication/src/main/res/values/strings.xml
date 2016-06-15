@@ -54,6 +54,8 @@
     <string name="add_input_a_3">Answe 3</string>
     <string name="add_input_remark">Remark</string>
     <string name="add_input_remark_hint">Input remark</string>
+    <string name="add_input_next">Next</string>
+    <string name="add_input_previous">Previous</string>
 
     <!-- Password group -->
     <string name="password_catrgory_web">Web</string>

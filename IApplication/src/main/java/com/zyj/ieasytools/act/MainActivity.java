@@ -1,6 +1,7 @@
 package com.zyj.ieasytools.act;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -35,7 +35,6 @@ import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
-import com.zyj.ieasytools.utils.SettingsConstant;
 import com.zyj.ieasytools.views.GroupAppView;
 import com.zyj.ieasytools.views.GroupEmailView;
 import com.zyj.ieasytools.views.GroupGameView;
@@ -142,7 +141,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mNavigationView = getViewById(R.id.navigationView);
         mNavigationView.setNavigationItemSelectedListener(mNavigationClick);
 
-        if (TextUtils.isEmpty(mSettings.getStringProperties(SettingsConstant.SETTINGS_VIEW_OTHER_DATABASE, null))) {
+        if (ZYJDBEntryptUtils.getDatabasePathsBesidesCurrent(this).size() <= 0) {
             mNavigationView.getMenu().removeItem(R.id.settings_view_other);
         }
         DrawerLayout.LayoutParams lp = (DrawerLayout.LayoutParams) mNavigationView.getLayoutParams();
@@ -249,20 +248,12 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         final Animator anim = ViewAnimationUtils.createCircularReveal(addView, mGroupWidth + 50, y, 0, mEndRadius);
         anim.setDuration(600);
         anim.setInterpolator(new DecelerateInterpolator());
-        anim.addListener(new Animator.AnimatorListener() {
-            public void onAnimationStart(Animator animation) {
-            }
-
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
             public void onAnimationEnd(Animator animation) {
                 for (int i = 0; i < views.length; i++) {
                     mMainViewLayout.removeView(views[i]);
                 }
-            }
-
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            public void onAnimationRepeat(Animator animation) {
             }
         });
         return anim;

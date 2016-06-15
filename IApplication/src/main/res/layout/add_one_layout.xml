@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/colorPrimary">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,17 +18,15 @@
 
             <TextView
                 style="@style/add_input_lable_style"
-                android:text="@string/add_input_title" />
+                android:text="@string/add_input_title"/>
 
             <EditText
                 android:id="@+id/title_input"
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_title_hint"
                 android:imeOptions="actionNext"
-                android:nextFocusForward="@+id/user_input" />
+                android:nextFocusForward="@+id/user_input"/>
         </LinearLayout>
-
-        <View style="@style/add_line_style" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,17 +35,15 @@
 
             <TextView
                 style="@style/add_input_lable_style"
-                android:text="@string/add_input_user" />
+                android:text="@string/add_input_user"/>
 
             <EditText
                 android:id="@+id/user_input"
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_user_hint"
                 android:imeOptions="actionNext"
-                android:nextFocusForward="@+id/password_input" />
+                android:nextFocusForward="@+id/password_input"/>
         </LinearLayout>
-
-        <View style="@style/add_line_style" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,17 +52,16 @@
 
             <TextView
                 style="@style/add_input_lable_style"
-                android:text="@string/add_input_password" />
+                android:text="@string/add_input_password"/>
 
             <EditText
                 android:id="@+id/password_input"
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_password_hint"
                 android:imeOptions="actionNext"
-                android:nextFocusForward="@+id/method_input" />
+                android:inputType="textPassword"
+                android:nextFocusForward="@+id/method_input"/>
         </LinearLayout>
-
-        <View style="@style/add_line_style" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,16 +70,21 @@
 
             <TextView
                 style="@style/add_input_lable_style"
-                android:text="@string/add_input_method" />
+                android:text="@string/add_input_method"/>
 
             <EditText
                 android:id="@+id/method_input"
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_method_hint"
-                android:imeOptions="actionDone" />
+                android:imeOptions="actionDone"/>
         </LinearLayout>
 
-        <View style="@style/add_line_style" />
+        <Button
+            android:id="@+id/next1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onViewClick"
+            android:text="@string/add_input_next"/>
 
     </LinearLayout>
 </ScrollView>

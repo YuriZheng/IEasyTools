@@ -9,8 +9,11 @@ import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.EncryptFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Get the encrypt util
@@ -78,27 +81,44 @@ public final class ZYJDBEntryptUtils {
 
     /**
      * Get our database file<br>
-     * "/storage/emulated/0" + {@link ZYJUtils#ROOR_PATH} + {@link com.zyj.ieasytools.library.db.DatabaseColumns.EncryptColumns#DATABASE_NAME}<br>
+     * "/data/data/com.zyj.ieasytools/databases/encrypt.izyj"<br>
      *
-     * @param context
      * @return the file of database, if create new file faile,then return null
      */
     public static File getCurrentDatabasePath(Context context) {
-//        String path = ZYJUtils.getExternalRootPath() + "/" + DatabaseColumns.EncryptColumns.DATABASE_NAME;
-//        File file = new File(path);
-        String dir = context.getExternalFilesDir("ZYJ").getPath();
-        File file = new File(dir + "/" + DatabaseColumns.EncryptColumns.DATABASE_NAME);
+        String root = context.getDatabasePath(DatabaseColumns.EncryptColumns.DATABASE_NAME).getAbsolutePath();
+        File file = new File(root);
         if (!file.exists()) {
+            file.getParent();
+            File dir = new File(file.getParent());
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
             try {
                 file.createNewFile();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 return null;
             }
         }
-//        file.setWritable(true);
-//        file.setReadable(true);
         return file;
+    }
+
+    /**
+     * Get other database paths
+     */
+    public static List<String> getDatabasePathsBesidesCurrent(Context context) {
+        List<String> paths = new ArrayList<String>();
+        String root = context.getDatabasePath(DatabaseColumns.EncryptColumns.DATABASE_NAME).getAbsolutePath();
+        File file = new File(new File(root).getParent());
+        for (String s : file.list()) {
+            if (!s.equals(DatabaseColumns.EncryptColumns.DATABASE_NAME)) {
+                String path = file.getAbsolutePath() + "/" + s;
+                ZYJUtils.logD(ZYJDBEntryptUtils.class, "Has other database: " + path);
+                paths.add(path);
+            }
+        }
+        return paths;
     }
 
     /**

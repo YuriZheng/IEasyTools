@@ -3,14 +3,12 @@ package com.zyj.ieasytools.library.utils;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 
-import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,8 +35,6 @@ public final class ZYJUtils {
     public static final boolean isFunctionDebug = true;
 
     private static String TAG = "zyj";
-
-    private static final String ROOR_PATH = "/.i_EasyTools/";
 
     public static void logD(Class<?> clz, String msg) {
         if (isLogDebug && msg != null) {
@@ -143,9 +139,9 @@ public final class ZYJUtils {
      *
      * @return exist will return true, otherwise return false
      */
-    public static boolean isExternalCardExist() {
-        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-    }
+//    public static boolean isExternalCardExist() {
+//        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+//    }
 
     /**
      * Get sdcard path if sd is available<br>
@@ -154,25 +150,25 @@ public final class ZYJUtils {
      *
      * @return if available, return the path, otherwise return null
      */
-    public static String getExternalRootPath() {
-        if (isExternalCardExist()) {
-            String root = Environment.getExternalStorageDirectory().getAbsolutePath() + ROOR_PATH;
-            File rootDir = new File(root);
-            if (!rootDir.exists()) {
-                if (!rootDir.mkdirs()) {
-                    ZYJUtils.logW(ZYJUtils.class, "Can't create dirs");
-                    return null;
-                }
-            }
-            if (rootDir.canRead() && rootDir.canWrite()) {
-                return root;
-            }
-            ZYJUtils.logW(ZYJUtils.class, "Can't read or write");
-            return null;
-        } else {
-            return null;
-        }
-    }
+//    public static String getExternalRootPath() {
+//        if (isExternalCardExist()) {
+//            String root = Environment.getExternalStorageDirectory().getAbsolutePath() + ROOR_PATH;
+//            File rootDir = new File(root);
+//            if (!rootDir.exists()) {
+//                if (!rootDir.mkdirs()) {
+//                    ZYJUtils.logW(ZYJUtils.class, "Can't create dirs");
+//                    return null;
+//                }
+//            }
+//            if (rootDir.canRead() && rootDir.canWrite()) {
+//                return root;
+//            }
+//            ZYJUtils.logW(ZYJUtils.class, "Can't read or write");
+//            return null;
+//        } else {
+//            return null;
+//        }
+//    }
 
     /**
      * Get the setting encrypt password

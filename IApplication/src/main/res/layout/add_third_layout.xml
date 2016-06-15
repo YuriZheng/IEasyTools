@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/colorPrimary">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,17 +18,16 @@
 
             <TextView
                 style="@style/add_input_lable_style"
-                android:text="@string/add_input_q_1" />
+                android:text="@string/add_input_q_1"/>
 
             <EditText
                 android:id="@+id/q_1s_input"
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_q_hint"
                 android:imeOptions="actionNext"
-                android:nextFocusForward="@+id/a_1_input" />
+                android:nextFocusForward="@+id/a_1_input"/>
         </LinearLayout>
 
-        <View style="@style/add_line_style" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,17 +36,16 @@
 
             <TextView
                 style="@style/add_input_lable_style"
-                android:text="@string/add_input_a_1" />
+                android:text="@string/add_input_a_1"/>
 
             <EditText
                 android:id="@+id/a_1_input"
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_a_hint"
                 android:imeOptions="actionNext"
-                android:nextFocusForward="@+id/q_2_input" />
+                android:nextFocusForward="@+id/q_2_input"/>
         </LinearLayout>
 
-        <View style="@style/add_line_style" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,17 +54,16 @@
 
             <TextView
                 style="@style/add_input_lable_style"
-                android:text="@string/add_input_q_2" />
+                android:text="@string/add_input_q_2"/>
 
             <EditText
                 android:id="@+id/q_2_input"
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_q_hint"
                 android:imeOptions="actionNext"
-                android:nextFocusForward="@+id/a_2_input" />
+                android:nextFocusForward="@+id/a_2_input"/>
         </LinearLayout>
 
-        <View style="@style/add_line_style" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -74,17 +72,16 @@
 
             <TextView
                 style="@style/add_input_lable_style"
-                android:text="@string/add_input_a_2" />
+                android:text="@string/add_input_a_2"/>
 
             <EditText
                 android:id="@+id/a_2_input"
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_a_hint"
                 android:imeOptions="actionNext"
-                android:nextFocusForward="@+id/a_3_input" />
+                android:nextFocusForward="@+id/a_3_input"/>
         </LinearLayout>
 
-        <View style="@style/add_line_style" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -93,17 +90,16 @@
 
             <TextView
                 style="@style/add_input_lable_style"
-                android:text="@string/add_input_q_3" />
+                android:text="@string/add_input_q_3"/>
 
             <EditText
                 android:id="@+id/q_3_input"
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_q_hint"
                 android:imeOptions="actionNext"
-                android:nextFocusForward="@+id/a_3_input" />
+                android:nextFocusForward="@+id/a_3_input"/>
         </LinearLayout>
 
-        <View style="@style/add_line_style" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -112,17 +108,16 @@
 
             <TextView
                 style="@style/add_input_lable_style"
-                android:text="@string/add_input_a_3" />
+                android:text="@string/add_input_a_3"/>
 
             <EditText
                 android:id="@+id/a_3_input"
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_a_hint"
                 android:imeOptions="actionNext"
-                android:nextFocusForward="@+id/remark_input" />
+                android:nextFocusForward="@+id/remark_input"/>
         </LinearLayout>
 
-        <View style="@style/add_line_style" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -131,14 +126,20 @@
 
             <TextView
                 style="@style/add_input_lable_style"
-                android:text="@string/add_input_remark" />
+                android:text="@string/add_input_remark"/>
 
             <EditText
                 android:id="@+id/remark_input"
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_remark_hint"
-                android:imeOptions="actionDone" />
+                android:imeOptions="actionDone"/>
         </LinearLayout>
 
+        <Button
+            android:id="@+id/previous1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onViewClick"
+            android:text="@string/add_input_previous"/>
     </LinearLayout>
 </ScrollView>

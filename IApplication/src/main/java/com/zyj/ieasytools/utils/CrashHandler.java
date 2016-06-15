@@ -50,7 +50,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             mUncaughtHandler.uncaughtException(thread, ex);
         } else {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 ZYJUtils.logW(TAG, "error : \n" + Log.getStackTraceString(e));
             }

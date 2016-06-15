@@ -190,7 +190,7 @@ public class InputEnterPasswordDialog extends Dialog {
         // The max count of wrong number
         protected final int WRONG_COUNT = 5;
         // The delayed time to dismiss this dialog
-        protected final int Delayed = 1000 * 1;
+        protected final int iDelayed = 1000 * 1;
         // The main view
         protected final View iMain;
         // The Sub title view
@@ -238,7 +238,7 @@ public class InputEnterPasswordDialog extends Dialog {
                 public void run() {
                     InputEnterPasswordDialog.this.dismiss();
                 }
-            }, Delayed);
+            }, iDelayed);
         }
     }
 
