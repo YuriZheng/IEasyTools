@@ -25,6 +25,12 @@
     <string name="verify_five_minutes_later">%1$s分钟之后再试</string>
     <string name="verify_error_count">错误%1$s次</string>
 
+    <string name="database_open_error">数据库错误代码：%1$s</string>
+    <string name="database_open_file_exception">数据库文件异常</string>
+    <string name="database_open_password_wrong">数据库密码错误</string>
+    <string name="database_open_open_unknow">数据库未知错误</string>
+    <string name="database_open_unknow">未知错误</string>
+
     <string name="password_short">密码太短</string>
     <string name="password_long">密码太长</string>
     <string name="setting_password_finish">密码设置完成</string>

@@ -22,21 +22,26 @@ public abstract class BaseDatabase {
     protected MySQLiteDatabase mSQLDatabase;
 
     /**
-     * The database open success
+     * Open database state
      */
-    public static final int DATABASE_OPEN_SUCCESS = 0;
-    /**
-     * The databse file is not exists or cann't read
-     */
-    public static final int DATABASE_OPEN_FILE_EXCEPTION = -0xA;
-    /**
-     * Error password to open database
-     */
-    public static final int DATABASE_OPEN_PASSWORD = DATABASE_OPEN_FILE_EXCEPTION << 1;
-    /**
-     * Unknow error
-     */
-    public static final int DATABASE_OPEN_UNKNOW = DATABASE_OPEN_FILE_EXCEPTION << 2;
+    public enum DATABASE_OPEN_STATE {
+        /**
+         * The database open success
+         */
+        DATABASE_OPEN_SUCCESS,
+        /**
+         * The databse file is not exists or cann't read
+         */
+        DATABASE_OPEN_FILE_EXCEPTION,
+        /**
+         * Error password to open database
+         */
+        DATABASE_OPEN_PASSWORD,
+        /**
+         * Unknow error
+         */
+        DATABASE_OPEN_UNKNOW
+    }
 
     public BaseDatabase(Context context) {
         this.mContext = context;
@@ -60,7 +65,7 @@ public abstract class BaseDatabase {
      */
     @SuppressWarnings("unused")
     protected void dropTable(String tableName) {
-        if (checkDatabaseOpenState(mSQLDatabase)) {
+        if (checkDatabaseValid()) {
             ZYJUtils.logD(TAG, "Drop table" + tableName);
             mSQLDatabase.getSQLDatabase().execSQL("DROP TABLE IF EXISTS " + tableName);
         } else {
@@ -74,7 +79,7 @@ public abstract class BaseDatabase {
      * @param createSql the sql
      */
     protected void creatTable(String createSql) {
-        if (checkDatabaseOpenState(mSQLDatabase)) {
+        if (checkDatabaseValid()) {
             ZYJUtils.logI(TAG, "Database onCreate: " + createSql);
             mSQLDatabase.getSQLDatabase().execSQL(createSql);
         } else {
@@ -83,7 +88,7 @@ public abstract class BaseDatabase {
     }
 
     public void onDestroy() {
-        if (checkDatabaseOpenState(mSQLDatabase)) {
+        if (checkDatabaseValid()) {
             if (mSQLDatabase.getSQLDatabase().isOpen()) {
                 mSQLDatabase.getSQLDatabase().close();
             }
@@ -106,18 +111,18 @@ public abstract class BaseDatabase {
         if (TextUtils.isEmpty(path) || TextUtils.isEmpty(password)
                 || password.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN
                 || password.length() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
-            mSQLDatabase.setSQL(null, DATABASE_OPEN_PASSWORD);
+            mSQLDatabase.setSQL(null, DATABASE_OPEN_STATE.DATABASE_OPEN_PASSWORD);
             return mSQLDatabase;
         }
         SQLiteDatabase database = null;
         try {
             File file = new File(path);
             if (!file.exists()) {
-                mSQLDatabase.setSQL(null, DATABASE_OPEN_FILE_EXCEPTION);
+                mSQLDatabase.setSQL(null, DATABASE_OPEN_STATE.DATABASE_OPEN_FILE_EXCEPTION);
                 return mSQLDatabase;
             }
             if (!file.canRead() || !file.canWrite()) {
-                mSQLDatabase.setSQL(null, DATABASE_OPEN_FILE_EXCEPTION);
+                mSQLDatabase.setSQL(null, DATABASE_OPEN_STATE.DATABASE_OPEN_FILE_EXCEPTION);
                 return mSQLDatabase;
             }
             // Debug
@@ -133,16 +138,16 @@ public abstract class BaseDatabase {
                     onUpgrade(database, database.getVersion(), getVersion());
                     database.setVersion(getVersion());
                 }
-                mSQLDatabase.setSQL(database, DATABASE_OPEN_SUCCESS);
+                mSQLDatabase.setSQL(database, DATABASE_OPEN_STATE.DATABASE_OPEN_SUCCESS);
             } else {
-                mSQLDatabase.setSQL(null, DATABASE_OPEN_UNKNOW);
+                mSQLDatabase.setSQL(null, DATABASE_OPEN_STATE.DATABASE_OPEN_UNKNOW);
             }
         } catch (SQLException e) {
             e.printStackTrace();
             if (database != null && database.isOpen()) {
                 database.close();
             }
-            mSQLDatabase.setSQL(null, DATABASE_OPEN_PASSWORD);
+            mSQLDatabase.setSQL(null, DATABASE_OPEN_STATE.DATABASE_OPEN_PASSWORD);
         }
         return mSQLDatabase;
     }
@@ -171,13 +176,12 @@ public abstract class BaseDatabase {
     }
 
     /**
-     * Check the {@link MySQLiteDatabase} is null
+     * Check the database is valid
      *
-     * @param my the checked instance
      * @return the instance is useful then return true, other return false
      */
-    protected boolean checkDatabaseOpenState(MySQLiteDatabase my) {
-        if (my == null || my.getStateCode() != DATABASE_OPEN_SUCCESS || my.getSQLDatabase() == null) {
+    protected boolean checkDatabaseValid() {
+        if (mSQLDatabase == null || mSQLDatabase.getStateCode() != DATABASE_OPEN_STATE.DATABASE_OPEN_SUCCESS || mSQLDatabase.getSQLDatabase() == null) {
             return false;
         }
         return true;
@@ -189,12 +193,12 @@ public abstract class BaseDatabase {
     protected class MySQLiteDatabase {
         private SQLiteDatabase mSQLDatabase = null;
         /**
-         * {@link #DATABASE_OPEN_SUCCESS}<br>
-         * {@link #DATABASE_OPEN_FILE_EXCEPTION}<br>
-         * {@link #DATABASE_OPEN_PASSWORD}<br>
-         * {@link #DATABASE_OPEN_UNKNOW}<br>
+         * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_SUCCESS}<br>
+         * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_FILE_EXCEPTION}<br>
+         * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_PASSWORD}<br>
+         * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_UNKNOW}<br>
          */
-        private int mStateCode;
+        private DATABASE_OPEN_STATE mStateCode;
 
         protected MySQLiteDatabase() {
         }
@@ -206,26 +210,26 @@ public abstract class BaseDatabase {
         /**
          * return {@link #mStateCode}
          */
-        public int getStateCode() {
+        public DATABASE_OPEN_STATE getStateCode() {
             return mStateCode;
         }
 
         public String getStateMessage() {
-            switch (getStateCode()) {
-                case DATABASE_OPEN_SUCCESS:
-                    return "database open success";
-                case DATABASE_OPEN_FILE_EXCEPTION:
-                    return "database open file exception";
-                case DATABASE_OPEN_PASSWORD:
-                    return "database open password wrong";
-                case DATABASE_OPEN_UNKNOW:
-                    return "database open unknow";
-                default:
-                    return "unknow";
+            DATABASE_OPEN_STATE state = getStateCode();
+            if (state == DATABASE_OPEN_STATE.DATABASE_OPEN_SUCCESS) {
+                return "database open success";
+            } else if (state == DATABASE_OPEN_STATE.DATABASE_OPEN_FILE_EXCEPTION) {
+                return "database open file exception";
+            } else if (state == DATABASE_OPEN_STATE.DATABASE_OPEN_PASSWORD) {
+                return "database open password wrong";
+            } else if (state == DATABASE_OPEN_STATE.DATABASE_OPEN_UNKNOW) {
+                return "database open unknow";
+            } else {
+                return "unknow";
             }
         }
 
-        protected MySQLiteDatabase setSQL(SQLiteDatabase database, int stateCode) {
+        protected MySQLiteDatabase setSQL(SQLiteDatabase database, DATABASE_OPEN_STATE stateCode) {
             this.mSQLDatabase = database;
             this.mStateCode = stateCode;
             return this;

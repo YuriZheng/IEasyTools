@@ -30,19 +30,16 @@ import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.library.db.ZYJEncrypts;
-import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
-import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
+import com.zyj.ieasytools.utils.EntryptUtils;
 import com.zyj.ieasytools.views.GroupAppView;
 import com.zyj.ieasytools.views.GroupEmailView;
 import com.zyj.ieasytools.views.GroupGameView;
 import com.zyj.ieasytools.views.GroupOtherView;
 import com.zyj.ieasytools.views.GroupWalletView;
 import com.zyj.ieasytools.views.GroupWebView;
-
-import java.util.UUID;
 
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
 
@@ -141,7 +138,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mNavigationView = getViewById(R.id.navigationView);
         mNavigationView.setNavigationItemSelectedListener(mNavigationClick);
 
-        if (ZYJDBEntryptUtils.getDatabasePathsBesidesCurrent(this).size() <= 0) {
+        if (EntryptUtils.getDatabasePathsBesidesCurrent(this).size() <= 0) {
             mNavigationView.getMenu().removeItem(R.id.settings_view_other);
         }
         DrawerLayout.LayoutParams lp = (DrawerLayout.LayoutParams) mNavigationView.getLayoutParams();
@@ -158,13 +155,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             mDebug.setText("Name: " + versions[0].toString() + "\nCode: " + versions[1].toString());
             mDebug.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.mipmap.debug);
             mDebug.setVisibility(View.VISIBLE);
-        }
-
-        mEncrypt = ZYJDBEntryptUtils.getCurrentEncryptDatabase(this, "12345678");
-        PasswordEntry e = new PasswordEntry(UUID.randomUUID().toString(), "497393102", BaseEncrypt.ENCRYPT_AES);
-        if (mEncrypt != null) {
-            mEncrypt.insertEntry(e, "497393102");
-            ZYJUtils.logD(TAG, "" + mEncrypt.getAllRecord());
         }
     }
 
@@ -197,7 +187,15 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         super.onDestroy();
         unbindService(mConnection);
         // Only call once
-        ZYJEncrypts.destory();
+        EntryptUtils.destoryEntrypt();
+    }
+
+    @Override
+    protected void verifyEnterPasswordSuccess() {
+        super.verifyEnterPasswordSuccess();
+        mEncrypt = EntryptUtils.getEncryptInstance(this);
+
+        ZYJUtils.logD(TAG, "Encrypt is " + (mEncrypt != null ? " finish" : " null"));
     }
 
     /**

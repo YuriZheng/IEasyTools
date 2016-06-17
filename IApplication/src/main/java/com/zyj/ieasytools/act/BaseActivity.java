@@ -19,6 +19,7 @@ import com.zyj.ieasytools.dialog.InputEnterPasswordDialog;
 import com.zyj.ieasytools.library.db.ZYJContentProvider;
 import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
+import com.zyj.ieasytools.utils.EntryptUtils;
 import com.zyj.ieasytools.utils.SettingsConstant;
 
 import java.lang.reflect.Field;
@@ -121,7 +122,10 @@ public class BaseActivity extends AppCompatActivity {
                 public void run() {
                     verifyEnterPassword();
                 }
-            }, 500);
+            }, 250);
+        } else {
+            ZYJUtils.logD(TAG, "time not out");
+            verifyEnterPasswordSuccess();
         }
         ZYJUtils.logD(TAG, "onResume");
     }
@@ -138,12 +142,12 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * Enter verify dialog and listener the result
      */
-    protected void verifyEnterPassword() {
+    private void verifyEnterPassword() {
         if (mInputDialog != null && mInputDialog.isShowing()) {
             ZYJUtils.logD(TAG, "verifing...");
             return;
         }
-        mInputDialog = new InputEnterPasswordDialog(this);
+        mInputDialog = new InputEnterPasswordDialog(this, !EntryptUtils.getCurrentDatabasePath(this, false).exists());
         mInputDialog.setResultCallBack(mVerifyCallBack);
         mInputDialog.show();
     }

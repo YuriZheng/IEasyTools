@@ -15,9 +15,7 @@ import net.sqlcipher.database.SQLiteDatabase;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <h5>principle: <h5/>
@@ -37,35 +35,20 @@ public class ZYJEncrypts extends BaseDatabase {
     public static final int ERROR_READ_ONLY = ERROR_PASSWORD - 1;
 
     private final int VERSION = 1;
-    private static MaintainEncryptClass mMaintain;
 
     private boolean isCurrentDatabase = false;
+    private boolean isDestory = false;
 
     private EncryptListener mListener;
 
     /**
      * Control the access permission, so It's a private constructor<br>
-     * Call {@link #destory()} to destory resources
+     * Call {@link ZYJDBEntryptUtils#destoryEntrypt()} to destory resources
      *
      * @param context context
      */
     private ZYJEncrypts(Context context) {
         super(context);
-        if (mMaintain == null) {
-            mMaintain = new MaintainEncryptClass();
-        }
-        ZYJUtils.logD(TAG, "Key: " + context.getClass().getName());
-        mMaintain.add(context.getClass().getName(), this);
-    }
-
-    /**
-     * Destory all instance,Call when exit app
-     */
-    public static void destory() {
-        if (mMaintain != null) {
-            mMaintain.destory();
-        }
-        mMaintain = null;
     }
 
     /**
@@ -73,10 +56,10 @@ public class ZYJEncrypts extends BaseDatabase {
      *
      * @param path     the database path
      * @param password the database password
-     * @return {@link #DATABASE_OPEN_SUCCESS}<br>
-     * {@link #DATABASE_OPEN_FILE_EXCEPTION}<br>
-     * {@link #DATABASE_OPEN_PASSWORD}<br>
-     * {@link #DATABASE_OPEN_UNKNOW}<br>
+     * @return {@link DATABASE_OPEN_STATE#DATABASE_OPEN_SUCCESS}<br>
+     * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_FILE_EXCEPTION}<br>
+     * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_PASSWORD}<br>
+     * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_UNKNOW}<br>
      * @see ZYJDBEntryptUtils#getEncryptDatabaseFromPath(Context, String, String)
      */
     private MySQLiteDatabase openDatabase(String path, String password) {
@@ -93,7 +76,7 @@ public class ZYJEncrypts extends BaseDatabase {
      */
     @SuppressWarnings("unused")
     private MySQLiteDatabase openDatabase(String password) {
-        File file = ZYJDBEntryptUtils.getCurrentDatabasePath(mContext);
+        File file = ZYJDBEntryptUtils.getCurrentDatabasePath(mContext, true);
         MySQLiteDatabase my = null;
         if (file == null) {
             ZYJUtils.logD(TAG, "Path: null");
@@ -116,22 +99,6 @@ public class ZYJEncrypts extends BaseDatabase {
     }
 
     /**
-     * Check the database state
-     */
-    private int checkDatabase() {
-        if (mSQLDatabase == null) {
-            return DATABASE_OPEN_FILE_EXCEPTION;
-        }
-        if (mSQLDatabase.getStateCode() != DATABASE_OPEN_SUCCESS) {
-            return mSQLDatabase.getStateCode();
-        }
-        if (mSQLDatabase.getStateCode() == DATABASE_OPEN_SUCCESS && mSQLDatabase.getSQLDatabase() == null) {
-            throw new RuntimeException("The state is success but the database is null");
-        }
-        return DATABASE_OPEN_SUCCESS;
-    }
-
-    /**
      * Set encrypt listener
      */
     public void setEncryptListener(EncryptListener l) {
@@ -148,6 +115,27 @@ public class ZYJEncrypts extends BaseDatabase {
     }
 
     /**
+     * Destory flag
+     */
+    public boolean isDestory() {
+        return isDestory;
+    }
+
+    /**
+     * Valid of database
+     */
+    public boolean validDatabase() {
+        return checkDatabaseValid();
+    }
+
+    public DATABASE_OPEN_STATE getDatabaseState() {
+        if (mSQLDatabase == null) {
+            return DATABASE_OPEN_STATE.DATABASE_OPEN_FILE_EXCEPTION;
+        }
+        return mSQLDatabase.getStateCode();
+    }
+
+    /**
      * Insert a entry. Insert after encrypt the entry
      *
      * @param entry    the entry
@@ -159,9 +147,8 @@ public class ZYJEncrypts extends BaseDatabase {
         if (!isCurrentDatabase) {
             return ERROR_READ_ONLY;
         }
-        int state = checkDatabase();
-        if (state != DATABASE_OPEN_SUCCESS) {
-            return state;
+        if (!checkDatabaseValid()) {
+            return -1;
         }
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
         if (checkUUID(d, entry.getUuid())) {
@@ -187,9 +174,8 @@ public class ZYJEncrypts extends BaseDatabase {
         if (!isCurrentDatabase) {
             return ERROR_READ_ONLY;
         }
-        int state = checkDatabase();
-        if (state != DATABASE_OPEN_SUCCESS) {
-            return state;
+        if (!checkDatabaseValid()) {
+            return -1;
         }
         if (ZYJDBEntryptUtils.checkEncryptPassword(entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
             return ERROR_PASSWORD;
@@ -215,9 +201,8 @@ public class ZYJEncrypts extends BaseDatabase {
         if (!isCurrentDatabase) {
             return ERROR_READ_ONLY;
         }
-        int state = checkDatabase();
-        if (state != DATABASE_OPEN_SUCCESS) {
-            return state;
+        if (!checkDatabaseValid()) {
+            return -1;
         }
         if (ZYJDBEntryptUtils.checkEncryptPassword(entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
             return ERROR_PASSWORD;
@@ -243,8 +228,7 @@ public class ZYJEncrypts extends BaseDatabase {
      */
     public List<PasswordEntry> queryEntry(String selection, String[] selectionArgs, String groupBy, String password) {
         List<PasswordEntry> list = new ArrayList<PasswordEntry>();
-        int state = checkDatabase();
-        if (state != DATABASE_OPEN_SUCCESS) {
+        if (!checkDatabaseValid()) {
             return list;
         }
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
@@ -271,9 +255,8 @@ public class ZYJEncrypts extends BaseDatabase {
      * @return return the count
      */
     public int getAllRecord() {
-        int state = checkDatabase();
-        if (state != DATABASE_OPEN_SUCCESS) {
-            return state;
+        if (!checkDatabaseValid()) {
+            return -1;
         }
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
         Cursor c = d.query(DatabaseColumns.EncryptColumns.TABLE_NAME, new String[]{DatabaseColumns.EncryptColumns._UUID},
@@ -381,6 +364,7 @@ public class ZYJEncrypts extends BaseDatabase {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        isDestory = true;
     }
 
     @Override
@@ -391,53 +375,6 @@ public class ZYJEncrypts extends BaseDatabase {
     @Override
     protected void onUpgrade(SQLiteDatabase sqliteDatabase, int oldVersion, int newVersion) {
         // TODO: 2016/5/17
-    }
-
-    /**
-     * Maintain the {@link ZYJEncrypts} instance
-     */
-    public static class MaintainEncryptClass {
-        /**
-         * The list of {@link ZYJEncrypts}
-         */
-        protected Map<String, ZYJEncrypts> mWeekRefresh = new HashMap<String, ZYJEncrypts>();
-
-        protected MaintainEncryptClass() {
-
-        }
-
-        /**
-         * Add a {@link ZYJEncrypts}
-         */
-        protected void add(String key, ZYJEncrypts z) {
-            ZYJEncrypts insted = mWeekRefresh.put(key, z);
-            if (insted != null) {
-                insted.onDestroy();
-            }
-        }
-
-        /**
-         * Remove {@link ZYJEncrypts}
-         */
-        protected void remove(String key) {
-            ZYJEncrypts insted = mWeekRefresh.remove(key);
-            if (insted != null) {
-                insted.onDestroy();
-            }
-        }
-
-        /**
-         * Destory all the {@link ZYJEncrypts} instance
-         */
-        protected void destory() {
-            for (String key : mWeekRefresh.keySet()) {
-                ZYJEncrypts z = mWeekRefresh.get(key);
-                if (z != null) {
-                    z.onDestroy();
-                }
-            }
-            mWeekRefresh.clear();
-        }
     }
 
     /**

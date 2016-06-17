@@ -68,7 +68,7 @@ public class ZYJSettings extends BaseDatabase {
         if (mSQLiteDatabase == null) {
             return false;
         }
-        if (mSQLiteDatabase.getStateCode() != BaseDatabase.DATABASE_OPEN_SUCCESS) {
+        if (mSQLiteDatabase.getStateCode() != DATABASE_OPEN_STATE.DATABASE_OPEN_SUCCESS) {
             return false;
         }
         if (mSQLiteDatabase.getSQLDatabase() == null) {
@@ -84,10 +84,10 @@ public class ZYJSettings extends BaseDatabase {
     /**
      * Open database
      *
-     * @return {@link #DATABASE_OPEN_SUCCESS}<br>
-     * {@link #DATABASE_OPEN_FILE_EXCEPTION}<br>
-     * {@link #DATABASE_OPEN_PASSWORD}<br>
-     * {@link #DATABASE_OPEN_UNKNOW}<br>
+     * @return {@link DATABASE_OPEN_STATE#DATABASE_OPEN_SUCCESS}<br>
+     * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_FILE_EXCEPTION}<br>
+     * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_PASSWORD}<br>
+     * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_UNKNOW}<br>
      */
     private MySQLiteDatabase openDatabase() {
         // Use the machine code to encrypt

@@ -24,6 +24,12 @@
     <string name="verify_five_minutes_later">Try %1$s minutes later</string>
     <string name="verify_error_count">Error:%1$s</string>
 
+    <string name="database_open_error">Database open error:%1$s</string>
+    <string name="database_open_file_exception">database open file exception</string>
+    <string name="database_open_password_wrong">database open password wrong</string>
+    <string name="database_open_open_unknow">database open unknow</string>
+    <string name="database_open_unknow">unknow</string>
+
     <string name="password_short">Password is too short</string>
     <string name="password_long">Password is too long</string>
     <string name="setting_password_finish">Setup is complete</string>

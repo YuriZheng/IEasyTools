@@ -22,7 +22,6 @@ import android.widget.RelativeLayout;
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.library.db.ZYJEncrypts;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
-import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 /**
@@ -83,8 +82,7 @@ public class AddEntryActivity extends BaseActivity {
         }
 
         initChildViews();
-
-        mEncrypt = ZYJDBEntryptUtils.getCurrentEncryptDatabase(this,"111");
+//        mEncrypt = ZYJDBEntryptUtils.getCurrentEncryptDatabase(this,"111");
     }
 
     private void initChildViews() {
