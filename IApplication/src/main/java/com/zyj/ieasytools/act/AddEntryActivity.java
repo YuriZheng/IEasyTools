@@ -2,8 +2,11 @@ package com.zyj.ieasytools.act;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -18,11 +21,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.library.db.ZYJEncrypts;
+import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
+import com.zyj.ieasytools.utils.EntryptUtils;
+
+import java.util.UUID;
 
 /**
  * Created by ZYJ on 6/11/16.
@@ -82,7 +90,6 @@ public class AddEntryActivity extends BaseActivity {
         }
 
         initChildViews();
-//        mEncrypt = ZYJDBEntryptUtils.getCurrentEncryptDatabase(this,"111");
     }
 
     private void initChildViews() {
@@ -100,6 +107,9 @@ public class AddEntryActivity extends BaseActivity {
         mPasswordInput = (EditText) mFirstView.findViewById(R.id.password_input);
         mPasswordInput.addTextChangedListener(mFirstTextWatcher);
         mMethodInput = (EditText) mFirstView.findViewById(R.id.method_input);
+        mMethodInput.setKeyListener(null);
+        mMethodInput.setOnClickListener(mMethod);
+        mMethodInput.setText(BaseEncrypt.ENCRYPT_AES);
         mMethodInput.addTextChangedListener(mFirstTextWatcher);
         mNextButton = (Button) mFirstView.findViewById(R.id.next1);
         mNextButton.setEnabled(false);
@@ -138,6 +148,30 @@ public class AddEntryActivity extends BaseActivity {
         }
     };
 
+    private View.OnClickListener mMethod = new View.OnClickListener() {
+        public void onClick(View v) {
+            final String[] choice = new String[]{BaseEncrypt.ENCRYPT_AES, BaseEncrypt.ENCRYPT_DES, BaseEncrypt.ENCRYPT_RC4, BaseEncrypt.ENCRYPT_BASE_64, BaseEncrypt.ENCRYPT_BLOWFISH};
+            int index = 0;
+            for (int i = 0; i < choice.length; i++) {
+                if (mMethodInput.getText().toString().equals(choice[i])) {
+                    index = i;
+                    break;
+                }
+            }
+            new AlertDialog.Builder(AddEntryActivity.this).setTitle(R.string.add_method).setSingleChoiceItems(choice, index, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    mMethodInput.setText(choice[which]);
+                    dialog.dismiss();
+                }
+            }).setPositiveButton(R.string.add_encrypt_help, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(getApplicationContext(), HelpActivity.class);
+                    startActivity(intent);
+                }
+            }).create().show();
+        }
+    };
+
     private void enableSave() {
         boolean enable = !TextUtils.isEmpty(mTitleInput.getText()) && !TextUtils.isEmpty(mUserInput.getText())
                 && !TextUtils.isEmpty(mPasswordInput.getText()) && !TextUtils.isEmpty(mMethodInput.getText());
@@ -149,7 +183,33 @@ public class AddEntryActivity extends BaseActivity {
     public void onViewClick(View view) {
         switch (view.getId()) {
             case R.id.save:
-                ZYJUtils.logD(TAG, "Save ...");
+                final EditText et = new EditText(this);
+                et.setSingleLine(true);
+                new AlertDialog.Builder(this).setMessage(R.string.add_input_see_password).setView(et).setPositiveButton(R.string.add_save, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        final String input = et.getText().toString().trim();
+                        if (input.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN) {
+                            showToast(getResources().getString(R.string.password_short));
+                            return;
+                        }
+                        if (input.length() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
+                            showToast(getResources().getString(R.string.password_long));
+                            return;
+                        }
+                        PasswordEntry entry = getPasswordEntry(input);
+                        long result = mEncrypt.insertEntry(entry, input);
+                        if (result > 0) {
+                            showToast(getResources().getString(R.string.add_success));
+                        } else {
+                            showToast(getResources().getString(R.string.add_fail));
+                        }
+                    }
+                }).setNegativeButton(R.string.add_see_password_help, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getApplicationContext(), HelpActivity.class);
+                        startActivity(intent);
+                    }
+                }).create().show();
                 break;
             case R.id.next1:
                 switchContentView(mSecondView);
@@ -192,10 +252,20 @@ public class AddEntryActivity extends BaseActivity {
         anim.start();
     }
 
-    private PasswordEntry getPasswordEntry() {
-//        PasswordEntry entry = new PasswordEntry();
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 
-        return null;
+    @Override
+    protected void verifyEnterPasswordSuccess() {
+        super.verifyEnterPasswordSuccess();
+        mEncrypt = EntryptUtils.getEncryptInstance(this);
+    }
+
+    private PasswordEntry getPasswordEntry(String password) {
+        PasswordEntry entry = new PasswordEntry(UUID.randomUUID().toString(), password, mMethodInput.getText().toString());
+
+        return entry;
     }
 
     @Override

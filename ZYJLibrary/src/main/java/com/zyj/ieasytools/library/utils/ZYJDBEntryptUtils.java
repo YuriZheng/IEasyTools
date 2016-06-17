@@ -102,7 +102,7 @@ public final class ZYJDBEntryptUtils {
 
     /**
      * Get our database file<br>
-     * "/data/data/com.zyj.ieasytools/databases/encrypt.izyj"<br>
+     * "/data/data/com.zyj.ieasytools/databases/XXX.izyj"<br>
      *
      * @return the file of database, if create new file faile,then return null
      */

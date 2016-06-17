@@ -25,7 +25,7 @@ public class MyServer extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mHandler = new Handler();
+        mHandler = new Handler(getMainLooper());
         mBinder = new MyBinder();
         TAG = getClass();
         ZYJUtils.logD(TAG, "onCreate");
@@ -49,7 +49,6 @@ public class MyServer extends Service {
     public void onDestroy() {
         super.onDestroy();
         if (getSetting() != null) {
-            // clear the password
             getSetting().onDestroy();
         }
         ZYJUtils.logD(TAG, "onDestroy");

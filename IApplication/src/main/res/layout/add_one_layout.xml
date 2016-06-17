@@ -58,9 +58,8 @@
                 android:id="@+id/password_input"
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_password_hint"
-                android:imeOptions="actionNext"
-                android:inputType="textPassword"
-                android:nextFocusForward="@+id/method_input"/>
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"/>
         </LinearLayout>
 
         <LinearLayout
@@ -75,8 +74,7 @@
             <EditText
                 android:id="@+id/method_input"
                 style="@style/add_input_edit_style"
-                android:hint="@string/add_input_method_hint"
-                android:imeOptions="actionDone"/>
+                android:hint="@string/add_input_method_hint"/>
         </LinearLayout>
 
         <Button

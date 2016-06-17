@@ -62,6 +62,13 @@
     <string name="add_input_remark_hint">Input remark</string>
     <string name="add_input_next">Next</string>
     <string name="add_input_previous">Previous</string>
+    <string name="add_method">Choice encrypt method:</string>
+    <string name="add_encrypt_help">Encryption method?</string>
+    <string name="add_input_see_password">Input see password</string>
+    <string name="add_save">Save</string>
+    <string name="add_success">Insert success</string>
+    <string name="add_fail">Insert fail</string>
+    <string name="add_see_password_help">See password?</string>
 
     <!-- Password group -->
     <string name="password_catrgory_web">Web</string>

@@ -27,6 +27,9 @@
         <activity
             android:name=".act.AddEntryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".act.HelpActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name=".act.MyServer" />
 

@@ -63,6 +63,13 @@
     <string name="add_input_remark_hint">请输入相关备注</string>
     <string name="add_input_next">下一步</string>
     <string name="add_input_previous">上一步</string>
+    <string name="add_method">选择加密方式：</string>
+    <string name="add_encrypt_help">加密方法？</string>
+    <string name="add_input_see_password">请输入查看密码</string>
+    <string name="add_save">保存</string>
+    <string name="add_success">插入成功</string>
+    <string name="add_fail">插入失败</string>
+    <string name="add_see_password_help">查看密码？</string>
 
     <!-- 分组 -->
     <string name="password_catrgory_web">网页</string>

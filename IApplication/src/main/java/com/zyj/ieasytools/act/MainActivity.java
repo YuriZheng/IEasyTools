@@ -194,8 +194,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     protected void verifyEnterPasswordSuccess() {
         super.verifyEnterPasswordSuccess();
         mEncrypt = EntryptUtils.getEncryptInstance(this);
-
-        ZYJUtils.logD(TAG, "Encrypt is " + (mEncrypt != null ? " finish" : " null"));
     }
 
     /**
