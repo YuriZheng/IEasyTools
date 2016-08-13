@@ -1,4 +1,4 @@
-package com.zyj.ieasytools.act;
+package com.zyj.ieasytools.act.myServer;
 
 import android.app.Service;
 import android.content.Intent;

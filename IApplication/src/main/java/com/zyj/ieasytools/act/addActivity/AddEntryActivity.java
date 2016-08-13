@@ -1,4 +1,4 @@
-package com.zyj.ieasytools.act;
+package com.zyj.ieasytools.act.addActivity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -24,6 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.zyj.ieasytools.R;
+import com.zyj.ieasytools.act.BaseActivity;
+import com.zyj.ieasytools.act.helpActivity.HelpActivity;
 import com.zyj.ieasytools.library.db.ZYJEncrypts;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;

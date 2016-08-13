@@ -1,4 +1,4 @@
-package com.zyj.ieasytools.act;
+package com.zyj.ieasytools.act.mainActivity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -29,17 +29,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
+import com.zyj.ieasytools.act.BaseActivity;
+import com.zyj.ieasytools.act.addActivity.AddEntryActivity;
+import com.zyj.ieasytools.act.mainActivity.appView.AppView;
+import com.zyj.ieasytools.act.mainActivity.emailView.EmailView;
+import com.zyj.ieasytools.act.mainActivity.gameView.GameView;
+import com.zyj.ieasytools.act.mainActivity.otherView.OtherView;
+import com.zyj.ieasytools.act.mainActivity.walletView.WalletView;
+import com.zyj.ieasytools.act.mainActivity.webView.WebView;
+import com.zyj.ieasytools.act.myServer.MyServer;
 import com.zyj.ieasytools.library.db.ZYJEncrypts;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
 import com.zyj.ieasytools.utils.EntryptUtils;
-import com.zyj.ieasytools.views.GroupAppView;
-import com.zyj.ieasytools.views.GroupEmailView;
-import com.zyj.ieasytools.views.GroupGameView;
-import com.zyj.ieasytools.views.GroupOtherView;
-import com.zyj.ieasytools.views.GroupWalletView;
-import com.zyj.ieasytools.views.GroupWebView;
 
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
 
@@ -53,12 +56,12 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
      */
     public static float mToolbarTextSize = -1;
 
-    private GroupWebView mGroupWebView;
-    private GroupEmailView mGroupEmailView;
-    private GroupWalletView mGroupWalletView;
-    private GroupAppView mGroupAppView;
-    private GroupGameView mGroupGameView;
-    private GroupOtherView mGroupOtherView;
+    private WebView mGroupWebView;
+    private EmailView mGroupEmailView;
+    private WalletView mGroupWalletView;
+    private AppView mGroupAppView;
+    private GameView mGroupGameView;
+    private OtherView mGroupOtherView;
 
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
@@ -202,15 +205,15 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     private void initContentViews() {
         new Thread() {
             public void run() {
-                mGroupWebView = new GroupWebView(MainActivity.this);
-                mGroupEmailView = new GroupEmailView(MainActivity.this);
-                mGroupWalletView = new GroupWalletView(MainActivity.this);
-                mGroupAppView = new GroupAppView(MainActivity.this);
-                mGroupGameView = new GroupGameView(MainActivity.this);
-                mGroupOtherView = new GroupOtherView(MainActivity.this);
+                mGroupWebView = new WebView();
+                mGroupEmailView = new EmailView();
+                mGroupWalletView = new WalletView();
+                mGroupAppView = new AppView();
+                mGroupGameView = new GameView();
+                mGroupOtherView = new OtherView();
                 mHandler.post(new Runnable() {
                     public void run() {
-                        addSwitchView(null, mGroupWebView.getMainView());
+                        addSwitchView(null, mGroupWebView.getView());
                         actionProgressBar(false);
                     }
                 });
@@ -378,32 +381,32 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         switch (view.getId()) {
             case R.id.group_web:
                 mToolbar.setTitle(R.string.password_catrgory_web);
-                addSwitchView(view, mGroupWebView.getMainView());
+                addSwitchView(view, mGroupWebView.getView());
                 mCategory = PasswordEntry.CATEGORY_WEB;
                 break;
             case R.id.group_email:
                 mToolbar.setTitle(R.string.password_catrgory_email);
-                addSwitchView(view, mGroupEmailView.getMainView());
+                addSwitchView(view, mGroupEmailView.getView());
                 mCategory = PasswordEntry.CATEGORY_EMAIL;
                 break;
             case R.id.group_wallet:
                 mToolbar.setTitle(R.string.password_catrgory_wallet);
-                addSwitchView(view, mGroupWalletView.getMainView());
+                addSwitchView(view, mGroupWalletView.getView());
                 mCategory = PasswordEntry.CATEGORY_WALLET;
                 break;
             case R.id.group_app:
                 mToolbar.setTitle(R.string.password_catrgory_app);
-                addSwitchView(view, mGroupAppView.getMainView());
+                addSwitchView(view, mGroupAppView.getView());
                 mCategory = PasswordEntry.CATEGORY_APP;
                 break;
             case R.id.group_game:
                 mToolbar.setTitle(R.string.password_catrgory_game);
-                addSwitchView(view, mGroupGameView.getMainView());
+                addSwitchView(view, mGroupGameView.getView());
                 mCategory = PasswordEntry.CATEGORY_GAME;
                 break;
             case R.id.group_other:
                 mToolbar.setTitle(R.string.password_catrgory_other);
-                addSwitchView(view, mGroupOtherView.getMainView());
+                addSwitchView(view, mGroupOtherView.getView());
                 mCategory = PasswordEntry.CATEGORY_OTHER;
                 break;
         }

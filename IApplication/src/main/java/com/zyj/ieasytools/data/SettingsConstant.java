@@ -1,4 +1,4 @@
-package com.zyj.ieasytools.utils;
+package com.zyj.ieasytools.data;
 
 /**
  * Created by yuri.zheng on 2016/5/17.

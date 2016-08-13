@@ -1,4 +1,4 @@
-package com.zyj.ieasytools.act;
+package com.zyj.ieasytools.act.welcomeActivity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.zyj.ieasytools.R;
+import com.zyj.ieasytools.act.mainActivity.MainActivity;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 import java.util.ArrayList;

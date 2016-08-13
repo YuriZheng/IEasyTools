@@ -17,14 +17,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
-import com.zyj.ieasytools.act.MainActivity;
+import com.zyj.ieasytools.act.mainActivity.MainActivity;
 import com.zyj.ieasytools.library.db.BaseDatabase;
 import com.zyj.ieasytools.library.db.ZYJEncrypts;
 import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.utils.EntryptUtils;
-import com.zyj.ieasytools.utils.SettingsConstant;
+import com.zyj.ieasytools.data.SettingsConstant;
 
 /**
  * Created by yuri.zheng on 2016/5/26.

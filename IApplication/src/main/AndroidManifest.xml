@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".act.WelcomeActivity"
+            android:name=".act.welcomeActivity.WelcomeActivity"
             android:label="@string/app_name"
             android:theme="@style/app_welcome_theme_style">
             <intent-filter>
@@ -22,16 +22,16 @@
         </activity>
 
         <activity
-            android:name=".act.MainActivity"
+            android:name=".act.mainActivity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".act.AddEntryActivity"
+            android:name=".act.addActivity.AddEntryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".act.HelpActivity"
+            android:name=".act.helpActivity.HelpActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".act.MyServer" />
+        <service android:name=".act.myServer.MyServer" />
 
     </application>
 

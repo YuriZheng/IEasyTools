@@ -20,7 +20,7 @@ import com.zyj.ieasytools.library.db.ZYJContentProvider;
 import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.utils.EntryptUtils;
-import com.zyj.ieasytools.utils.SettingsConstant;
+import com.zyj.ieasytools.data.SettingsConstant;
 
 import java.lang.reflect.Field;
 

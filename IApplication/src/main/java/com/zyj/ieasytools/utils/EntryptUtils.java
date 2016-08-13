@@ -3,6 +3,7 @@ package com.zyj.ieasytools.utils;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.db.ZYJEncrypts;
 import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
