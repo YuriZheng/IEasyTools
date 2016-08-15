@@ -205,12 +205,12 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     private void initContentViews() {
         new Thread() {
             public void run() {
-                mGroupWebView = new WebView();
-                mGroupEmailView = new EmailView();
-                mGroupWalletView = new WalletView();
-                mGroupAppView = new AppView();
-                mGroupGameView = new GameView();
-                mGroupOtherView = new OtherView();
+                mGroupWebView = new WebView(MainActivity.this);
+                mGroupEmailView = new EmailView(MainActivity.this);
+                mGroupWalletView = new WalletView(MainActivity.this);
+                mGroupAppView = new AppView(MainActivity.this);
+                mGroupGameView = new GameView(MainActivity.this);
+                mGroupOtherView = new OtherView(MainActivity.this);
                 mHandler.post(new Runnable() {
                     public void run() {
                         addSwitchView(null, mGroupWebView.getView());
@@ -433,7 +433,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         }
     }
 
-    private void actionProgressBar(boolean show) {
+    public void actionProgressBar(boolean show) {
         int visibility = show ? View.VISIBLE : View.INVISIBLE;
         if (mProgressBar.getVisibility() != visibility) {
             mProgressBar.setVisibility(visibility);

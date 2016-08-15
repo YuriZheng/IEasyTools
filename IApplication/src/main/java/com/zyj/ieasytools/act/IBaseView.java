@@ -3,7 +3,7 @@ package com.zyj.ieasytools.act;
 /**
  * Created by ZYJ on 8/13/16.
  */
-public interface IBaseView<T> {
+public interface IBaseView<T extends IBasePresenter> {
 
     void setPresenter(T presenter);
 

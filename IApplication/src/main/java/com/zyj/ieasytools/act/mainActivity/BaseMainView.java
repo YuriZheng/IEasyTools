@@ -1,18 +1,25 @@
 package com.zyj.ieasytools.act.mainActivity;
 
-import android.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Created by yuri.zheng on 2016/5/24.
  */
-public abstract class BaseMainView extends Fragment implements IMainView {
+public abstract class BaseMainView<T extends IMainPresenter> implements IMainView<T> {
 
-    public BaseMainView() {
+    protected ViewGroup mViewGroup;
+    protected MainActivity mContext;
+
+    public BaseMainView(MainActivity context, int layoutId) {
+        this.mContext = context;
+        mViewGroup = (ViewGroup) LayoutInflater.from(context).inflate(layoutId, null);
     }
 
     @Override
-    public void setPresenter(Object presenter) {
-
+    public View getView() {
+        return mViewGroup;
     }
 
 }
