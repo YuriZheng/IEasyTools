@@ -5,6 +5,4 @@ package com.zyj.ieasytools.act.mainActivity;
  */
 public class BaseMainPresenter implements IMainPresenter {
 
-
-
 }

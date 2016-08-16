@@ -43,7 +43,7 @@ public class ZYJSettings extends BaseDatabase {
         mSQLiteDatabase = openDatabase();
         creatTable(DatabaseColumns.SettingColumns.CREATE_SETTING_TABLE_SQL);
         mEncrypt = ZYJDBEntryptUtils.getSettingsEncrypt(c);
-        APP_VERSION = ZYJVersion.MAX_VERSION;
+        APP_VERSION = ZYJVersion.getCurrentVersion();
     }
 
     /**

@@ -12,13 +12,17 @@ public final class ZYJVersion {
     // *********************************************************************************************
     // Recording the old version here
     public static final int ZERO_VERSION = 0;
+
+    public static final int FIRST_VERSION = 1;
     // *********************************************************************************************
     // *********************************************************************************************
 
     /**
      * The first version code
      */
-    public static final int MAX_VERSION = 1;
+//    public static final int MAX_VERSION = 1;
+
+    private static final int CURRENT_VERSION = FIRST_VERSION;
 
     private ZYJVersion() {
 
@@ -31,11 +35,15 @@ public final class ZYJVersion {
         new Thread() {
             public void run() {
                 int version = Integer.parseInt(ZYJUtils.getVersion(c)[1].toString());
-                if (version != MAX_VERSION) {
-                    throw new RuntimeException("The version is " + version + ", but the max is " + MAX_VERSION);
+                if (version != CURRENT_VERSION) {
+                    throw new RuntimeException("The version is " + version + ", but the max is " + CURRENT_VERSION);
                 }
             }
         }.start();
+    }
+
+    public static int getCurrentVersion() {
+        return CURRENT_VERSION;
     }
 
 }

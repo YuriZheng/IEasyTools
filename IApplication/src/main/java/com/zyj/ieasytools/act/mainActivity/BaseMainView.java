@@ -9,12 +9,19 @@ import android.view.ViewGroup;
  */
 public abstract class BaseMainView<T extends IMainPresenter> implements IMainView<T> {
 
+    protected T mPresenter;
+
     protected ViewGroup mViewGroup;
     protected MainActivity mContext;
 
     public BaseMainView(MainActivity context, int layoutId) {
         this.mContext = context;
         mViewGroup = (ViewGroup) LayoutInflater.from(context).inflate(layoutId, null);
+    }
+
+    @Override
+    public void setPresenter(T presenter) {
+        mPresenter = presenter;
     }
 
     @Override

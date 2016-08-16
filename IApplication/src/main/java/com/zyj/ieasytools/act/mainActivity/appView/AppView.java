@@ -7,14 +7,9 @@ import com.zyj.ieasytools.act.mainActivity.MainActivity;
 /**
  * Created by yuri.zheng on 2016/5/24.
  */
-public class AppView extends BaseMainView<IAppContract.Presenter> {
+public class AppView extends BaseMainView<IAppContract.Presenter> implements IAppContract.View {
 
     public AppView(MainActivity context) {
         super(context, R.layout.group_app_layout);
-    }
-
-    @Override
-    public void setPresenter(IAppContract.Presenter presenter) {
-
     }
 }

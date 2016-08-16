@@ -1,11 +1,11 @@
-package com.zyj.ieasytools.utils;
+package com.zyj.ieasytools.data;
 
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.db.ZYJEncrypts;
 import com.zyj.ieasytools.library.db.ZYJSettings;
+import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
 
 import java.io.File;
@@ -14,17 +14,60 @@ import java.util.List;
 /**
  * Created by yuri.zheng on 2016/6/17.
  */
-public final class EntryptUtils {
+public final class EntryptImple implements IEntrypt {
 
-    /**
-     * Get the encrypt instance
-     */
-    public static ZYJEncrypts getEncryptInstance(Context context) {
+    private ZYJEncrypts mZYJEncrypts;
+
+    public EntryptImple(Context context) {
         String password = ZYJSettings.getInstance(context).getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null);
         if (!TextUtils.isEmpty(password)) {
-            return getCurrentEncryptDatabase(context, password);
+            mZYJEncrypts = getCurrentEncryptDatabase(context, password);
         }
-        return null;
+    }
+
+    @Override
+    public void setEncryptListener(ZYJEncrypts.EncryptListener l) {
+        mZYJEncrypts.setEncryptListener(l);
+    }
+
+    @Override
+    public boolean isCurrentDatabase() {
+        return mZYJEncrypts.isCurrentDatabase();
+    }
+
+    @Override
+    public boolean isDestory() {
+        return mZYJEncrypts.isDestory();
+    }
+
+    @Override
+    public boolean validDatabase() {
+        return mZYJEncrypts.validDatabase();
+    }
+
+    @Override
+    public long insertEntry(PasswordEntry entry, String password) {
+        return mZYJEncrypts.insertEntry(entry, password);
+    }
+
+    @Override
+    public int deleteEntry(PasswordEntry entry, String password) {
+        return mZYJEncrypts.deleteEntry(entry, password);
+    }
+
+    @Override
+    public long updateEntry(PasswordEntry entry, String password) {
+        return mZYJEncrypts.updateEntry(entry, password);
+    }
+
+    @Override
+    public List<PasswordEntry> queryEntry(String selection, String[] selectionArgs, String groupBy, String password) {
+        return mZYJEncrypts.queryEntry(selection, selectionArgs, groupBy, password);
+    }
+
+    @Override
+    public int getAllRecord() {
+        return mZYJEncrypts.getAllRecord();
     }
 
     /**

@@ -23,7 +23,7 @@ import com.zyj.ieasytools.library.db.ZYJEncrypts;
 import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
-import com.zyj.ieasytools.utils.EntryptUtils;
+import com.zyj.ieasytools.data.EntryptImple;
 import com.zyj.ieasytools.data.SettingsConstant;
 
 /**
@@ -298,7 +298,7 @@ public class InputEnterPasswordDialog extends Dialog {
                     iSubTitle.setText(R.string.verify_enter_copy);
                 } else {
                     if (iRecordPassword.equals(input)) {
-                        ZYJEncrypts encrypt = EntryptUtils.getCurrentEncryptDatabase(mContext, input);
+                        ZYJEncrypts encrypt = EntryptImple.getCurrentEncryptDatabase(mContext, input);
                         if (encrypt == null || !encrypt.validDatabase()) {
                             if (encrypt == null) {
                                 iSubTitle.setText(mContext.getResources().getString(R.string.database_open_error, "null"));
@@ -332,7 +332,7 @@ public class InputEnterPasswordDialog extends Dialog {
                     }
                 }
             } else {
-                ZYJEncrypts encrypt = EntryptUtils.getCurrentEncryptDatabase(mContext, input);
+                ZYJEncrypts encrypt = EntryptImple.getCurrentEncryptDatabase(mContext, input);
                 if (encrypt == null || !encrypt.validDatabase()) {
                     if (encrypt == null) {
                         iSubTitle.setText(mContext.getResources().getString(R.string.database_open_error, "null"));

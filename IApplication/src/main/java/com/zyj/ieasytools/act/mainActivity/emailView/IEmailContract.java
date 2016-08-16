@@ -15,7 +15,6 @@ public interface IEmailContract {
     }
 
     interface Presenter extends IMainPresenter {
-
     }
 
 }

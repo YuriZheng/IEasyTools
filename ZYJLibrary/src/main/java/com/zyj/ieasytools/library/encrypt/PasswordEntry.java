@@ -197,10 +197,10 @@ public final class PasswordEntry implements Parcelable {
      * @param method   encryption method
      */
     public PasswordEntry(String uuid, String password, String method) {
-        String[] test = ZYJDBEntryptUtils.generateTestTo(method, password, ZYJVersion.MAX_VERSION);
+        String[] test = ZYJDBEntryptUtils.generateTestTo(method, password, ZYJVersion.getCurrentVersion());
         this.uuid = uuid;
         p_add_time = System.currentTimeMillis();
-        p_version = ZYJVersion.MAX_VERSION;
+        p_version = ZYJVersion.getCurrentVersion();
         p_encryption_method = method;
         p_test_from = test[0];
         p_test_to = test[1];

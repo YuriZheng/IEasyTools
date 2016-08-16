@@ -30,7 +30,6 @@ import com.zyj.ieasytools.library.db.ZYJEncrypts;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
-import com.zyj.ieasytools.utils.EntryptUtils;
 
 import java.util.UUID;
 
@@ -261,7 +260,7 @@ public class AddEntryActivity extends BaseActivity {
     @Override
     protected void verifyEnterPasswordSuccess() {
         super.verifyEnterPasswordSuccess();
-        mEncrypt = EntryptUtils.getEncryptInstance(this);
+//        mEncrypt = EntryptImple.getEncryptInstance(this);
     }
 
     private PasswordEntry getPasswordEntry(String password) {

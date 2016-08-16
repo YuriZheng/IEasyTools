@@ -48,17 +48,17 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         if (!handleException(ex) && mUncaughtHandler != null) {
             //如果用户没有处理则让系统默认的异常处理器来处理
             mUncaughtHandler.uncaughtException(thread, ex);
-        } else {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                ZYJUtils.logW(TAG, "error : \n" + Log.getStackTraceString(e));
+            } else {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    ZYJUtils.logW(TAG, "error : \n" + Log.getStackTraceString(e));
+                }
+                //退出程序
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(1);
             }
-            //退出程序
-            android.os.Process.killProcess(android.os.Process.myPid());
-            System.exit(1);
         }
-    }
 
     private boolean handleException(Throwable ex) {
         ZYJUtils.logW(TAG, "error : \n" + Log.getStackTraceString(ex));

@@ -182,7 +182,7 @@ public class ZYJEncrypts extends BaseDatabase {
         }
         BaseEncrypt encrypt = EncryptFactory.getInstance().getEncryptInstance(entry.getEncryptionMethod(), password);
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
-        String uuid = encrypt.encrypt(entry.getUuid(), ZYJVersion.MAX_VERSION);
+        String uuid = encrypt.encrypt(entry.getUuid(), ZYJVersion.getCurrentVersion());
         ZYJUtils.logD(TAG, "delete: " + entry);
         if (mListener != null) {
             mListener.finishDelete();
@@ -273,22 +273,22 @@ public class ZYJEncrypts extends BaseDatabase {
     private ContentValues getContentValues(PasswordEntry entry, String password) {
         BaseEncrypt encrypt = EncryptFactory.getInstance().getEncryptInstance(entry.getEncryptionMethod(), password);
         ContentValues v = new ContentValues();
-        v.put(DatabaseColumns.EncryptColumns._UUID, encrypt.encrypt(entry.getUuid(), ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._CATEGORY, encrypt.encrypt(entry.p_category, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._TITLE, encrypt.encrypt(entry.p_title, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._USERNAME, encrypt.encrypt(entry.p_username, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._PASSWORD, encrypt.encrypt(entry.p_password, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._ADDRESS, encrypt.encrypt(entry.p_address, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._DESCRIPTION, encrypt.encrypt(entry.p_description, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._EMAIL, encrypt.encrypt(entry.p_email, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._PHONE, encrypt.encrypt(entry.p_phone, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._QUESTION_1, encrypt.encrypt(entry.p_q_1, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_1, encrypt.encrypt(entry.p_q_a_1, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._QUESTION_2, encrypt.encrypt(entry.p_q_2, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_2, encrypt.encrypt(entry.p_q_a_2, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._QUESTION_3, encrypt.encrypt(entry.p_q_3, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_3, encrypt.encrypt(entry.p_q_a_3, ZYJVersion.MAX_VERSION));
-        v.put(DatabaseColumns.EncryptColumns._REMARKS, encrypt.encrypt(entry.p_remarks, ZYJVersion.MAX_VERSION));
+        v.put(DatabaseColumns.EncryptColumns._UUID, encrypt.encrypt(entry.getUuid(), ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._CATEGORY, encrypt.encrypt(entry.p_category, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._TITLE, encrypt.encrypt(entry.p_title, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._USERNAME, encrypt.encrypt(entry.p_username, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._PASSWORD, encrypt.encrypt(entry.p_password, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._ADDRESS, encrypt.encrypt(entry.p_address, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._DESCRIPTION, encrypt.encrypt(entry.p_description, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._EMAIL, encrypt.encrypt(entry.p_email, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._PHONE, encrypt.encrypt(entry.p_phone, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._QUESTION_1, encrypt.encrypt(entry.p_q_1, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_1, encrypt.encrypt(entry.p_q_a_1, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._QUESTION_2, encrypt.encrypt(entry.p_q_2, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_2, encrypt.encrypt(entry.p_q_a_2, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._QUESTION_3, encrypt.encrypt(entry.p_q_3, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_3, encrypt.encrypt(entry.p_q_a_3, ZYJVersion.getCurrentVersion()));
+        v.put(DatabaseColumns.EncryptColumns._REMARKS, encrypt.encrypt(entry.p_remarks, ZYJVersion.getCurrentVersion()));
         v.put(DatabaseColumns.EncryptColumns._ADD_TIME, entry.getAddTime());
         v.put(DatabaseColumns.EncryptColumns._MODIFY_TIME, entry.p_modify_time);
         v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_METHOD, entry.getEncryptionMethod());

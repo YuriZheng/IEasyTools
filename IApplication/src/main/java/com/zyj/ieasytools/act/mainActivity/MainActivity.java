@@ -38,11 +38,12 @@ import com.zyj.ieasytools.act.mainActivity.otherView.OtherView;
 import com.zyj.ieasytools.act.mainActivity.walletView.WalletView;
 import com.zyj.ieasytools.act.mainActivity.webView.WebView;
 import com.zyj.ieasytools.act.myServer.MyServer;
+import com.zyj.ieasytools.data.EntryptImple;
+import com.zyj.ieasytools.data.IEntrypt;
 import com.zyj.ieasytools.library.db.ZYJEncrypts;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
-import com.zyj.ieasytools.utils.EntryptUtils;
 
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
 
@@ -141,7 +142,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mNavigationView = getViewById(R.id.navigationView);
         mNavigationView.setNavigationItemSelectedListener(mNavigationClick);
 
-        if (EntryptUtils.getDatabasePathsBesidesCurrent(this).size() <= 0) {
+        if (EntryptImple.getDatabasePathsBesidesCurrent(this).size() <= 0) {
             mNavigationView.getMenu().removeItem(R.id.settings_view_other);
         }
         DrawerLayout.LayoutParams lp = (DrawerLayout.LayoutParams) mNavigationView.getLayoutParams();
@@ -190,13 +191,13 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         super.onDestroy();
         unbindService(mConnection);
         // Only call once
-        EntryptUtils.destoryEntrypt();
+        EntryptImple.destoryEntrypt();
     }
 
     @Override
     protected void verifyEnterPasswordSuccess() {
         super.verifyEnterPasswordSuccess();
-        mEncrypt = EntryptUtils.getEncryptInstance(this);
+//        mEncrypt = EntryptImple.getEncryptInstance(this);
     }
 
     /**
@@ -205,7 +206,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     private void initContentViews() {
         new Thread() {
             public void run() {
+                IEntrypt e = new EntryptImple(MainActivity.this);
                 mGroupWebView = new WebView(MainActivity.this);
+//                new AppPresenter(e, mGroupAppView);
                 mGroupEmailView = new EmailView(MainActivity.this);
                 mGroupWalletView = new WalletView(MainActivity.this);
                 mGroupAppView = new AppView(MainActivity.this);

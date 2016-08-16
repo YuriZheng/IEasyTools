@@ -13,8 +13,4 @@ public class EmailView extends BaseMainView<IEmailContract.Presenter> {
         super(context, R.layout.group_email_layout);
     }
 
-    @Override
-    public void setPresenter(IEmailContract.Presenter presenter) {
-
-    }
 }

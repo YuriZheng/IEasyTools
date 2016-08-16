@@ -19,7 +19,7 @@ import com.zyj.ieasytools.dialog.InputEnterPasswordDialog;
 import com.zyj.ieasytools.library.db.ZYJContentProvider;
 import com.zyj.ieasytools.library.db.ZYJSettings;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
-import com.zyj.ieasytools.utils.EntryptUtils;
+import com.zyj.ieasytools.data.EntryptImple;
 import com.zyj.ieasytools.data.SettingsConstant;
 
 import java.lang.reflect.Field;
@@ -147,7 +147,7 @@ public class BaseActivity extends AppCompatActivity {
             ZYJUtils.logD(TAG, "verifing...");
             return;
         }
-        mInputDialog = new InputEnterPasswordDialog(this, !EntryptUtils.getCurrentDatabasePath(this, false).exists());
+        mInputDialog = new InputEnterPasswordDialog(this, !EntryptImple.getCurrentDatabasePath(this, false).exists());
         mInputDialog.setResultCallBack(mVerifyCallBack);
         mInputDialog.show();
     }
