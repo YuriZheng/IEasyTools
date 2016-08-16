@@ -7,26 +7,24 @@ import android.view.ViewGroup;
 /**
  * Created by yuri.zheng on 2016/5/24.
  */
-public abstract class BaseMainView<T extends IMainPresenter> implements IMainView<T> {
-
-    protected T mPresenter;
+public abstract class BaseMainView<P extends IMainPresenter> {
 
     protected ViewGroup mViewGroup;
     protected MainActivity mContext;
+
+    protected P mPresenter;
 
     public BaseMainView(MainActivity context, int layoutId) {
         this.mContext = context;
         mViewGroup = (ViewGroup) LayoutInflater.from(context).inflate(layoutId, null);
     }
 
-    @Override
-    public void setPresenter(T presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
     public View getView() {
         return mViewGroup;
+    }
+
+    public void setPresenter(P presenter) {
+        mPresenter = presenter;
     }
 
 }
