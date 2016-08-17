@@ -1,6 +1,6 @@
 package com.zyj.ieasytools.data;
 
-import com.zyj.ieasytools.library.db.ZYJEncrypts;
+import com.zyj.ieasytools.library.db.ZYJDatabaseEncrypts;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 
 import java.util.List;
@@ -9,50 +9,50 @@ import java.util.List;
  * 作者：yuri.zheng<br>
  * 时间：2016/8/16<br>
  */
-public interface IEntrypt {
+public interface IEntrypt extends IData {
 
     /**
-     * {@link ZYJEncrypts#setEncryptListener(ZYJEncrypts.EncryptListener)}
+     * {@link ZYJDatabaseEncrypts#setEncryptListener(ZYJDatabaseEncrypts.EncryptListener)}
      */
-    void setEncryptListener(ZYJEncrypts.EncryptListener l);
+    void setEncryptListener(ZYJDatabaseEncrypts.EncryptListener l);
 
     /**
-     * {@link ZYJEncrypts#isCurrentDatabase()}
+     * {@link ZYJDatabaseEncrypts#isCurrentDatabase()}
      */
     boolean isCurrentDatabase();
 
     /**
-     * {@link ZYJEncrypts#isDestory()}
+     * {@link ZYJDatabaseEncrypts#isDestory()}
      */
     boolean isDestory();
 
     /**
-     * {@link ZYJEncrypts#validDatabase()}
+     * {@link ZYJDatabaseEncrypts#validDatabase()}
      */
     boolean validDatabase();
 
     /**
-     * {@link ZYJEncrypts#insertEntry(PasswordEntry, String)}
+     * {@link ZYJDatabaseEncrypts#insertEntry(PasswordEntry, String)}
      */
     long insertEntry(PasswordEntry entry, String password);
 
     /**
-     * {@link ZYJEncrypts#deleteEntry(PasswordEntry, String)}
+     * {@link ZYJDatabaseEncrypts#deleteEntry(PasswordEntry, String)}
      */
     int deleteEntry(PasswordEntry entry, String password);
 
     /**
-     * {@link ZYJEncrypts#updateEntry(PasswordEntry, String)}
+     * {@link ZYJDatabaseEncrypts#updateEntry(PasswordEntry, String)}
      */
     long updateEntry(PasswordEntry entry, String password);
 
     /**
-     * {@link ZYJEncrypts#queryEntry(String, String[], String, String)}
+     * {@link ZYJDatabaseEncrypts#queryEntry(String, String[], String, String)}
      */
     List<PasswordEntry> queryEntry(String selection, String[] selectionArgs, String groupBy, String password);
 
     /**
-     * {@link ZYJEncrypts#getAllRecord()}
+     * {@link ZYJDatabaseEncrypts#getAllRecord()}
      */
     int getAllRecord();
 

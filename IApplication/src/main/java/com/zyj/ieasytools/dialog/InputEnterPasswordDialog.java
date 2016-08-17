@@ -19,9 +19,10 @@ import android.widget.TextView;
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.mainActivity.MainActivity;
 import com.zyj.ieasytools.library.db.BaseDatabase;
-import com.zyj.ieasytools.library.db.ZYJEncrypts;
-import com.zyj.ieasytools.library.db.ZYJSettings;
+import com.zyj.ieasytools.library.db.ZYJDatabaseEncrypts;
+import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
+import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.data.EntryptImple;
 import com.zyj.ieasytools.data.SettingsConstant;
@@ -65,7 +66,7 @@ public class InputEnterPasswordDialog extends Dialog {
     // The verify main view
     private BaseVerifyView mVerifyView;
     // The setting
-    private ZYJSettings mSettings;
+    private ZYJDatabaseSettings mSettings;
 
     // Setting or Verify call back
     private VerifyResultCallBack mResultCallBack;
@@ -83,7 +84,7 @@ public class InputEnterPasswordDialog extends Dialog {
 
     public InputEnterPasswordDialog(Context context, boolean isSetting) {
         super(context, R.style.enter_password_dialog_style);
-        mSettings = ZYJSettings.getInstance(context);
+        mSettings = ZYJDatabaseUtils.getSettingsInstance(context);
         if (mSettings == null) {
             ZYJUtils.logW(TAG, "Settings is null");
             dismiss();
@@ -298,7 +299,7 @@ public class InputEnterPasswordDialog extends Dialog {
                     iSubTitle.setText(R.string.verify_enter_copy);
                 } else {
                     if (iRecordPassword.equals(input)) {
-                        ZYJEncrypts encrypt = EntryptImple.getCurrentEncryptDatabase(mContext, input);
+                        ZYJDatabaseEncrypts encrypt = EntryptImple.getCurrentEncryptDatabase(mContext, input);
                         if (encrypt == null || !encrypt.validDatabase()) {
                             if (encrypt == null) {
                                 iSubTitle.setText(mContext.getResources().getString(R.string.database_open_error, "null"));
@@ -332,7 +333,7 @@ public class InputEnterPasswordDialog extends Dialog {
                     }
                 }
             } else {
-                ZYJEncrypts encrypt = EntryptImple.getCurrentEncryptDatabase(mContext, input);
+                ZYJDatabaseEncrypts encrypt = EntryptImple.getCurrentEncryptDatabase(mContext, input);
                 if (encrypt == null || !encrypt.validDatabase()) {
                     if (encrypt == null) {
                         iSubTitle.setText(mContext.getResources().getString(R.string.database_open_error, "null"));

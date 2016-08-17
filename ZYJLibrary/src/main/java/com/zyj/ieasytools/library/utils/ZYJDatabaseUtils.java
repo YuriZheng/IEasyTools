@@ -4,7 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.zyj.ieasytools.library.db.DatabaseColumns;
-import com.zyj.ieasytools.library.db.ZYJEncrypts;
+import com.zyj.ieasytools.library.db.ZYJDatabaseEncrypts;
+import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.EncryptFactory;
 
@@ -21,15 +22,20 @@ import java.util.Map;
  * Get the encrypt util
  * Created by yuri.zheng on 2016/5/6.
  */
-public final class ZYJDBEntryptUtils {
+public final class ZYJDatabaseUtils {
+
+    /**
+     * Singleton ZYJDatabaseSettings
+     */
+    private static ZYJDatabaseSettings mInstance;
 
     private static final String TEST_FROM = "!@#$%^&*()_+~zhengyujie497393102";
 
     private static final String OUR_DATABASE_KEY = "our";
     /**
-     * Keep the instance of {@link ZYJEncrypts} by database's path
+     * Keep the instance of {@link ZYJDatabaseEncrypts} by database's path
      */
-    private static Map<String, ZYJEncrypts> sEncryptMap = new HashMap<String, ZYJEncrypts>();
+    private static Map<String, ZYJDatabaseEncrypts> sEncryptMap = new HashMap<String, ZYJDatabaseEncrypts>();
 
     /**
      * Get the settings default encrypt bean
@@ -39,14 +45,32 @@ public final class ZYJDBEntryptUtils {
     }
 
     /**
+     * Get settings instance
+     */
+    public static ZYJDatabaseSettings getSettingsInstance(Context c) {
+        if (mInstance == null) {
+            try {
+                Class<?> cls = Class.forName(ZYJDatabaseSettings.class.getName());
+                Constructor<?> con = cls.getDeclaredConstructor(new Class<?>[]{Context.class});
+                con.setAccessible(true);
+                ZYJDatabaseSettings settings = (ZYJDatabaseSettings) con.newInstance(new Object[]{c});
+                mInstance = settings;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return mInstance;
+    }
+
+    /**
      * Get our encrypt database
      *
      * @param context  context
      * @param password the database's password
-     * @return return {@link ZYJEncrypts}
+     * @return return {@link ZYJDatabaseEncrypts}
      */
-    public static ZYJEncrypts getCurrentEncryptDatabase(Context context, String password) {
-        ZYJEncrypts e = sEncryptMap.get(OUR_DATABASE_KEY);
+    public static ZYJDatabaseEncrypts getCurrentEncryptDatabase(Context context, String password) {
+        ZYJDatabaseEncrypts e = sEncryptMap.get(OUR_DATABASE_KEY);
         if (e == null) {
             return getEncryptDatabaseFromPath(context, OUR_DATABASE_KEY, password);
         } else {
@@ -60,36 +84,36 @@ public final class ZYJDBEntryptUtils {
      * @param context  context
      * @param path     the database's path
      * @param password the database's password
-     * @return return {@link ZYJEncrypts}
+     * @return return {@link ZYJDatabaseEncrypts}
      */
-    public static ZYJEncrypts getEncryptDatabaseFromPath(Context context, String path, String password) {
+    public static ZYJDatabaseEncrypts getEncryptDatabaseFromPath(Context context, String path, String password) {
         if (TextUtils.isEmpty(path)) {
             return null;
         }
-        ZYJEncrypts entrypt = sEncryptMap.get(path);
+        ZYJDatabaseEncrypts entrypt = sEncryptMap.get(path);
         if (entrypt != null) {
             return entrypt;
         }
         try {
-            Class<?> cls = Class.forName(ZYJEncrypts.class.getName());
+            Class<?> cls = Class.forName(ZYJDatabaseEncrypts.class.getName());
             Constructor<?> con = cls.getDeclaredConstructor(new Class<?>[]{Context.class});
             con.setAccessible(true);
             // init the object
-            ZYJEncrypts encrypt = (ZYJEncrypts) con.newInstance(new Object[]{context});
+            ZYJDatabaseEncrypts encrypt = (ZYJDatabaseEncrypts) con.newInstance(new Object[]{context});
             // open our database
             if (OUR_DATABASE_KEY.equals(path)) {
                 // Current encrypt database
-                Method method = ZYJEncrypts.class.getDeclaredMethod("openDatabase", String.class);
+                Method method = ZYJDatabaseEncrypts.class.getDeclaredMethod("openDatabase", String.class);
                 method.setAccessible(true);
                 method.invoke(encrypt, password);
             } else {
                 // Other encrypt database
-                Method method = ZYJEncrypts.class.getDeclaredMethod("openDatabase", String.class, String.class);
+                Method method = ZYJDatabaseEncrypts.class.getDeclaredMethod("openDatabase", String.class, String.class);
                 method.setAccessible(true);
                 method.invoke(encrypt, path, password);
             }
             // create database table
-            Method method = ZYJEncrypts.class.getDeclaredMethod("initDatabase");
+            Method method = ZYJDatabaseEncrypts.class.getDeclaredMethod("initDatabase");
             method.setAccessible(true);
             method.invoke(encrypt);
             sEncryptMap.put(path, encrypt);
@@ -141,7 +165,7 @@ public final class ZYJDBEntryptUtils {
                 for (String s : file.list()) {
                     if (!s.equals(DatabaseColumns.EncryptColumns.DATABASE_NAME)) {
                         String path = file.getAbsolutePath() + "/" + s;
-                        ZYJUtils.logD(ZYJDBEntryptUtils.class, "Has other database: " + path);
+                        ZYJUtils.logD(ZYJDatabaseUtils.class, "Has other database: " + path);
                         paths.add(path);
                     }
                 }
@@ -153,15 +177,19 @@ public final class ZYJDBEntryptUtils {
     /**
      * Destory all entrypt instance
      */
-    public static void destoryEntrypt() {
+    public static void destoryDatabases() {
         for (String path : sEncryptMap.keySet()) {
-            ZYJEncrypts e = sEncryptMap.get(path);
+            ZYJDatabaseEncrypts e = sEncryptMap.get(path);
             if (e != null && !e.isDestory()) {
                 e.onDestroy();
             }
             e = null;
         }
         sEncryptMap.clear();
+        if (mInstance != null) {
+            mInstance.onDestroy();
+        }
+        mInstance = null;
     }
 
     /**

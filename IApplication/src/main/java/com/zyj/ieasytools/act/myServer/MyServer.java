@@ -7,7 +7,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.zyj.ieasytools.library.db.ZYJSettings;
+import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
+import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 /**
@@ -17,7 +18,7 @@ public class MyServer extends Service {
 
     private Class<?> TAG;
 
-    private ZYJSettings mSetting;
+    private ZYJDatabaseSettings mSetting;
     private MyBinder mBinder;
 
     private Handler mHandler;
@@ -31,9 +32,9 @@ public class MyServer extends Service {
         ZYJUtils.logD(TAG, "onCreate");
     }
 
-    private ZYJSettings getSetting() {
+    private ZYJDatabaseSettings getSetting() {
         if (mSetting == null) {
-            mSetting = ZYJSettings.getInstance(this);
+            mSetting = ZYJDatabaseUtils.getSettingsInstance(this);
         }
         return mSetting;
     }

@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
-import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
+import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.utils.ZYJVersion;
 
@@ -19,12 +19,7 @@ import java.util.Map;
 /**
  * Created by yuri.zheng on 2016/5/5.
  */
-public class ZYJSettings extends BaseDatabase {
-
-    /**
-     * Singleton
-     */
-    private static ZYJSettings mInstance;
+public class ZYJDatabaseSettings extends BaseDatabase {
 
     private BaseEncrypt mEncrypt;
 
@@ -38,22 +33,12 @@ public class ZYJSettings extends BaseDatabase {
     /**
      * Singleton mode, so call {@link #onDestroy()} to destory resources
      */
-    private ZYJSettings(Context c) {
+    private ZYJDatabaseSettings(Context c) {
         super(c);
         mSQLiteDatabase = openDatabase();
         creatTable(DatabaseColumns.SettingColumns.CREATE_SETTING_TABLE_SQL);
-        mEncrypt = ZYJDBEntryptUtils.getSettingsEncrypt(c);
+        mEncrypt = ZYJDatabaseUtils.getSettingsEncrypt(c);
         APP_VERSION = ZYJVersion.getCurrentVersion();
-    }
-
-    /**
-     * Get settings instance
-     */
-    public static ZYJSettings getInstance(Context c) {
-        if (mInstance == null) {
-            mInstance = new ZYJSettings(c);
-        }
-        return mInstance;
     }
 
     /**
@@ -62,9 +47,6 @@ public class ZYJSettings extends BaseDatabase {
      * @return true is valid, other is invalid
      */
     public synchronized boolean verifyValidSetting() {
-        if (mInstance == null) {
-            return false;
-        }
         if (mSQLiteDatabase == null) {
             return false;
         }
@@ -311,7 +293,6 @@ public class ZYJSettings extends BaseDatabase {
     public void onDestroy() {
         super.onDestroy();
         ZYJUtils.logD(TAG, "Settings destory");
-        mInstance = null;
     }
 
     @Override

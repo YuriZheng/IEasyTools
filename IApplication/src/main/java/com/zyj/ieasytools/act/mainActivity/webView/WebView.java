@@ -10,6 +10,8 @@ import com.zyj.ieasytools.act.mainActivity.MainActivity;
 public class WebView extends BaseMainView<IWebContract.Presenter> implements IWebContract.View {
 
     public WebView(MainActivity context) {
-        super(context, R.layout.group_wallet_layout);
+        super(context, R.layout.group_web_layout);
     }
+
+
 }

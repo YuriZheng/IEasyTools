@@ -17,7 +17,8 @@ import android.view.Window;
 
 import com.zyj.ieasytools.dialog.InputEnterPasswordDialog;
 import com.zyj.ieasytools.library.db.ZYJContentProvider;
-import com.zyj.ieasytools.library.db.ZYJSettings;
+import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
+import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.data.EntryptImple;
 import com.zyj.ieasytools.data.SettingsConstant;
@@ -46,7 +47,7 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * The setting database
      */
-    protected ZYJSettings mSettings;
+    protected ZYJDatabaseSettings mSettings;
     /**
      * The main handler
      */
@@ -82,7 +83,7 @@ public class BaseActivity extends AppCompatActivity {
                 BaseActivity.this.onChange(selfChange, uri);
             }
         };
-        mSettings = ZYJSettings.getInstance(this);
+        mSettings = ZYJDatabaseUtils.getSettingsInstance(this);
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
         mLocalBroadcastManager.registerReceiver(mFinishReceiver, new IntentFilter(LOCAL_BROADCAST));
         getContentResolver().registerContentObserver(ZYJContentProvider.SEETINGS_URI, true, mListener);

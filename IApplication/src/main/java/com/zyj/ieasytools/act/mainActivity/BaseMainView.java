@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zyj.ieasytools.act.IBasePresenter;
+
 /**
  * Created by yuri.zheng on 2016/5/24.
  */
@@ -19,10 +21,18 @@ public abstract class BaseMainView<P extends IMainPresenter> {
         mViewGroup = (ViewGroup) LayoutInflater.from(context).inflate(layoutId, null);
     }
 
+    /**
+     * Get the root View
+     *
+     * @return return root view subclass {@link ViewGroup}
+     */
     public View getView() {
         return mViewGroup;
     }
 
+    /**
+     * {@link com.zyj.ieasytools.act.IBaseView#setPresenter(IBasePresenter)}
+     */
     public void setPresenter(P presenter) {
         mPresenter = presenter;
     }

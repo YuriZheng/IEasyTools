@@ -31,16 +31,22 @@ import android.widget.TextView;
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.BaseActivity;
 import com.zyj.ieasytools.act.addActivity.AddEntryActivity;
+import com.zyj.ieasytools.act.mainActivity.appView.AppPresenter;
 import com.zyj.ieasytools.act.mainActivity.appView.AppView;
+import com.zyj.ieasytools.act.mainActivity.emailView.EmailPresenter;
 import com.zyj.ieasytools.act.mainActivity.emailView.EmailView;
+import com.zyj.ieasytools.act.mainActivity.gameView.GamePresenter;
 import com.zyj.ieasytools.act.mainActivity.gameView.GameView;
+import com.zyj.ieasytools.act.mainActivity.otherView.OtherPresenter;
 import com.zyj.ieasytools.act.mainActivity.otherView.OtherView;
+import com.zyj.ieasytools.act.mainActivity.walletView.WalletPresenter;
 import com.zyj.ieasytools.act.mainActivity.walletView.WalletView;
+import com.zyj.ieasytools.act.mainActivity.webView.WebPresenter;
 import com.zyj.ieasytools.act.mainActivity.webView.WebView;
 import com.zyj.ieasytools.act.myServer.MyServer;
 import com.zyj.ieasytools.data.EntryptImple;
 import com.zyj.ieasytools.data.IEntrypt;
-import com.zyj.ieasytools.library.db.ZYJEncrypts;
+import com.zyj.ieasytools.library.db.ZYJDatabaseEncrypts;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
@@ -90,7 +96,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     private TextView mDebug;
 
-    private ZYJEncrypts mEncrypt;
+    private ZYJDatabaseEncrypts mEncrypt;
 
     private MyServer mServer;
 
@@ -208,12 +214,17 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             public void run() {
                 IEntrypt e = new EntryptImple(MainActivity.this);
                 mGroupWebView = new WebView(MainActivity.this);
-//                new AppPresenter(e, mGroupAppView);
+                new WebPresenter(e, mGroupWebView);
                 mGroupEmailView = new EmailView(MainActivity.this);
+                new EmailPresenter(e, mGroupEmailView);
                 mGroupWalletView = new WalletView(MainActivity.this);
+                new WalletPresenter(e, mGroupWalletView);
                 mGroupAppView = new AppView(MainActivity.this);
+                new AppPresenter(e, mGroupAppView);
                 mGroupGameView = new GameView(MainActivity.this);
+                new GamePresenter(e, mGroupGameView);
                 mGroupOtherView = new OtherView(MainActivity.this);
+                new OtherPresenter(e, mGroupOtherView);
                 mHandler.post(new Runnable() {
                     public void run() {
                         addSwitchView(null, mGroupWebView.getView());

@@ -26,7 +26,7 @@ import android.widget.Toast;
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.BaseActivity;
 import com.zyj.ieasytools.act.helpActivity.HelpActivity;
-import com.zyj.ieasytools.library.db.ZYJEncrypts;
+import com.zyj.ieasytools.library.db.ZYJDatabaseEncrypts;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
@@ -57,7 +57,7 @@ public class AddEntryActivity extends BaseActivity {
     // entry category
     private String mCategory;
 
-    private ZYJEncrypts mEncrypt;
+    private ZYJDatabaseEncrypts mEncrypt;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

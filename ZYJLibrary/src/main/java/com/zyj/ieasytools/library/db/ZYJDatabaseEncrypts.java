@@ -6,7 +6,7 @@ import android.content.Context;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.EncryptFactory;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
-import com.zyj.ieasytools.library.utils.ZYJDBEntryptUtils;
+import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.utils.ZYJVersion;
 
@@ -23,7 +23,7 @@ import java.util.List;
  * Read data after decrypted <br><br>
  * Created by yuri.zheng on 2016/5/5.
  */
-public class ZYJEncrypts extends BaseDatabase {
+public class ZYJDatabaseEncrypts extends BaseDatabase {
 
     /**
      * Password error
@@ -43,11 +43,11 @@ public class ZYJEncrypts extends BaseDatabase {
 
     /**
      * Control the access permission, so It's a private constructor<br>
-     * Call {@link ZYJDBEntryptUtils#destoryEntrypt()} to destory resources
+     * Call {@link ZYJDatabaseUtils#destoryDatabases()} to destory resources
      *
      * @param context context
      */
-    private ZYJEncrypts(Context context) {
+    private ZYJDatabaseEncrypts(Context context) {
         super(context);
     }
 
@@ -60,7 +60,7 @@ public class ZYJEncrypts extends BaseDatabase {
      * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_FILE_EXCEPTION}<br>
      * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_PASSWORD}<br>
      * {@link DATABASE_OPEN_STATE#DATABASE_OPEN_UNKNOW}<br>
-     * @see ZYJDBEntryptUtils#getEncryptDatabaseFromPath(Context, String, String)
+     * @see ZYJDatabaseUtils#getEncryptDatabaseFromPath(Context, String, String)
      */
     private MySQLiteDatabase openDatabase(String path, String password) {
         isCurrentDatabase = false;
@@ -72,11 +72,11 @@ public class ZYJEncrypts extends BaseDatabase {
      *
      * @param password
      * @return {@link #openDatabase(String, String)}
-     * @see ZYJDBEntryptUtils#getEncryptDatabaseFromPath(Context, String, String)
+     * @see ZYJDatabaseUtils#getEncryptDatabaseFromPath(Context, String, String)
      */
     @SuppressWarnings("unused")
     private MySQLiteDatabase openDatabase(String password) {
-        File file = ZYJDBEntryptUtils.getCurrentDatabasePath(mContext, true);
+        File file = ZYJDatabaseUtils.getCurrentDatabasePath(mContext, true);
         MySQLiteDatabase my = null;
         if (file == null) {
             ZYJUtils.logD(TAG, "Path: null");
@@ -91,7 +91,7 @@ public class ZYJEncrypts extends BaseDatabase {
     }
 
     /**
-     * @see ZYJDBEntryptUtils#getEncryptDatabaseFromPath(Context, String, String)
+     * @see ZYJDatabaseUtils#getEncryptDatabaseFromPath(Context, String, String)
      */
     @SuppressWarnings("unused")
     private void initDatabase() {
@@ -177,7 +177,7 @@ public class ZYJEncrypts extends BaseDatabase {
         if (!checkDatabaseValid()) {
             return -1;
         }
-        if (ZYJDBEntryptUtils.checkEncryptPassword(entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
+        if (ZYJDatabaseUtils.checkEncryptPassword(entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
             return ERROR_PASSWORD;
         }
         BaseEncrypt encrypt = EncryptFactory.getInstance().getEncryptInstance(entry.getEncryptionMethod(), password);
@@ -204,7 +204,7 @@ public class ZYJEncrypts extends BaseDatabase {
         if (!checkDatabaseValid()) {
             return -1;
         }
-        if (ZYJDBEntryptUtils.checkEncryptPassword(entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
+        if (ZYJDatabaseUtils.checkEncryptPassword(entry.getEncryptionMethod(), password, entry.getTestFrom(), entry.getTestTo(), entry.getEncryptVersion())) {
             return ERROR_PASSWORD;
         }
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
@@ -312,7 +312,7 @@ public class ZYJEncrypts extends BaseDatabase {
         long modifyTime = c.getLong(c.getColumnIndex(DatabaseColumns.EncryptColumns._MODIFY_TIME));
         int version = c.getInt(c.getColumnIndex(DatabaseColumns.EncryptColumns._Version));
 
-        if (ZYJDBEntryptUtils.checkEncryptPassword(method, password, from, to, version)) {
+        if (ZYJDatabaseUtils.checkEncryptPassword(method, password, from, to, version)) {
             ZYJUtils.logW(TAG, c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ID))
                     + " record password wrong");
             return null;
