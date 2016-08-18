@@ -14,9 +14,7 @@ import com.zyj.ieasytools.library.utils.ZYJVersion;
  */
 public final class PasswordEntry implements Parcelable {
 
-    //
-    // 6个不加密、6个不能修改
-    //
+    // TODO: 2016/8/18  6个不加密、6个不能修改，另外新添加四个不加密：标题”、“用户”、“描述”和“备注”
 
     /**
      * Web group，default
@@ -178,7 +176,7 @@ public final class PasswordEntry implements Parcelable {
      */
     public PasswordEntry(String uuid, long addTime, String method, String from, String to, int version) {
         this.uuid = uuid;
-        if (p_add_time <= 0) {
+        if (addTime <= 0) {
             p_add_time = System.currentTimeMillis();
         } else {
             p_add_time = addTime;
@@ -200,6 +198,7 @@ public final class PasswordEntry implements Parcelable {
         String[] test = ZYJDatabaseUtils.generateTestTo(method, password, ZYJVersion.getCurrentVersion());
         this.uuid = uuid;
         p_add_time = System.currentTimeMillis();
+        p_modify_time = p_add_time;
         p_version = ZYJVersion.getCurrentVersion();
         p_encryption_method = method;
         p_test_from = test[0];

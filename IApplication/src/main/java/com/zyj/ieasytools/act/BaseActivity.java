@@ -100,8 +100,8 @@ public class BaseActivity extends AppCompatActivity {
             ZYJUtils.logD(TAG, "LastTime: " + lastTime + " and init");
             return true;
         }
-        // TODO: 2016/5/25 这里的默认时间为设置里面的默认时间，暂定1分钟
-        long timeOut = mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, 1000 * 60 * 1);
+        // TODO: 2016/5/25 这里的默认时间为设置里面的默认时间，暂定10分钟
+        long timeOut = mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, 1000 * 60 * 10);
         long current = System.currentTimeMillis();
         boolean time = (lastTime + timeOut) < current;
         ZYJUtils.logD(TAG, "Current time: " + current + ", Time out: " + (lastTime + timeOut) + (time ? " and time out" : ""));

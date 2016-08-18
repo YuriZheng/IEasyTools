@@ -270,16 +270,20 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
         }
     }
 
+    // TODO: 2016/8/18 这里的加密，因为显示简介时，需要根据不同的查看密码来获取真实信息，所以这里规定“标题”、“用户”、“描述”和“备注”四个字段不进行任何形式的加密
     private ContentValues getContentValues(PasswordEntry entry, String password) {
         BaseEncrypt encrypt = EncryptFactory.getInstance().getEncryptInstance(entry.getEncryptionMethod(), password);
         ContentValues v = new ContentValues();
         v.put(DatabaseColumns.EncryptColumns._UUID, encrypt.encrypt(entry.getUuid(), ZYJVersion.getCurrentVersion()));
         v.put(DatabaseColumns.EncryptColumns._CATEGORY, encrypt.encrypt(entry.p_category, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._TITLE, encrypt.encrypt(entry.p_title, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._USERNAME, encrypt.encrypt(entry.p_username, ZYJVersion.getCurrentVersion()));
+
+        v.put(DatabaseColumns.EncryptColumns._TITLE, entry.p_title);
+        v.put(DatabaseColumns.EncryptColumns._USERNAME, entry.p_username);
+        v.put(DatabaseColumns.EncryptColumns._DESCRIPTION, entry.p_description);
+        v.put(DatabaseColumns.EncryptColumns._REMARKS, entry.p_remarks);
+
         v.put(DatabaseColumns.EncryptColumns._PASSWORD, encrypt.encrypt(entry.p_password, ZYJVersion.getCurrentVersion()));
         v.put(DatabaseColumns.EncryptColumns._ADDRESS, encrypt.encrypt(entry.p_address, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._DESCRIPTION, encrypt.encrypt(entry.p_description, ZYJVersion.getCurrentVersion()));
         v.put(DatabaseColumns.EncryptColumns._EMAIL, encrypt.encrypt(entry.p_email, ZYJVersion.getCurrentVersion()));
         v.put(DatabaseColumns.EncryptColumns._PHONE, encrypt.encrypt(entry.p_phone, ZYJVersion.getCurrentVersion()));
         v.put(DatabaseColumns.EncryptColumns._QUESTION_1, encrypt.encrypt(entry.p_q_1, ZYJVersion.getCurrentVersion()));
@@ -288,7 +292,6 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
         v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_2, encrypt.encrypt(entry.p_q_a_2, ZYJVersion.getCurrentVersion()));
         v.put(DatabaseColumns.EncryptColumns._QUESTION_3, encrypt.encrypt(entry.p_q_3, ZYJVersion.getCurrentVersion()));
         v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_3, encrypt.encrypt(entry.p_q_a_3, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._REMARKS, encrypt.encrypt(entry.p_remarks, ZYJVersion.getCurrentVersion()));
         v.put(DatabaseColumns.EncryptColumns._ADD_TIME, entry.getAddTime());
         v.put(DatabaseColumns.EncryptColumns._MODIFY_TIME, entry.p_modify_time);
         v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_METHOD, entry.getEncryptionMethod());
@@ -321,12 +324,14 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
         String uuid = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._UUID));
         PasswordEntry entry = new PasswordEntry(encrypt.decrypt(uuid, version), addTime, method, from, to, version);
 
+        entry.p_title = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._TITLE));
+        entry.p_username = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._USERNAME));
+        entry.p_description = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._DESCRIPTION));
+        entry.p_remarks = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._REMARKS));
+
         entry.p_category = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._CATEGORY)), version);
-        entry.p_title = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._TITLE)), version);
-        entry.p_username = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._USERNAME)), version);
         entry.p_password = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._PASSWORD)), version);
         entry.p_address = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ADDRESS)), version);
-        entry.p_description = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._DESCRIPTION)), version);
         entry.p_email = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._EMAIL)), version);
         entry.p_phone = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._PHONE)), version);
         entry.p_q_1 = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_1)), version);
@@ -335,8 +340,8 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
         entry.p_q_a_2 = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_2)), version);
         entry.p_q_3 = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_3)), version);
         entry.p_q_a_3 = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_3)), version);
-        entry.p_remarks = encrypt.decrypt(c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._REMARKS)), version);
         entry.p_modify_time = modifyTime;
+
         // Reserve
         // DatabaseColumns.EncryptColumns._Reserve_0
         // DatabaseColumns.EncryptColumns._Reserve_1

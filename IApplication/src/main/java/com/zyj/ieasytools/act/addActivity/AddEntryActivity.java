@@ -26,17 +26,16 @@ import android.widget.Toast;
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.BaseActivity;
 import com.zyj.ieasytools.act.helpActivity.HelpActivity;
+import com.zyj.ieasytools.data.EntryptImple;
 import com.zyj.ieasytools.library.db.ZYJDatabaseEncrypts;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
-import java.util.UUID;
-
 /**
  * Created by ZYJ on 6/11/16.
  */
-public class AddEntryActivity extends BaseActivity {
+public class AddEntryActivity extends BaseActivity implements IAddContract.View {
 
     public static final String PASSWORD_ENTRY = "entry_style";
 
@@ -51,13 +50,28 @@ public class AddEntryActivity extends BaseActivity {
     private EditText mPasswordInput;
     private EditText mMethodInput;
     private Button mNextButton;
+
     private View mSecondView;
+    private EditText mEmailInput;
+    private EditText mPhoneInput;
+    private EditText mAddressInput;
+    private EditText mDescriptionInput;
+
     private View mThirdView;
+    private EditText mQInput1;
+    private EditText mAInput1;
+    private EditText mQInput2;
+    private EditText mAInput2;
+    private EditText mQInput3;
+    private EditText mAInput3;
+    private EditText mRemark;
 
     // entry category
     private String mCategory;
 
     private ZYJDatabaseEncrypts mEncrypt;
+
+    private IAddContract.Presenter mPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,6 +105,13 @@ public class AddEntryActivity extends BaseActivity {
         }
 
         initChildViews();
+
+        new AddPresenter(new EntryptImple(this), this);
+    }
+
+    @Override
+    public void setPresenter(IAddContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 
     private void initChildViews() {
@@ -117,7 +138,19 @@ public class AddEntryActivity extends BaseActivity {
         mMainLayout.addView(mFirstView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         mSecondView = LayoutInflater.from(this).inflate(R.layout.add_second_layout, null);
+        mEmailInput = (EditText) mSecondView.findViewById(R.id.email_input);
+        mPhoneInput = (EditText) mSecondView.findViewById(R.id.phone_input);
+        mAddressInput = (EditText) mSecondView.findViewById(R.id.address_input);
+        mDescriptionInput = (EditText) mSecondView.findViewById(R.id.description_input);
+
         mThirdView = LayoutInflater.from(this).inflate(R.layout.add_third_layout, null);
+        mQInput1 = (EditText) mThirdView.findViewById(R.id.q_1_input);
+        mAInput1 = (EditText) mThirdView.findViewById(R.id.a_1_input);
+        mQInput2 = (EditText) mThirdView.findViewById(R.id.q_2_input);
+        mAInput2 = (EditText) mThirdView.findViewById(R.id.a_2_input);
+        mQInput3 = (EditText) mThirdView.findViewById(R.id.q_3_input);
+        mAInput3 = (EditText) mThirdView.findViewById(R.id.a_3_input);
+        mRemark = (EditText) mThirdView.findViewById(R.id.remark_input);
 
     }
 
@@ -188,22 +221,23 @@ public class AddEntryActivity extends BaseActivity {
                 et.setSingleLine(true);
                 new AlertDialog.Builder(this).setMessage(R.string.add_input_see_password).setView(et).setPositiveButton(R.string.add_save, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        final String input = et.getText().toString().trim();
-                        if (input.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN) {
-                            showToast(getResources().getString(R.string.password_short));
-                            return;
-                        }
-                        if (input.length() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
-                            showToast(getResources().getString(R.string.password_long));
-                            return;
-                        }
-                        PasswordEntry entry = getPasswordEntry(input);
-                        long result = mEncrypt.insertEntry(entry, input);
-                        if (result > 0) {
-                            showToast(getResources().getString(R.string.add_success));
-                        } else {
-                            showToast(getResources().getString(R.string.add_fail));
-                        }
+                        mPresenter.setEntryAttri(mEmailInput.getText().toString(),
+                                mPhoneInput.getText().toString(),
+                                mAddressInput.getText().toString(),
+                                mDescriptionInput.getText().toString(),
+                                mQInput1.getText().toString(),
+                                mAInput1.getText().toString(),
+                                mQInput2.getText().toString(),
+                                mAInput2.getText().toString(),
+                                mQInput3.getText().toString(),
+                                mAInput3.getText().toString(),
+                                mRemark.getText().toString());
+                        mPresenter.saveEntry(
+                                mTitleInput.getText().toString(),
+                                mUserInput.getText().toString(),
+                                mPasswordInput.getText().toString(),
+                                mCategory,
+                                et.getText().toString().trim(), mMethodInput.getText().toString().trim());
                     }
                 }).setNegativeButton(R.string.add_see_password_help, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -253,20 +287,19 @@ public class AddEntryActivity extends BaseActivity {
         anim.start();
     }
 
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    @Override
+    public void finishView() {
+        this.finish();
+    }
+
+    @Override
+    public void showToast(int resId) {
+        Toast.makeText(this, getResources().getString(resId), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void verifyEnterPasswordSuccess() {
         super.verifyEnterPasswordSuccess();
-//        mEncrypt = EntryptImple.getEncryptInstance(this);
-    }
-
-    private PasswordEntry getPasswordEntry(String password) {
-        PasswordEntry entry = new PasswordEntry(UUID.randomUUID().toString(), password, mMethodInput.getText().toString());
-
-        return entry;
     }
 
     @Override
