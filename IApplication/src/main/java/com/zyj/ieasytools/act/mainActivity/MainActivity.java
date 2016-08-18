@@ -46,21 +46,18 @@ import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebView;
 import com.zyj.ieasytools.act.myServer.MyServer;
 import com.zyj.ieasytools.data.EntryptImple;
+import com.zyj.ieasytools.dialog.InputEnterPasswordDialog;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
+import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
 
-public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener, IMainView<IMainPresenter> {
+public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener, IMainContract.View {
 
     /**
      * The content main layout
      */
     private ViewGroup mMainViewLayout;
-
-    /**
-     * Record toolbar text size:{@link com.zyj.ieasytools.dialog.InputEnterPasswordDialog}
-     */
-    public static float mToolbarTextSize = -1;
 
     private WebView mGroupWebView;
     private EmailView mGroupEmailView;
@@ -78,25 +75,18 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
 
+    private FloatingActionButton mFab;
+
     private View mMenuMore;
     private View mMenuAdd;
     private View mMenuSeach;
     private MenuRevealView mMenuLayout;
 
-    /**
-     * Record the category
-     * <li>{@link PasswordEntry#CATEGORY_WEB}</li>
-     * <li>{@link PasswordEntry#CATEGORY_EMAIL}</li>
-     * <li>{@link PasswordEntry#CATEGORY_WALLET}</li>
-     * <li>{@link PasswordEntry#CATEGORY_APP}</li>
-     * <li>{@link PasswordEntry#CATEGORY_GAME}</li>
-     * <li>{@link PasswordEntry#CATEGORY_OTHER}</li>
-     */
-    private String mCategory = PasswordEntry.CATEGORY_WEB;
-
     private TextView mDebug;
 
     private MyServer mServer;
+
+    private IMainContract.Presenter mPresenter;
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -121,9 +111,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         setSupportActionBar(mToolbar);
         mToolNavigationView = getToolbarChildView(mToolbar, "mNavButtonView", View.class);
         mTitleTextView = getToolbarChildView(mToolbar, "mTitleTextView", View.class);
-        if (mTitleTextView != null) {
-            mToolbarTextSize = ((TextView) mTitleTextView).getTextSize();
-        }
+        ZYJPreferencesUtils.putFloat(this, InputEnterPasswordDialog.mTitleTextSize, ((TextView) mTitleTextView).getTextSize());
 
         mProgressBar = getViewById(R.id.progress);
         mProgressBar.getIndeterminateDrawable().setTint(getResources().getColor(android.R.color.white));
@@ -145,14 +133,11 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mNavigationView = getViewById(R.id.navigationView);
         mNavigationView.setNavigationItemSelectedListener(mNavigationClick);
 
-        if (EntryptImple.getDatabasePathsBesidesCurrent(this).size() <= 0) {
-            mNavigationView.getMenu().removeItem(R.id.settings_view_other);
-        }
         DrawerLayout.LayoutParams lp = (DrawerLayout.LayoutParams) mNavigationView.getLayoutParams();
         lp.width = ZYJUtils.getDisplayMetrics(this).widthPixels * 2 / 3;
         mNavigationView.setLayoutParams(lp);
 
-        FloatingActionButton fab = getViewById(R.id.fab);
+        mFab = getViewById(R.id.fab);
 
         initContentViews();
 
@@ -163,11 +148,16 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             mDebug.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.mipmap.debug);
             mDebug.setVisibility(View.VISIBLE);
         }
+        new MainPresenter(this);
+
+        if (!mPresenter.hasOtherDatabase()) {
+            mNavigationView.getMenu().removeItem(R.id.settings_view_other);
+        }
     }
 
     @Override
-    public void setPresenter(IMainPresenter presenter) {
-
+    public void setPresenter(IMainContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 
     @Override
@@ -200,6 +190,11 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         unbindService(mConnection);
         // Only call once
         EntryptImple.destoryEntrypt();
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 
     @Override
@@ -275,12 +270,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         return anim;
     }
 
-    /**
-     * Add centent view by animation
-     *
-     * @param clickView the click view
-     * @param view      added view
-     */
     private void addSwitchView(final View clickView, final BaseMainView view) {
         final View addView = view.getView();
         mCurrentView = view;
@@ -349,7 +338,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
                         Intent intent = new Intent(getApplicationContext(), AddEntryActivity.class);
-                        intent.putExtra(AddEntryActivity.PASSWORD_ENTRY, mCategory);
+                        intent.putExtra(AddEntryActivity.PASSWORD_ENTRY, mPresenter.getCategory());
                         if (mTitleTextView != null) {
                             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this
                                     , Pair.create(mTitleTextView, "share")).toBundle());
@@ -404,37 +393,38 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             case R.id.group_web:
                 mToolbar.setTitle(R.string.password_catrgory_web);
                 addSwitchView(view, mGroupWebView);
-                mCategory = PasswordEntry.CATEGORY_WEB;
+                mCurrentView = mGroupEmailView;
+                mPresenter.setCategory(PasswordEntry.CATEGORY_WEB);
                 break;
             case R.id.group_email:
                 mToolbar.setTitle(R.string.password_catrgory_email);
                 addSwitchView(view, mGroupEmailView);
                 mCurrentView = mGroupEmailView;
-                mCategory = PasswordEntry.CATEGORY_EMAIL;
+                mPresenter.setCategory(PasswordEntry.CATEGORY_EMAIL);
                 break;
             case R.id.group_wallet:
                 mToolbar.setTitle(R.string.password_catrgory_wallet);
                 addSwitchView(view, mGroupWalletView);
                 mCurrentView = mGroupWalletView;
-                mCategory = PasswordEntry.CATEGORY_WALLET;
+                mPresenter.setCategory(PasswordEntry.CATEGORY_WALLET);
                 break;
             case R.id.group_app:
                 mToolbar.setTitle(R.string.password_catrgory_app);
                 addSwitchView(view, mGroupAppView);
                 mCurrentView = mGroupAppView;
-                mCategory = PasswordEntry.CATEGORY_APP;
+                mPresenter.setCategory(PasswordEntry.CATEGORY_APP);
                 break;
             case R.id.group_game:
                 mToolbar.setTitle(R.string.password_catrgory_game);
                 addSwitchView(view, mGroupGameView);
                 mCurrentView = mGroupGameView;
-                mCategory = PasswordEntry.CATEGORY_GAME;
+                mPresenter.setCategory(PasswordEntry.CATEGORY_GAME);
                 break;
             case R.id.group_other:
                 mToolbar.setTitle(R.string.password_catrgory_other);
                 addSwitchView(view, mGroupOtherView);
                 mCurrentView = mGroupOtherView;
-                mCategory = PasswordEntry.CATEGORY_OTHER;
+                mPresenter.setCategory(PasswordEntry.CATEGORY_OTHER);
                 break;
         }
         mMenuLayout.hideMenu();
@@ -442,7 +432,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     public void onViewClick(View view) {
         actionProgressBar(false);
-        showToast(view);
         switch (view.getId()) {
             case R.id.ok_id:
                 break;
@@ -460,6 +449,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         }
     }
 
+    @Override
     public void actionProgressBar(boolean show) {
         int visibility = show ? View.VISIBLE : View.INVISIBLE;
         if (mProgressBar.getVisibility() != visibility) {
@@ -467,8 +457,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         }
     }
 
-    private void showToast(View view) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+    @Override
+    public void showSnackbarToast() {
+        Snackbar.make(mFab, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
 

@@ -17,15 +17,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
-import com.zyj.ieasytools.act.mainActivity.MainActivity;
+import com.zyj.ieasytools.data.EntryptImple;
+import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.db.BaseDatabase;
 import com.zyj.ieasytools.library.db.ZYJDatabaseEncrypts;
 import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
+import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
-import com.zyj.ieasytools.data.EntryptImple;
-import com.zyj.ieasytools.data.SettingsConstant;
 
 /**
  * Created by yuri.zheng on 2016/5/26.
@@ -33,6 +33,8 @@ import com.zyj.ieasytools.data.SettingsConstant;
 public class InputEnterPasswordDialog extends Dialog {
 
     private final Class TAG = getClass();
+
+    public static final String mTitleTextSize = "_title_size";
 
     // TODO: 6/11/16 修改默认的验证方法
     /**
@@ -168,8 +170,9 @@ public class InputEnterPasswordDialog extends Dialog {
             }
         });
         TextView titleView = (TextView) toolbarLayout.findViewById(R.id.title);
-        if (MainActivity.mToolbarTextSize > 0) {
-            titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainActivity.mToolbarTextSize);
+        float size = ZYJPreferencesUtils.getFloat(mContext, mTitleTextSize);
+        if (size > 0) {
+            titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         }
         titleView.setText(title);
         toolbarLayout.measure(0, 0);
@@ -224,8 +227,9 @@ public class InputEnterPasswordDialog extends Dialog {
         protected BaseVerifyView(int layoutRes) {
             iMain = LayoutInflater.from(mContext).inflate(layoutRes, null);
             iSubTitle = (TextView) iMain.findViewById(R.id.sub_title);
-            if (MainActivity.mToolbarTextSize > 0) {
-                iSubTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, MainActivity.mToolbarTextSize - 5);
+            float size = ZYJPreferencesUtils.getFloat(mContext, mTitleTextSize);
+            if (size > 0) {
+                iSubTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 5);
             }
             if (isSettingPassword) {
                 iSubTitle.setText(R.string.enter_password_setting);

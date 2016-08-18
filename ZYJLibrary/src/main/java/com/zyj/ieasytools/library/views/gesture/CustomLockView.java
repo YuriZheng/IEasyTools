@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
-import com.zyj.ieasytools.library.utils.PreferencesUtils;
+import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,7 +147,7 @@ public class CustomLockView extends View {
     private LOCK_STATUS mLockState = null;
 
 
-    private PreferencesUtils mSaveUtils;
+    private ZYJPreferencesUtils mSaveUtils;
     private Handler mHandler;
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -229,7 +229,7 @@ public class CustomLockView extends View {
     private void init(Context context) {
         mContext = context;
         mHandler = new Handler(mContext.getMainLooper());
-        mSaveUtils = new PreferencesUtils(TAG.getSimpleName());
+        mSaveUtils = new ZYJPreferencesUtils(TAG.getSimpleName());
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 getViewTreeObserver().removeOnGlobalLayoutListener(this);
