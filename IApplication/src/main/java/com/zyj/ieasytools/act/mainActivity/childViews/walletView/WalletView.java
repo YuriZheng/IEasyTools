@@ -1,7 +1,7 @@
-package com.zyj.ieasytools.act.mainActivity.walletView;
+package com.zyj.ieasytools.act.mainActivity.childViews.walletView;
 
 import com.zyj.ieasytools.R;
-import com.zyj.ieasytools.act.mainActivity.BaseMainView;
+import com.zyj.ieasytools.act.mainActivity.childViews.BaseMainView;
 import com.zyj.ieasytools.act.mainActivity.MainActivity;
 
 /**

@@ -1,7 +1,7 @@
-package com.zyj.ieasytools.act.mainActivity.otherView;
+package com.zyj.ieasytools.act.mainActivity.childViews.otherView;
 
 import com.zyj.ieasytools.R;
-import com.zyj.ieasytools.act.mainActivity.BaseMainView;
+import com.zyj.ieasytools.act.mainActivity.childViews.BaseMainView;
 import com.zyj.ieasytools.act.mainActivity.MainActivity;
 
 /**

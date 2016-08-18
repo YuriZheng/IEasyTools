@@ -85,7 +85,7 @@ public class AddPresenter implements IAddContract.Presenter {
     }
 
     @Override
-    public void setEntryAttri(String email, String phone, String address, String description, String q1, String a1, String q2, String a2, String q3, String a3, String mark) {
+    public void setEntryAttributes(String email, String phone, String address, String description, String q1, String a1, String q2, String a2, String q3, String a3, String mark) {
         mEmail = email;
         mPhone = phone;
         mAddress = address;

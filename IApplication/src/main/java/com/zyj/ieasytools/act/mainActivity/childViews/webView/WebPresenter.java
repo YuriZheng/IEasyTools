@@ -1,6 +1,6 @@
-package com.zyj.ieasytools.act.mainActivity.webView;
+package com.zyj.ieasytools.act.mainActivity.childViews.webView;
 
-import com.zyj.ieasytools.act.mainActivity.BaseMainPresenter;
+import com.zyj.ieasytools.act.mainActivity.childViews.BaseMainPresenter;
 import com.zyj.ieasytools.data.EntryptImple;
 import com.zyj.ieasytools.library.db.DatabaseColumns;
 

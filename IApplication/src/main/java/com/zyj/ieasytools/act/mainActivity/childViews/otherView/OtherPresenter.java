@@ -1,6 +1,6 @@
-package com.zyj.ieasytools.act.mainActivity.otherView;
+package com.zyj.ieasytools.act.mainActivity.childViews.otherView;
 
-import com.zyj.ieasytools.act.mainActivity.BaseMainPresenter;
+import com.zyj.ieasytools.act.mainActivity.childViews.BaseMainPresenter;
 
 /**
  * Created by ZYJ on 8/13/16.

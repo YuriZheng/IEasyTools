@@ -31,25 +31,26 @@ import android.widget.TextView;
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.BaseActivity;
 import com.zyj.ieasytools.act.addActivity.AddEntryActivity;
-import com.zyj.ieasytools.act.mainActivity.appView.AppPresenter;
-import com.zyj.ieasytools.act.mainActivity.appView.AppView;
-import com.zyj.ieasytools.act.mainActivity.emailView.EmailPresenter;
-import com.zyj.ieasytools.act.mainActivity.emailView.EmailView;
-import com.zyj.ieasytools.act.mainActivity.gameView.GamePresenter;
-import com.zyj.ieasytools.act.mainActivity.gameView.GameView;
-import com.zyj.ieasytools.act.mainActivity.otherView.OtherPresenter;
-import com.zyj.ieasytools.act.mainActivity.otherView.OtherView;
-import com.zyj.ieasytools.act.mainActivity.walletView.WalletPresenter;
-import com.zyj.ieasytools.act.mainActivity.walletView.WalletView;
-import com.zyj.ieasytools.act.mainActivity.webView.WebPresenter;
-import com.zyj.ieasytools.act.mainActivity.webView.WebView;
+import com.zyj.ieasytools.act.mainActivity.childViews.BaseMainView;
+import com.zyj.ieasytools.act.mainActivity.childViews.appView.AppPresenter;
+import com.zyj.ieasytools.act.mainActivity.childViews.appView.AppView;
+import com.zyj.ieasytools.act.mainActivity.childViews.emailView.EmailPresenter;
+import com.zyj.ieasytools.act.mainActivity.childViews.emailView.EmailView;
+import com.zyj.ieasytools.act.mainActivity.childViews.gameView.GamePresenter;
+import com.zyj.ieasytools.act.mainActivity.childViews.gameView.GameView;
+import com.zyj.ieasytools.act.mainActivity.childViews.otherView.OtherPresenter;
+import com.zyj.ieasytools.act.mainActivity.childViews.otherView.OtherView;
+import com.zyj.ieasytools.act.mainActivity.childViews.walletView.WalletPresenter;
+import com.zyj.ieasytools.act.mainActivity.childViews.walletView.WalletView;
+import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebPresenter;
+import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebView;
 import com.zyj.ieasytools.act.myServer.MyServer;
 import com.zyj.ieasytools.data.EntryptImple;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
 
-public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener {
+public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener, IMainView<IMainPresenter> {
 
     /**
      * The content main layout
@@ -162,6 +163,11 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             mDebug.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.mipmap.debug);
             mDebug.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void setPresenter(IMainPresenter presenter) {
+
     }
 
     @Override

@@ -1,7 +1,7 @@
-package com.zyj.ieasytools.act.mainActivity.gameView;
+package com.zyj.ieasytools.act.mainActivity.childViews.gameView;
 
 import com.zyj.ieasytools.R;
-import com.zyj.ieasytools.act.mainActivity.BaseMainView;
+import com.zyj.ieasytools.act.mainActivity.childViews.BaseMainView;
 import com.zyj.ieasytools.act.mainActivity.MainActivity;
 
 /**

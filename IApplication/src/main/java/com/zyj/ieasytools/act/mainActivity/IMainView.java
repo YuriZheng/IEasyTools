@@ -1,7 +1,5 @@
 package com.zyj.ieasytools.act.mainActivity;
 
-import android.view.View;
-
 import com.zyj.ieasytools.act.IBaseView;
 
 /**
@@ -9,10 +7,4 @@ import com.zyj.ieasytools.act.IBaseView;
  */
 public interface IMainView<T extends IMainPresenter> extends IBaseView<T> {
 
-    /**
-     * Get the root view
-     *
-     * @return return the root view instance
-     */
-    View getView();
 }

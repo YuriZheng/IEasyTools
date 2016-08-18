@@ -221,7 +221,7 @@ public class AddEntryActivity extends BaseActivity implements IAddContract.View 
                 et.setSingleLine(true);
                 new AlertDialog.Builder(this).setMessage(R.string.add_input_see_password).setView(et).setPositiveButton(R.string.add_save, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        mPresenter.setEntryAttri(mEmailInput.getText().toString(),
+                        mPresenter.setEntryAttributes(mEmailInput.getText().toString(),
                                 mPhoneInput.getText().toString(),
                                 mAddressInput.getText().toString(),
                                 mDescriptionInput.getText().toString(),

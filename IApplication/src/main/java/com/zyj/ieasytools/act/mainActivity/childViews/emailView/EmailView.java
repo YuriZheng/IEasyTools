@@ -1,7 +1,7 @@
-package com.zyj.ieasytools.act.mainActivity.emailView;
+package com.zyj.ieasytools.act.mainActivity.childViews.emailView;
 
 import com.zyj.ieasytools.R;
-import com.zyj.ieasytools.act.mainActivity.BaseMainView;
+import com.zyj.ieasytools.act.mainActivity.childViews.BaseMainView;
 import com.zyj.ieasytools.act.mainActivity.MainActivity;
 
 /**

@@ -19,9 +19,11 @@ public class IAddContract {
 
     interface Presenter extends IBasePresenter {
 
-        void saveEntry(final String title, final String username, final String userPassword, final String category, final String password, final String method);
+        void saveEntry(final String title, final String username, final String userPassword,
+                       final String category, final String password, final String method);
 
-        void setEntryAttri(String email, String phone, String address, String description, String q1, String a1, String q2, String a2, String q3, String a3, String mark);
+        void setEntryAttributes(String email, String phone, String address, String description,
+                                String q1, String a1, String q2, String a2, String q3, String a3, String mark);
 
     }
 

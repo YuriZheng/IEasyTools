@@ -1,6 +1,6 @@
-package com.zyj.ieasytools.act.mainActivity.walletView;
+package com.zyj.ieasytools.act.mainActivity.childViews.walletView;
 
-import com.zyj.ieasytools.act.mainActivity.BaseMainPresenter;
+import com.zyj.ieasytools.act.mainActivity.childViews.BaseMainPresenter;
 
 /**
  * Created by ZYJ on 8/13/16.

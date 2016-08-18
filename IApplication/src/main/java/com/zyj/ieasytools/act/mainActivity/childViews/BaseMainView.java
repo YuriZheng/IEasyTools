@@ -1,15 +1,15 @@
-package com.zyj.ieasytools.act.mainActivity;
+package com.zyj.ieasytools.act.mainActivity.childViews;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.zyj.ieasytools.act.IBasePresenter;
+import com.zyj.ieasytools.act.mainActivity.MainActivity;
 
 /**
  * Created by yuri.zheng on 2016/5/24.
  */
-public abstract class BaseMainView<P extends IMainPresenter> {
+public abstract class BaseMainView<P extends IViewsPresenter> {
 
     protected ViewGroup mViewGroup;
     protected MainActivity mContext;
@@ -35,7 +35,7 @@ public abstract class BaseMainView<P extends IMainPresenter> {
     }
 
     /**
-     * {@link com.zyj.ieasytools.act.IBaseView#setPresenter(IBasePresenter)}
+     * {@link com.zyj.ieasytools.act.IBaseView#setPresenter(com.zyj.ieasytools.act.IBasePresenter)}
      */
     public void setPresenter(P presenter) {
         mPresenter = presenter;

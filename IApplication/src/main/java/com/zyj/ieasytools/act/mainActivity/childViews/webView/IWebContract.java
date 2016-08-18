@@ -1,9 +1,9 @@
-package com.zyj.ieasytools.act.mainActivity.webView;
+package com.zyj.ieasytools.act.mainActivity.childViews.webView;
 
 import android.content.Context;
 
-import com.zyj.ieasytools.act.mainActivity.IMainPresenter;
-import com.zyj.ieasytools.act.mainActivity.IMainView;
+import com.zyj.ieasytools.act.mainActivity.childViews.IViewsPresenter;
+import com.zyj.ieasytools.act.mainActivity.childViews.IViewsView;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 public interface IWebContract {
 
 
-    interface View extends IMainView<Presenter> {
+    interface View extends IViewsView<Presenter> {
 
         Context getContext();
 
@@ -23,7 +23,7 @@ public interface IWebContract {
 
     }
 
-    interface Presenter extends IMainPresenter {
+    interface Presenter extends IViewsPresenter {
 
         void requestEntryByCategory();
 
