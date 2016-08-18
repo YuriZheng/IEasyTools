@@ -13,4 +13,13 @@ public class OtherView extends BaseMainView<IOtherContract.Presenter> implements
         super(context, R.layout.group_other_layout);
     }
 
+    @Override
+    public void verifyEnterPasswordSuccess() {
+
+    }
+
+    @Override
+    public void onReload() {
+
+    }
 }

@@ -1,17 +1,16 @@
 package com.zyj.ieasytools.act.mainActivity;
 
-import com.zyj.ieasytools.data.IData;
+import com.zyj.ieasytools.data.IEntrypt;
 
 /**
  * Created by ZYJ on 8/13/16.
  */
-public abstract class BaseMainPresenter<D extends IData, V extends IMainView> {
+public abstract class BaseMainPresenter<V extends IMainView> {
 
-    protected final D mModel;
     protected final V mView;
+    protected IEntrypt mEntrypt;
 
-    public BaseMainPresenter(D presenter, V view) {
-        mModel = presenter;
+    public BaseMainPresenter(V view) {
         mView = view;
     }
 }

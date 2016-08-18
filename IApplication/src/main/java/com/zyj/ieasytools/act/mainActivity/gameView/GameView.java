@@ -12,4 +12,14 @@ public class GameView extends BaseMainView<IGameContract.Presenter> implements I
     public GameView(MainActivity context) {
         super(context, R.layout.group_game_layout);
     }
+
+    @Override
+    public void verifyEnterPasswordSuccess() {
+
+    }
+
+    @Override
+    public void onReload() {
+
+    }
 }

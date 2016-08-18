@@ -106,7 +106,7 @@ public class AddEntryActivity extends BaseActivity implements IAddContract.View 
 
         initChildViews();
 
-        new AddPresenter(new EntryptImple(this), this);
+        new AddPresenter(EntryptImple.getEntryptImple(this), this);
     }
 
     @Override

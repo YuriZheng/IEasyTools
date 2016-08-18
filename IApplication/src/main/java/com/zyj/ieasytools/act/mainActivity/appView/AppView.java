@@ -12,4 +12,14 @@ public class AppView extends BaseMainView<IAppContract.Presenter> implements IAp
     public AppView(MainActivity context) {
         super(context, R.layout.group_app_layout);
     }
+
+    @Override
+    public void verifyEnterPasswordSuccess() {
+
+    }
+
+    @Override
+    public void onReload() {
+
+    }
 }

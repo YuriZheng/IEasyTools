@@ -69,6 +69,9 @@
     <string name="add_success">Insert success</string>
     <string name="add_fail">Insert fail</string>
     <string name="add_see_password_help">See password?</string>
+    <string name="add_save_title_null">Title can\'t be null</string>
+    <string name="add_save_user_null">User can\'t be null</string>
+    <string name="add_save_password_null">Password can\'t be null</string>
 
     <!-- Password group -->
     <string name="password_catrgory_web">Web</string>

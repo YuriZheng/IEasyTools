@@ -10,4 +10,9 @@
     <color name="colorLevel_7">#b5b5b5</color>
     <color name="colorLevel_8">#c5c5c5</color>
 
+
+    <color name="main_view_title_color">#ff222222</color>
+    <color name="main_view_user_color">#aa000000</color>
+    <color name="main_view_mark_color">#aa222222</color>
+
 </resources>

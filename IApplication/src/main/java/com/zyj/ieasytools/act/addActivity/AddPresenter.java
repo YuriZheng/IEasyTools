@@ -1,5 +1,7 @@
 package com.zyj.ieasytools.act.addActivity;
 
+import android.text.TextUtils;
+
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.data.IEntrypt;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
@@ -43,6 +45,18 @@ public class AddPresenter implements IAddContract.Presenter {
         }
         if (password.length() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
             mView.showToast(R.string.password_long);
+            return;
+        }
+        if (TextUtils.isEmpty(title)) {
+            mView.showToast(R.string.add_save_title_null);
+            return;
+        }
+        if (TextUtils.isEmpty(username)) {
+            mView.showToast(R.string.add_save_user_null);
+            return;
+        }
+        if (TextUtils.isEmpty(userPassword)) {
+            mView.showToast(R.string.add_save_password_null);
             return;
         }
         PasswordEntry entry = new PasswordEntry(UUID.randomUUID().toString(), password, method);

@@ -30,11 +30,22 @@ public abstract class BaseMainView<P extends IMainPresenter> {
         return mViewGroup;
     }
 
+    public View findViewById(int id) {
+        return mViewGroup.findViewById(id);
+    }
+
     /**
      * {@link com.zyj.ieasytools.act.IBaseView#setPresenter(IBasePresenter)}
      */
     public void setPresenter(P presenter) {
         mPresenter = presenter;
     }
+
+    public abstract void verifyEnterPasswordSuccess();
+
+    /**
+     * Call this method When the main activity switch view
+     */
+    public abstract void onReload();
 
 }

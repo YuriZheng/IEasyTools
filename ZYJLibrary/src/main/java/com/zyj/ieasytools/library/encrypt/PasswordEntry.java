@@ -260,7 +260,7 @@ public final class PasswordEntry implements Parcelable {
         if (o instanceof PasswordEntry) {
             PasswordEntry entry = (PasswordEntry) o;
             // uuid、password、username
-            return entry.uuid.equals(this.uuid) && entry.p_password.equals(p_password) && entry.p_username.equals(p_username);
+            return entry.uuid.equals(this.uuid) && entry.p_username.equals(p_username);
         }
         return false;
     }

@@ -17,10 +17,19 @@ public final class EntryptImple implements IEntrypt {
 
     private ZYJDatabaseEncrypts mZYJEncrypts;
 
-    public EntryptImple(Context context) {
+    private EntryptImple(Context context) {
         String password = ZYJDatabaseUtils.getSettingsInstance(context).getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null);
         if (!TextUtils.isEmpty(password)) {
             mZYJEncrypts = getCurrentEncryptDatabase(context, password);
+        }
+    }
+
+    public static EntryptImple getEntryptImple(Context context) {
+        EntryptImple e = new EntryptImple(context);
+        if (e.mZYJEncrypts == null) {
+            return null;
+        } else {
+            return e;
         }
     }
 
@@ -60,13 +69,8 @@ public final class EntryptImple implements IEntrypt {
     }
 
     @Override
-    public List<PasswordEntry> queryEntry(String selection, String[] selectionArgs, String groupBy, String password) {
-        return mZYJEncrypts.queryEntry(selection, selectionArgs, groupBy, password);
-    }
-
-    @Override
-    public int getAllRecord() {
-        return mZYJEncrypts.getAllRecord();
+    public List<PasswordEntry> queryEntry(String[] columns, String selection, String[] selectionArgs, String groupBy, String password) {
+        return mZYJEncrypts.queryEntry(columns, selection, selectionArgs, groupBy, password);
     }
 
     /**

@@ -12,4 +12,14 @@ public class WalletView extends BaseMainView<IWalletContract.Presenter> implemen
     public WalletView(MainActivity context) {
         super(context, R.layout.group_wallet_layout);
     }
+
+    @Override
+    public void verifyEnterPasswordSuccess() {
+
+    }
+
+    @Override
+    public void onReload() {
+
+    }
 }

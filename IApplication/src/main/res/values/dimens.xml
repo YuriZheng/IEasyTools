@@ -8,4 +8,11 @@
 
     <dimen name="input_enter_dialog_sub_padd">16dp</dimen>
 
+    <dimen name="main_view_round_padd">16dp</dimen>
+
+    <dimen name="main_view_title_size">20sp</dimen>
+    <dimen name="main_view_user_size">17sp</dimen>
+    <dimen name="main_view_description_size">15sp</dimen>
+    <dimen name="main_view_mark_size">15sp</dimen>
+
 </resources>
