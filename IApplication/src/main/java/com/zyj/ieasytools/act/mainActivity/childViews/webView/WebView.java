@@ -43,6 +43,7 @@ public class WebView extends BaseMainView<IWebContract.Presenter> implements IWe
 
     @Override
     public void setDatas(List<PasswordEntry> list) {
+        list.addAll(list);
         mAdapter.setList(list);
         mAdapter.notifyDataSetChanged();
     }

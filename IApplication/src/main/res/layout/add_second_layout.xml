@@ -43,6 +43,7 @@
                 style="@style/add_input_edit_style"
                 android:hint="@string/add_input_phone_hint"
                 android:imeOptions="actionNext"
+                android:inputType="phone"
                 android:nextFocusForward="@+id/address_input"/>
         </LinearLayout>
 

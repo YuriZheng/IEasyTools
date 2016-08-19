@@ -44,4 +44,9 @@ public class MainPresenter implements IMainContract.Presenter {
     public boolean hasOtherDatabase() {
         return EntryptImple.getDatabasePathsBesidesCurrent(mView.getContext()).size() > 0;
     }
+
+    @Override
+    public void destory() {
+        EntryptImple.destoryEntrypt();
+    }
 }

@@ -28,6 +28,8 @@ public interface IMainContract {
 
         boolean hasOtherDatabase();
 
+        void destory();
+
     }
 
 }

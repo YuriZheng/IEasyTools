@@ -45,7 +45,6 @@ import com.zyj.ieasytools.act.mainActivity.childViews.walletView.WalletView;
 import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebView;
 import com.zyj.ieasytools.act.myServer.MyServer;
-import com.zyj.ieasytools.data.EntryptImple;
 import com.zyj.ieasytools.dialog.InputEnterPasswordDialog;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
@@ -139,6 +138,13 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
         mFab = getViewById(R.id.fab);
 
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSnackbarToast();
+            }
+        });
+
         initContentViews();
 
         if (ZYJUtils.isFunctionDebug) {
@@ -189,7 +195,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         super.onDestroy();
         unbindService(mConnection);
         // Only call once
-        EntryptImple.destoryEntrypt();
+        mPresenter.destory();
     }
 
     @Override

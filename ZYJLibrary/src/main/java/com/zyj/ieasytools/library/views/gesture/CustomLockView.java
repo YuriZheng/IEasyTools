@@ -147,7 +147,6 @@ public class CustomLockView extends View {
     private LOCK_STATUS mLockState = null;
 
 
-    private ZYJPreferencesUtils mSaveUtils;
     private Handler mHandler;
     private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -229,7 +228,6 @@ public class CustomLockView extends View {
     private void init(Context context) {
         mContext = context;
         mHandler = new Handler(mContext.getMainLooper());
-        mSaveUtils = new ZYJPreferencesUtils(TAG.getSimpleName());
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             public void onGlobalLayout() {
                 getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -299,7 +297,7 @@ public class CustomLockView extends View {
         if (mLockState != null) {
             return;
         }
-        String string = mSaveUtils.getString(mContext, KEY);
+        String string = ZYJPreferencesUtils.getString(mContext, KEY);
         if (TextUtils.isEmpty(string)) {
             // no password, so it's setting
             mLockState = LOCK_STATUS.LOCK_SETTING;
@@ -310,7 +308,7 @@ public class CustomLockView extends View {
                 // it's verify
                 mLockState = LOCK_STATUS.LOCK_VERIFY;
             } else {
-                mSaveUtils.putString(mContext, KEY, "");
+                ZYJPreferencesUtils.putString(mContext, KEY, "");
                 mLockState = LOCK_STATUS.LOCK_SETTING;
                 mIndexs = null;
             }
@@ -598,7 +596,7 @@ public class CustomLockView extends View {
                 postInvalidate();
             } else {
                 String password = arrayToString(indexs);
-                if (mSaveUtils.putString(mContext, KEY, password)) {
+                if (ZYJPreferencesUtils.putString(mContext, KEY, password)) {
                     if (mCompleteListener != null) {
                         mCompleteListener.onCompleteSetting(indexs);
                     }
@@ -844,7 +842,7 @@ public class CustomLockView extends View {
      * @return true if the password exist, other return false
      */
     public boolean checkVerifyPassword() {
-        String password = mSaveUtils.getString(mContext, KEY);
+        String password = ZYJPreferencesUtils.getString(mContext, KEY);
         if (TextUtils.isEmpty(password)) {
             return false;
         }
@@ -885,7 +883,7 @@ public class CustomLockView extends View {
         isCorrect = true;
         postInvalidate();
         mLockState = LOCK_STATUS.LOCK_SETTING;
-        mSaveUtils.putString(mContext, KEY, "");
+        ZYJPreferencesUtils.putString(mContext, KEY, "");
     }
 
     /**
