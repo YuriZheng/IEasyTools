@@ -99,10 +99,10 @@ public class AddEntryActivity extends BaseActivity implements IAddContract.View 
             }
         });
 
-        mTitleView = getToolbarChildView(mToolbar, "mTitleTextView", View.class);
-        if (mTitleView != null) {
-            mTitleView.setTransitionName("share");
-        }
+//        mTitleView = getToolbarChildView(mToolbar, "mTitleTextView", View.class);
+//        if (mTitleView != null) {
+//            mTitleView.setTransitionName("share");
+//        }
 
         initChildViews();
 

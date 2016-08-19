@@ -2,7 +2,6 @@ package com.zyj.ieasytools.act.mainActivity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +16,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +28,10 @@ import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.BaseActivity;
+import com.zyj.ieasytools.act.aboutActivity.AboutActivity;
 import com.zyj.ieasytools.act.addActivity.AddEntryActivity;
+import com.zyj.ieasytools.act.feedbackActivity.FeedbackActivity;
+import com.zyj.ieasytools.act.helpActivity.HelpActivity;
 import com.zyj.ieasytools.act.mainActivity.childViews.BaseMainView;
 import com.zyj.ieasytools.act.mainActivity.childViews.appView.AppPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.appView.AppView;
@@ -45,6 +46,7 @@ import com.zyj.ieasytools.act.mainActivity.childViews.walletView.WalletView;
 import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebView;
 import com.zyj.ieasytools.act.myServer.MyServer;
+import com.zyj.ieasytools.act.settingActivity.SettingActivity;
 import com.zyj.ieasytools.dialog.InputEnterPasswordDialog;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
@@ -345,15 +347,14 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
                         Intent intent = new Intent(getApplicationContext(), AddEntryActivity.class);
-                        intent.putExtra(AddEntryActivity.PASSWORD_ENTRY, mPresenter.getCategory());
-                        if (mTitleTextView != null) {
-                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this
-                                    , Pair.create(mTitleTextView, "share")).toBundle());
-                        } else {
-                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this
-                            ).toBundle());
-                        }
-
+//                        intent.putExtra(AddEntryActivity.PASSWORD_ENTRY, mPresenter.getCategory());
+//                        if (mTitleTextView != null) {
+//                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this
+//                                    , Pair.create(mTitleTextView, "share")).toBundle());
+//                        } else {
+//                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
+//                        }
+                        startActivity(intent);
                     }
                 }, 300);
                 break;
@@ -369,16 +370,19 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         public boolean onNavigationItemSelected(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.settings_settings:
-                    actionProgressBar(true);
+                    startActivity(new Intent(getApplicationContext(), SettingActivity.class));
                     break;
                 case R.id.settings_view_other:
+                    // TODO: 2016/8/19
                     break;
                 case R.id.settings_feedback:
-                    actionProgressBar(false);
+                    startActivity(new Intent(getApplicationContext(), FeedbackActivity.class));
                     break;
                 case R.id.settings_about:
+                    startActivity(new Intent(getApplicationContext(), AboutActivity.class));
                     break;
                 case R.id.settings_help:
+                    startActivity(new Intent(getApplicationContext(), HelpActivity.class));
                     break;
             }
             return false;
