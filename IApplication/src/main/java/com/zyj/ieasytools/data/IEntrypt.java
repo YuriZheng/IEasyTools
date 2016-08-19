@@ -49,6 +49,6 @@ public interface IEntrypt extends IData {
     /**
      * {@link ZYJDatabaseEncrypts#queryEntry(String[], String, String[], String, String)}
      */
-    List<PasswordEntry> queryEntry(String[] columns, String selection, String[] selectionArgs, String groupBy, String password);
+    List<PasswordEntry> queryEntry(String[] columns, String selection, String[] selectionArgs, String orderBy, String password);
 
 }

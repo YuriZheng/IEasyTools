@@ -280,6 +280,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         final View addView = view.getView();
         mCurrentView = view;
         if (clickView == null) {
+            view.onReload();
             mMainViewLayout.addView(addView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             return;
         }

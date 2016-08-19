@@ -14,7 +14,8 @@ import com.zyj.ieasytools.library.utils.ZYJVersion;
  */
 public final class PasswordEntry implements Parcelable {
 
-    // TODO: 2016/8/18  6个不加密、6个不能修改，另外新添加四个不加密：标题”、“用户”、“描述”和“备注”
+    // TODO: 2016/8/18  6个不加密、6个不能修改，
+    // TODO: 2016/8/18 因为显示简介时，需要根据不同的查看密码来获取真实信息，所以这里规定“UUID”、“类别”、“标题”、“用户”、“描述”和“备注”六个字段不进行任何形式的加密
 
     /**
      * Web group，default

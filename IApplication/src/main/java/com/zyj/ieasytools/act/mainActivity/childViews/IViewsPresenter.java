@@ -5,6 +5,5 @@ package com.zyj.ieasytools.act.mainActivity.childViews;
  */
 public interface IViewsPresenter extends com.zyj.ieasytools.act.IBasePresenter {
 
-
-
+    void requestEntryByCategory(String category);
 }

@@ -69,8 +69,8 @@ public final class EntryptImple implements IEntrypt {
     }
 
     @Override
-    public List<PasswordEntry> queryEntry(String[] columns, String selection, String[] selectionArgs, String groupBy, String password) {
-        return mZYJEncrypts.queryEntry(columns, selection, selectionArgs, groupBy, password);
+    public List<PasswordEntry> queryEntry(String[] columns, String selection, String[] selectionArgs, String orderBy, String password) {
+        return mZYJEncrypts.queryEntry(columns, selection, selectionArgs, orderBy, password);
     }
 
     /**

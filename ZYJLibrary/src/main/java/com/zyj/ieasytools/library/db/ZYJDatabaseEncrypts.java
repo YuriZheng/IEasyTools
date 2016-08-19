@@ -217,15 +217,14 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
         return d.update(DatabaseColumns.EncryptColumns.TABLE_NAME, v, DatabaseColumns.EncryptColumns._UUID + "=?", new String[]{uuid});
     }
 
-    // TODO: 2016/8/18 这里的加密，因为显示简介时，需要根据不同的查看密码来获取真实信息，所以这里规定“UUID”、“标题”、“用户”、“描述”和“备注”四个字段不进行任何形式的加密
     private ContentValues getContentValues(PasswordEntry entry, String password) {
         BaseEncrypt encrypt = EncryptFactory.getInstance().getEncryptInstance(entry.getEncryptionMethod(), password);
         ContentValues v = new ContentValues();
-        v.put(DatabaseColumns.EncryptColumns._CATEGORY, encrypt.encrypt(entry.p_category, ZYJVersion.getCurrentVersion()));
 
         v.put(DatabaseColumns.EncryptColumns._UUID, entry.getUuid());
         v.put(DatabaseColumns.EncryptColumns._TITLE, entry.p_title);
         v.put(DatabaseColumns.EncryptColumns._USERNAME, entry.p_username);
+        v.put(DatabaseColumns.EncryptColumns._CATEGORY, entry.p_category);
         v.put(DatabaseColumns.EncryptColumns._DESCRIPTION, entry.p_description);
         v.put(DatabaseColumns.EncryptColumns._REMARKS, entry.p_remarks);
 
@@ -300,6 +299,10 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
         if (modifyColumn >= 0) {
             entry.p_modify_time = c.getLong(modifyColumn);
         }
+        int categoryColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._CATEGORY);
+        if (categoryColumn >= 0) {
+            entry.p_category = c.getString(categoryColumn);
+        }
 
         if (!TextUtils.isEmpty(password)) {
             BaseEncrypt encrypt = EncryptFactory.getInstance().getEncryptInstance(method, password);
@@ -307,10 +310,6 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
                 ZYJUtils.logW(TAG, c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ID))
                         + " record password wrong");
             } else {
-                int categoryColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._CATEGORY);
-                if (categoryColumn >= 0) {
-                    entry.p_category = encrypt.decrypt(c.getString(categoryColumn), version);
-                }
                 int passwordColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._PASSWORD);
                 if (passwordColumn >= 0) {
                     entry.p_password = encrypt.decrypt(c.getString(passwordColumn), version);
@@ -382,11 +381,11 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
      *
      * @param selection     condition
      * @param selectionArgs condition args
-     * @param groupBy       sort
+     * @param orderBy       sort
      * @param password      password,If a record is wrong, then ignore this record
      * @return return {@link List} of {@link PasswordEntry}
      */
-    public List<PasswordEntry> queryEntry(String[] columns, String selection, String[] selectionArgs, String groupBy, String password) {
+    public List<PasswordEntry> queryEntry(String[] columns, String selection, String[] selectionArgs, String orderBy, String password) {
         List<PasswordEntry> list = new ArrayList<PasswordEntry>();
         if (!checkDatabaseValid()) {
             return list;
@@ -400,7 +399,7 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
             columns = newColumns;
         }
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
-        Cursor c = d.query(DatabaseColumns.EncryptColumns.TABLE_NAME, columns, selection, selectionArgs, groupBy, null, null);
+        Cursor c = d.query(DatabaseColumns.EncryptColumns.TABLE_NAME, columns, selection, selectionArgs, null, null, orderBy);
         if (c == null) {
             return list;
         }
