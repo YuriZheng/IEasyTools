@@ -2,6 +2,8 @@ package com.zyj.ieasytools.act.mainActivity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -70,8 +72,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
-    private View mToolNavigationView;
-    private View mTitleTextView;
+    private TextView mTitleTextView;
     private ProgressBar mProgressBar;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
@@ -110,9 +111,13 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mToolbar = getViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.password_catrgory_web);
         setSupportActionBar(mToolbar);
-        mToolNavigationView = getToolbarChildView(mToolbar, "mNavButtonView", View.class);
-        mTitleTextView = getToolbarChildView(mToolbar, "mTitleTextView", View.class);
-        ZYJPreferencesUtils.putFloat(this, InputEnterPasswordDialog.mTitleTextSize, ((TextView) mTitleTextView).getTextSize());
+        View view = getToolbarChildView(mToolbar, "mTitleTextView", View.class);
+        if (view != null && view instanceof TextView) {
+            mTitleTextView = (TextView) view;
+        }
+        if (mTitleTextView != null) {
+            ZYJPreferencesUtils.putFloat(this, InputEnterPasswordDialog.mTitleTextSize, ((TextView) mTitleTextView).getTextSize());
+        }
 
         mProgressBar = getViewById(R.id.progress);
         mProgressBar.getIndeterminateDrawable().setTint(getResources().getColor(android.R.color.white));
@@ -347,7 +352,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 mHandler.postDelayed(new Runnable() {
                     public void run() {
                         Intent intent = new Intent(getApplicationContext(), AddEntryActivity.class);
-//                        intent.putExtra(AddEntryActivity.PASSWORD_ENTRY, mPresenter.getCategory());
+                        intent.putExtra(AddEntryActivity.PASSWORD_ENTRY, mPresenter.getCategory());
 //                        if (mTitleTextView != null) {
 //                            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this
 //                                    , Pair.create(mTitleTextView, "share")).toBundle());
@@ -367,25 +372,30 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     private NavigationView.OnNavigationItemSelectedListener mNavigationClick = new NavigationView.OnNavigationItemSelectedListener() {
         @Override
-        public boolean onNavigationItemSelected(MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.settings_settings:
-                    startActivity(new Intent(getApplicationContext(), SettingActivity.class));
-                    break;
-                case R.id.settings_view_other:
-                    // TODO: 2016/8/19
-                    break;
-                case R.id.settings_feedback:
-                    startActivity(new Intent(getApplicationContext(), FeedbackActivity.class));
-                    break;
-                case R.id.settings_about:
-                    startActivity(new Intent(getApplicationContext(), AboutActivity.class));
-                    break;
-                case R.id.settings_help:
-                    startActivity(new Intent(getApplicationContext(), HelpActivity.class));
-                    break;
-            }
-            return false;
+        public boolean onNavigationItemSelected(final MenuItem item) {
+            hideSildeDrawer();
+            mHandler.postDelayed(new Runnable() {
+                public void run() {
+                    switch (item.getItemId()) {
+                        case R.id.settings_settings:
+                            startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                            break;
+                        case R.id.settings_view_other:
+                            // TODO: 2016/8/19
+                            break;
+                        case R.id.settings_feedback:
+                            startActivity(new Intent(getApplicationContext(), FeedbackActivity.class));
+                            break;
+                        case R.id.settings_about:
+                            startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+                            break;
+                        case R.id.settings_help:
+                            startActivity(new Intent(getApplicationContext(), HelpActivity.class));
+                            break;
+                    }
+                }
+            }, 300);
+            return true;
         }
     };
 
@@ -402,43 +412,69 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         }
         switch (view.getId()) {
             case R.id.group_web:
-                mToolbar.setTitle(R.string.password_catrgory_web);
+//                mToolbar.setTitle(R.string.password_catrgory_web);
+                animatorTitle(R.string.password_catrgory_web);
                 addSwitchView(view, mGroupWebView);
                 mCurrentView = mGroupEmailView;
                 mPresenter.setCategory(PasswordEntry.CATEGORY_WEB);
                 break;
             case R.id.group_email:
-                mToolbar.setTitle(R.string.password_catrgory_email);
+//                mToolbar.setTitle(R.string.password_catrgory_email);
+                animatorTitle(R.string.password_catrgory_email);
                 addSwitchView(view, mGroupEmailView);
                 mCurrentView = mGroupEmailView;
                 mPresenter.setCategory(PasswordEntry.CATEGORY_EMAIL);
                 break;
             case R.id.group_wallet:
-                mToolbar.setTitle(R.string.password_catrgory_wallet);
+//                mToolbar.setTitle(R.string.password_catrgory_wallet);
+                animatorTitle(R.string.password_catrgory_wallet);
                 addSwitchView(view, mGroupWalletView);
                 mCurrentView = mGroupWalletView;
                 mPresenter.setCategory(PasswordEntry.CATEGORY_WALLET);
                 break;
             case R.id.group_app:
-                mToolbar.setTitle(R.string.password_catrgory_app);
+//                mToolbar.setTitle(R.string.password_catrgory_app);
+                animatorTitle(R.string.password_catrgory_app);
                 addSwitchView(view, mGroupAppView);
                 mCurrentView = mGroupAppView;
                 mPresenter.setCategory(PasswordEntry.CATEGORY_APP);
                 break;
             case R.id.group_game:
-                mToolbar.setTitle(R.string.password_catrgory_game);
+//                mToolbar.setTitle(R.string.password_catrgory_game);
+                animatorTitle(R.string.password_catrgory_game);
                 addSwitchView(view, mGroupGameView);
                 mCurrentView = mGroupGameView;
                 mPresenter.setCategory(PasswordEntry.CATEGORY_GAME);
                 break;
             case R.id.group_other:
-                mToolbar.setTitle(R.string.password_catrgory_other);
+//                mToolbar.setTitle(R.string.password_catrgory_other);
+                animatorTitle(R.string.password_catrgory_other);
                 addSwitchView(view, mGroupOtherView);
                 mCurrentView = mGroupOtherView;
                 mPresenter.setCategory(PasswordEntry.CATEGORY_OTHER);
                 break;
         }
         mMenuLayout.hideMenu();
+    }
+
+    private void animatorTitle(final int resId) {
+        if (mTitleTextView != null) {
+            PropertyValuesHolder translation = PropertyValuesHolder.ofFloat("translationX", 0, mTitleTextView.getWidth());
+            PropertyValuesHolder aplha = PropertyValuesHolder.ofFloat("alpha", 1f, 0f);
+            ObjectAnimator dis = ObjectAnimator.ofPropertyValuesHolder(mTitleTextView, translation, aplha);
+            dis.setDuration(150);
+            dis.addListener(new AnimatorListenerAdapter() {
+                public void onAnimationEnd(Animator animation) {
+                    mTitleTextView.setText(resId);
+                    PropertyValuesHolder translation = PropertyValuesHolder.ofFloat("translationX", -mTitleTextView.getWidth(), 0);
+                    PropertyValuesHolder aplha = PropertyValuesHolder.ofFloat("alpha", 0f, 1f);
+                    ObjectAnimator show = ObjectAnimator.ofPropertyValuesHolder(mTitleTextView, translation, aplha);
+                    show.setDuration(150);
+                    show.start();
+                }
+            });
+            dis.start();
+        }
     }
 
     public void onViewClick(View view) {

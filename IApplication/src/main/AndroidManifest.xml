@@ -23,25 +23,25 @@
 
         <activity
             android:name=".act.mainActivity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar.Animation"/>
         <activity
             android:name=".act.addActivity.AddEntryActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar.Animation"/>
         <activity
             android:name=".act.helpActivity.HelpActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar.Animation"/>
 
         <activity
             android:name=".act.aboutActivity.AboutActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar.Animation"/>
 
         <activity
             android:name=".act.feedbackActivity.FeedbackActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar.Animation"/>
 
         <activity
             android:name=".act.settingActivity.SettingActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar.Animation"/>
 
         <service android:name=".act.myServer.MyServer"/>
 

@@ -88,6 +88,7 @@ public class AddEntryActivity extends BaseActivity implements IAddContract.View 
         if (TextUtils.isEmpty(mCategory)) {
             ZYJUtils.logD(TAG, "Category is null");
             finish();
+            return;
         }
         setTitle();
         setSupportActionBar(mToolbar);

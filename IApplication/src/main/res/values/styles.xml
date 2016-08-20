@@ -14,8 +14,24 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Animation" parent="AppTheme.NoActionBar">
+        <item name="android:windowAnimationStyle">@style/activity_push_animation_style</item>
+    </style>
+
+    <style name="activity_push_animation_style">
+        <!--
+            当我们从 A1 启动 A2 时，A1 从屏幕上消失，这个动画叫做 android:activityOpenExitAnimation
+            当我们从 A1 启动 A2 时，A2 出现在屏幕上，这个动画叫做 android:activityOpenEnterAnimation
+            当我们从 A2 退出回到 A1 时，A2 从屏幕上消失，这个叫做 android:activityCloseExitAnimation
+            当我们从 A2 退出回到 A1 时，A1 出现在屏幕上，这个叫做 android:activityCloseEnterAnimation
+        -->
+        <item name="android:activityOpenExitAnimation">@anim/activity_push_open_exit</item>
+        <item name="android:activityOpenEnterAnimation">@anim/activity_push_open_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_push_close_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_push_close_enter</item>
     </style>
 
     <style name="app_welcome_theme_style" parent="AppTheme.NoActionBar">
