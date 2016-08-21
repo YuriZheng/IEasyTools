@@ -8,7 +8,7 @@ JNIEXPORT jstring
 
 JNICALL Java_com_zyj_jni_ZYJJniLib_generateSettingCode
         (JNIEnv *env, jobject obj, jstring resource) {
-    LOGD("From c: %s", (char *)resource);
+//    LOGD("From c: %s", (char *)resource);
     return (*env)->NewStringUTF(env, "I'm comes from to Native Function!");
 }
 

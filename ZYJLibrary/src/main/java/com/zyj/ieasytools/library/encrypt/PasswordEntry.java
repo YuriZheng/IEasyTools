@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
-import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.utils.ZYJVersion;
 
 /**
@@ -268,15 +267,11 @@ public final class PasswordEntry implements Parcelable {
 
     @Override
     public String toString() {
-        if (ZYJUtils.isFunctionDebug) {
-            return "Title: " + p_title
-                    + ", UUID: " + uuid
-                    + ", Username: " + p_username
-                    + ", Add time: " + p_add_time
-                    + ", Encrypt way: " + p_encryption_method;
-        } else {
-            return "UUID: " + uuid;
-        }
+        return "Title: " + p_title
+                + ", UUID: " + uuid
+                + ", Username: " + p_username
+                + ", Add time: " + p_add_time
+                + ", Encrypt way: " + p_encryption_method;
     }
 
     @Override

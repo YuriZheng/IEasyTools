@@ -28,6 +28,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.zyj.ieasytools.BuildConfig;
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.BaseActivity;
 import com.zyj.ieasytools.act.aboutActivity.AboutActivity;
@@ -154,7 +155,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
         initContentViews();
 
-        if (ZYJUtils.isFunctionDebug) {
+        if (BuildConfig.FUNCTION_DEBUG) {
             mDebug = getViewById(R.id.debug);
             Object[] versions = ZYJUtils.getVersion(this);
             mDebug.setText("Name: " + versions[0].toString() + "\nCode: " + versions[1].toString());

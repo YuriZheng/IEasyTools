@@ -29,11 +29,6 @@ public final class ZYJUtils {
      */
     private static boolean isLogDebug = true;
 
-    /**
-     * Some funcation debug
-     */
-    public static final boolean isFunctionDebug = true;
-
     private static String TAG = "zyj";
 
     public static void logD(Class<?> clz, String msg) {
