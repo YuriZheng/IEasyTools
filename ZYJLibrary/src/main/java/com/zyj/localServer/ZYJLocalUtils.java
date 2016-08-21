@@ -3,13 +3,15 @@ package com.zyj.localserver;
 import java.io.UnsupportedEncodingException;
 
 /**
- * Created by yuri.zheng on 2016/6/5.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public final class ZYJLocalUtils {
 
     private static ZYJLocalUtils sInstance;
 
-    private static ZYJJniLib sJniLib;
+    private static com.zyj.localserver.ZYJJniLib sJniLib;
 
     public static ZYJLocalUtils getInstance() {
         if (sInstance == null) {
@@ -18,9 +20,9 @@ public final class ZYJLocalUtils {
         return sInstance;
     }
 
-    private static ZYJJniLib getJniLib() {
+    private static com.zyj.localserver.ZYJJniLib getJniLib() {
         if (sJniLib == null) {
-            sJniLib = new ZYJJniLib();
+            sJniLib = new com.zyj.localserver.ZYJJniLib();
         }
         return sJniLib;
     }

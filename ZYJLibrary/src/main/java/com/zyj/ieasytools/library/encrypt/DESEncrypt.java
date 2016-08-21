@@ -10,9 +10,11 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 /**
- * DESEncrypt encrypt class
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  *
- * @author yuri.zheng 2016/04/25
+ * DESEncrypt encrypt class
  */
 public class DESEncrypt extends BaseEncrypt {
 

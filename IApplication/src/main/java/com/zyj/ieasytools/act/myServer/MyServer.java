@@ -12,7 +12,9 @@ import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 /**
- * Created by yuri.zheng on 2016/5/25.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public class MyServer extends Service {
 

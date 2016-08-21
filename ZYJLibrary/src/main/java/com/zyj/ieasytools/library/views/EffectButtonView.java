@@ -13,7 +13,9 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 /**
- * Created by yuri.zheng on 2016/6/3.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public class EffectButtonView extends View {
 

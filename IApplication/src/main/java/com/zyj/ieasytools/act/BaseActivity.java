@@ -26,7 +26,9 @@ import com.zyj.ieasytools.data.SettingsConstant;
 import java.lang.reflect.Field;
 
 /**
- * Created by yuri.zheng on 2016/5/11.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public class BaseActivity extends AppCompatActivity {
 

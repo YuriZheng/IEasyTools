@@ -1,7 +1,9 @@
 package com.zyj.ieasytools.data;
 
 /**
- * Created by yuri.zheng on 2016/5/17.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public final class SettingsConstant {
 

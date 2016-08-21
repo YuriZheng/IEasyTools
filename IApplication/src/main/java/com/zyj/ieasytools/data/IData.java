@@ -1,7 +1,9 @@
 package com.zyj.ieasytools.data;
 
 /**
- * Created by ZYJ on 8/16/16.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public interface IData {
 

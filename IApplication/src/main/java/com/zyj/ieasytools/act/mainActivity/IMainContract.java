@@ -6,7 +6,9 @@ import com.zyj.ieasytools.act.IBasePresenter;
 import com.zyj.ieasytools.act.IBaseView;
 
 /**
- * Created by ZYJ on 8/18/16.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public interface IMainContract {
 

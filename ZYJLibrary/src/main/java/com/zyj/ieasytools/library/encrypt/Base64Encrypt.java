@@ -3,9 +3,11 @@ package com.zyj.ieasytools.library.encrypt;
 import android.text.TextUtils;
 
 /**
- * Base64 encrypt class
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  *
- * @author yuri.zheng 2016/04/25
+ * Base64 encrypt class
  */
 public class Base64Encrypt extends BaseEncrypt {
 

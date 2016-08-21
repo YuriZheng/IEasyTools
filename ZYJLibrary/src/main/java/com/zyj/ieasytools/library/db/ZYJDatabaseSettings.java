@@ -17,7 +17,9 @@ import java.util.AbstractMap;
 import java.util.Map;
 
 /**
- * Created by yuri.zheng on 2016/5/5.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public class ZYJDatabaseSettings extends BaseDatabase {
 

@@ -10,10 +10,12 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 /**
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
+ *
  * AES encrypt class,Nees a private password to encrypt or decrypt string<br>
  * Default encrypt class
- *
- * @author yuri.zheng 2016/04/25
  */
 public class AESEncrypt extends BaseEncrypt {
 

@@ -3,8 +3,10 @@ package com.zyj.ieasytools.library.db;
 import android.provider.BaseColumns;
 
 /**
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  * Package the columns
- * Created by yuri.zheng on 2016/4/26.
  */
 public abstract class DatabaseColumns {
 

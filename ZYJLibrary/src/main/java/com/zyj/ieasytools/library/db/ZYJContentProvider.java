@@ -17,7 +17,9 @@ import net.sqlcipher.database.SQLiteQueryBuilder;
 import java.lang.reflect.Method;
 
 /**
- * Created by yuri.zheng on 2016/5/5.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public class ZYJContentProvider extends ContentProvider {
 

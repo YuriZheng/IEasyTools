@@ -13,6 +13,11 @@ import net.sqlcipher.database.SQLiteDatabase;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
+ */
 public abstract class BaseDatabase {
 
     protected Class<?> TAG = getClass();

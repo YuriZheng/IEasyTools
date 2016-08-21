@@ -1,7 +1,9 @@
 package com.zyj.ieasytools.act;
 
 /**
- * Created by ZYJ on 8/13/16.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public interface IBaseView<T extends IBasePresenter> {
 

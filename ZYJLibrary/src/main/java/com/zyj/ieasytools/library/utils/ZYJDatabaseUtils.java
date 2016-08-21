@@ -19,8 +19,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
+ *
  * Get the encrypt util
- * Created by yuri.zheng on 2016/5/6.
  */
 public final class ZYJDatabaseUtils {
 

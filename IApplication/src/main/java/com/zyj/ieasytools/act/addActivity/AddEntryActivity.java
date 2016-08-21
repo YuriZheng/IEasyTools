@@ -33,7 +33,9 @@ import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 /**
- * Created by ZYJ on 6/11/16.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public class AddEntryActivity extends BaseActivity implements IAddContract.View {
 

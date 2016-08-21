@@ -56,6 +56,11 @@ import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
 
+/**
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
+ */
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener, IMainContract.View {
 
     /**

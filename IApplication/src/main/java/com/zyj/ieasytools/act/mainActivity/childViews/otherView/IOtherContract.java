@@ -4,7 +4,9 @@ import com.zyj.ieasytools.act.mainActivity.childViews.IViewsPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.IViewsView;
 
 /**
- * Created by ZYJ on 8/13/16.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  * This specifies the contract between the view and the presenter.
  */
 public interface IOtherContract {

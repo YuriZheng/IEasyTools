@@ -10,8 +10,9 @@ import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import java.util.UUID;
 
 /**
- * 作者：yuri.zheng<br>
- * 时间：2016/8/18<br>
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public class AddPresenter implements IAddContract.Presenter {
 

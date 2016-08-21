@@ -3,10 +3,12 @@ package com.zyj.ieasytools.library.encrypt;
 import android.text.TextUtils;
 
 /**
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
+ *
  * Need a password<br>
  * Finish
- *
- * @author yuri.zheng 2016/04/25
  */
 public class RC4Encrypt extends BaseEncrypt {
 

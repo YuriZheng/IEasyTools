@@ -28,7 +28,9 @@ import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 /**
- * Created by yuri.zheng on 2016/5/26.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public class InputEnterPasswordDialog extends Dialog {
 

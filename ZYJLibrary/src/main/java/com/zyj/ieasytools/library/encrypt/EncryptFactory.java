@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Factory method
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  *
- * @author yuri.zheng 2016/04/25
+ * Factory method
  */
 public final class EncryptFactory {
 

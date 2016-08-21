@@ -8,8 +8,9 @@ import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.BaseActivity;
 
 /**
- * 作者：yuri.zheng<br>
- * 时间：2016/8/19<br>
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public class AboutActivity extends BaseActivity implements IAboutContract.View {
 

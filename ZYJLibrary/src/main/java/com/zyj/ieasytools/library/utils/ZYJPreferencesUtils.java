@@ -5,6 +5,10 @@ import android.content.SharedPreferences;
 
 
 /**
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
+ *
  * PreferencesUtils, easy to get or put data
  * <ul>
  * <strong>Preference Name</strong>
@@ -27,8 +31,6 @@ import android.content.SharedPreferences;
  * <li>get boolean {@link #getBoolean(Context, String)}, {@link #getBoolean(Context, String, boolean)}</li>
  * </ul>
  * <p/>
- *
- * @author yuri.zheng on 2016/5/27.
  */
 public class ZYJPreferencesUtils {
 

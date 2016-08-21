@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
+ *
  * The base encrypt class<br>
  * Note:The private key's length must been range {@link #ENCRYPT_PRIVATE_KEY_LENGTH_MIN}-{@link #ENCRYPT_PRIVATE_KEY_LENGTH_MAX}
- *
- * @author yuri.zheng 2016/04/25
  */
 public abstract class BaseEncrypt {
 
