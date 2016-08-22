@@ -6,10 +6,10 @@
     </style>
 
     <style name="base_button_background">
-        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
 
-    <style name="activity_main_group_image_button_style" parent="base_button_background">
+    <style name="activity_main_group_image_button_style" parent="base_button_background_less">
         <item name="android:layout_width">?attr/actionBarSize</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
         <item name="android:layout_gravity">right</item>
@@ -41,10 +41,31 @@
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="add_line_style">
+    <style name="setting_item_title_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/setting_item_title_color</item>
+    </style>
+
+    <style name="setting_item_explanation_style">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:background">#55000000</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/setting_item_explanation_color</item>
+    </style>
+
+    <style name="black_line_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">@color/div_black_line_color</item>
+    </style>
+
+    <style name="while_line_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">@color/div_while_line_color</item>
     </style>
 
 

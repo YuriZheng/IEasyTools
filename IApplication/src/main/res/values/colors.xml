@@ -15,4 +15,12 @@
     <color name="main_view_user_color">#aa000000</color>
     <color name="main_view_mark_color">#aa222222</color>
 
+    <color name="setting_main_bg_color">#757575</color>
+    <color name="setting_item_click_color">#616161</color>
+    <color name="setting_item_title_color">#424242</color>
+    <color name="setting_item_explanation_color">#959595</color>
+
+    <color name="div_while_line_color">#ffaaaaaa</color>
+    <color name="div_black_line_color">#55000000</color>
+
 </resources>

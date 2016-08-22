@@ -36,8 +36,6 @@ public class InputEnterPasswordDialog extends Dialog {
 
     private final Class TAG = getClass();
 
-    public static final String mTitleTextSize = "_title_size";
-
     // TODO: 6/11/16 修改默认的验证方法
     /**
      * Enter password style: gesture
@@ -100,7 +98,7 @@ public class InputEnterPasswordDialog extends Dialog {
 
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.gravity = Gravity.BOTTOM;
-        lp.height = ZYJUtils.getDisplayMetrics(mContext).heightPixels - mContext.getResources().getDimensionPixelSize
+        lp.height = mContext.getResources().getDisplayMetrics().heightPixels - mContext.getResources().getDimensionPixelSize
                 (Resources.getSystem().getIdentifier("status_bar_height", "dimen", "android"));
         getWindow().setAttributes(lp);
 
@@ -172,7 +170,7 @@ public class InputEnterPasswordDialog extends Dialog {
             }
         });
         TextView titleView = (TextView) toolbarLayout.findViewById(R.id.title);
-        float size = ZYJPreferencesUtils.getFloat(mContext, mTitleTextSize);
+        float size = ZYJPreferencesUtils.getFloat(mContext, SettingsConstant.TOOLBAR_TITLE_SIZE);
         if (size > 0) {
             titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         }
@@ -229,7 +227,7 @@ public class InputEnterPasswordDialog extends Dialog {
         protected BaseVerifyView(int layoutRes) {
             iMain = LayoutInflater.from(mContext).inflate(layoutRes, null);
             iSubTitle = (TextView) iMain.findViewById(R.id.sub_title);
-            float size = ZYJPreferencesUtils.getFloat(mContext, mTitleTextSize);
+            float size = ZYJPreferencesUtils.getFloat(mContext, SettingsConstant.TOOLBAR_TITLE_SIZE);
             if (size > 0) {
                 iSubTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 5);
             }
@@ -326,7 +324,7 @@ public class InputEnterPasswordDialog extends Dialog {
                             v.setOnClickListener(null);
                             verifyFinish();
                         } else {
-                            // 保存密码
+                            // Save the password
                             mSettings.putStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, input);
                             iSubTitle.setText(R.string.setting_password_finish);
                             iSuccess = true;
@@ -359,7 +357,7 @@ public class InputEnterPasswordDialog extends Dialog {
                     if (iRecordCount >= WRONG_COUNT) {
                         iSuccess = false;
                         iSubTitle.setText(mContext.getResources().getString(R.string.verify_five_minutes_later, mTimeOut / 1000 / 60));
-                        // 输入五次，mTimeOut分钟之后再试
+                        // TODO: 2016/8/22  输入五次，mTimeOut分钟之后再试
                         mSettings.putLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, System.currentTimeMillis());
                         mInputText.setEnabled(false);
                         v.setOnClickListener(null);

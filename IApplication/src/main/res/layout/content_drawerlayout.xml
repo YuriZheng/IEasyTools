@@ -16,6 +16,6 @@
         android:layout_gravity="left"
         app:headerLayout="@layout/navigation_head"
         app:itemIconTint="?attr/colorAccent"
-        app:itemTextColor="@drawable/menu_navigation_text_color"
+        app:itemTextColor="@color/menu_navigation_text_color"
         app:menu="@menu/menu_settings"/>
 </android.support.v4.widget.DrawerLayout>

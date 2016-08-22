@@ -27,8 +27,6 @@ public class AboutActivity extends BaseActivity implements IAboutContract.View {
         setToolbarTitle(getResources().getString(R.string.settings_about));
         setSupportActionBar(mToolbar);
 
-        setToolbarSubtitle("Sub");
-
         new AboutPresenter(this);
     }
 

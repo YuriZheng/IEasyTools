@@ -8,7 +8,15 @@
     <string name="settings_settings">Setting</string>
     <string name="settings_feedback">Feedback</string>
     <string name="settings_view_other">Other Database</string>
-    <string name="more_import">Import Database</string>
+    <string name="setting_password_time_out">Setting password expiration</string>
+    <string name="setting_import_other_file">Import other database</string>
+    <string name="setting_export_other_file">Export the database to local</string>
+    <string name="setting_password_time_out_grade_1">Ten minutes</string>
+    <string name="setting_password_time_out_grade_2">Thirty minutes</string>
+    <string name="setting_password_time_out_grade_3">One hour</string>
+    <string name="setting_password_time_out_grade_4">Two hours</string>
+    <string name="setting_password_time_out_grade_5">One day</string>
+    <string name="setting_password_time_out_grade_6">Never</string>
 
     <string name="verify_enterpassword_input">Key Input</string>
     <string name="verify_enterpassword_ios">Verify Number</string>

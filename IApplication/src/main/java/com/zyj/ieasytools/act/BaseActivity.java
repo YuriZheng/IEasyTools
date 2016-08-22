@@ -32,44 +32,12 @@ import java.lang.reflect.Field;
  */
 public class BaseActivity extends AppCompatActivity {
 
-    private final String LOCAL_BROADCAST = "verify_faile_finish";
-
-    protected Class<?> TAG = getClass();
+    protected final Class<?> TAG = getClass();
 
     /**
-     * Local broadcast to finish activity when verify faile
+     * Logic class
      */
-    private LocalBroadcastManager mLocalBroadcastManager;
-
-    /**
-     * Listener settings change
-     */
-    private ContentObserver mListener;
-
-    /**
-     * The setting database
-     */
-    protected ZYJDatabaseSettings mSettings;
-    /**
-     * The main handler
-     */
-    protected Handler mHandler;
-
-    /**
-     * Verify dialog,set the callback {@link InputEnterPasswordDialog#setResultCallBack(InputEnterPasswordDialog.VerifyResultCallBack)}
-     * to handle the result
-     */
-    private InputEnterPasswordDialog mInputDialog;
-
-    /**
-     * Reveive the broadcast to finish itself
-     */
-    private BroadcastReceiver mFinishReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            ZYJUtils.logD(TAG, "local broadcast finish");
-            finish();
-        }
-    };
+    private BasePresenter mBasePresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,97 +46,26 @@ public class BaseActivity extends AppCompatActivity {
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
 
-        mHandler = new Handler(getMainLooper());
-        mListener = new ContentObserver(mHandler) {
-            public void onChange(boolean selfChange, Uri uri) {
-                ZYJUtils.logD(TAG, uri.toString());
-                BaseActivity.this.onChange(selfChange, uri);
-            }
-        };
-        mSettings = ZYJDatabaseUtils.getSettingsInstance(this);
-        mLocalBroadcastManager = LocalBroadcastManager.getInstance(this);
-        mLocalBroadcastManager.registerReceiver(mFinishReceiver, new IntentFilter(LOCAL_BROADCAST));
-        getContentResolver().registerContentObserver(ZYJContentProvider.SEETINGS_URI, true, mListener);
-    }
-
-    private boolean checkTimeOutOrPassword() {
-        long verifyLastTime = mSettings.getLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, -1);
-        if (verifyLastTime > 0 || verifyLastTime == InputEnterPasswordDialog.VERIFY_STATE_FAILE) {
-            ZYJUtils.logD(TAG, "verify last time: " + verifyLastTime);
-            return true;
-        }
-        long lastTime = mSettings.getLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME, -1);
-        if (lastTime < 0) {
-            ZYJUtils.logD(TAG, "LastTime: " + lastTime + " and init");
-            return true;
-        }
-        // TODO: 2016/5/25 这里的默认时间为设置里面的默认时间，暂定10分钟
-        long timeOut = mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, 1000 * 60 * 10);
-        long current = System.currentTimeMillis();
-        boolean time = (lastTime + timeOut) < current;
-        ZYJUtils.logD(TAG, "Current time: " + current + ", Time out: " + (lastTime + timeOut) + (time ? " and time out" : ""));
-        return time;
+        mBasePresenter = new BasePresenter(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mLocalBroadcastManager.unregisterReceiver(mFinishReceiver);
-        getContentResolver().unregisterContentObserver(mListener);
+        mBasePresenter.onDestroy();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (checkTimeOutOrPassword()) {
-            mHandler.postDelayed(new Runnable() {
-                public void run() {
-                    verifyEnterPassword();
-                }
-            }, 250);
-        } else {
-            ZYJUtils.logD(TAG, "time not out");
-            verifyEnterPasswordSuccess();
-        }
-        ZYJUtils.logD(TAG, "onResume");
+        mBasePresenter.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        ZYJUtils.logD(TAG, "onPause");
-        if (mSettings.verifyValidSetting()) {
-            mSettings.putLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME, System.currentTimeMillis());
-        }
+        mBasePresenter.onPause();
     }
-
-    /**
-     * Enter verify dialog and listener the result
-     */
-    private void verifyEnterPassword() {
-        if (mInputDialog != null && mInputDialog.isShowing()) {
-            ZYJUtils.logD(TAG, "verifing...");
-            return;
-        }
-        mInputDialog = new InputEnterPasswordDialog(this, !EntryptImple.getCurrentDatabasePath(this, false).exists());
-        mInputDialog.setResultCallBack(mVerifyCallBack);
-        mInputDialog.show();
-    }
-
-    private InputEnterPasswordDialog.VerifyResultCallBack mVerifyCallBack = new InputEnterPasswordDialog.VerifyResultCallBack() {
-        @Override
-        public void verifyEnterPasswordCallBack(boolean success) {
-            if (success) {
-                ZYJUtils.logD(TAG, "verifyEnterPasswordSuccess");
-                verifyEnterPasswordSuccess();
-            } else {
-                // verify faile, clear the buffer of password
-                // TODO: 2016/5/26 清空密码
-                ZYJUtils.logD(TAG, "verifyEnterPasswordFaile");
-                mLocalBroadcastManager.sendBroadcast(new Intent(LOCAL_BROADCAST));
-            }
-        }
-    };
 
     /**
      * Get toolbar fields
@@ -207,5 +104,155 @@ public class BaseActivity extends AppCompatActivity {
      */
     public void onChange(boolean selfChange, Uri uri) {
         // Subclass override method
+    }
+
+    private class BasePresenter implements IBasePresenter {
+
+        private final String LOCAL_BROADCAST = "verify_faile_finish";
+
+        /**
+         * The setting database
+         */
+        private final ZYJDatabaseSettings mSettings;
+
+        private Context mContext;
+
+        /**
+         * The main handler
+         */
+        protected Handler mHandler;
+        /**
+         * Local broadcast to finish activity when verify faile
+         */
+        private LocalBroadcastManager mLocalBroadcastManager;
+        /**
+         * Listener settings change
+         */
+        private ContentObserver mListener;
+        /**
+         * Verify dialog,set the callback {@link InputEnterPasswordDialog#setResultCallBack(InputEnterPasswordDialog.VerifyResultCallBack)}
+         * to handle the result
+         */
+        private InputEnterPasswordDialog mInputDialog;
+
+        private BasePresenter(Context context) {
+            mContext = context;
+            this.mSettings = ZYJDatabaseUtils.getSettingsInstance(context);
+
+            mHandler = new Handler(getMainLooper());
+            mListener = new ContentObserver(mHandler) {
+                public void onChange(boolean selfChange, Uri uri) {
+                    ZYJUtils.logD(TAG, uri.toString());
+                    BaseActivity.this.onChange(selfChange, uri);
+                }
+            };
+
+            mLocalBroadcastManager = LocalBroadcastManager.getInstance(mContext);
+            mLocalBroadcastManager.registerReceiver(mFinishReceiver, new IntentFilter(LOCAL_BROADCAST));
+            getContentResolver().registerContentObserver(ZYJContentProvider.SEETINGS_URI, true, mListener);
+        }
+
+        private Long getLastTime() {
+            return mSettings != null ? mSettings.getLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, -1) : -1;
+        }
+
+        private Long getPauseTime() {
+            return mSettings != null ? mSettings.getLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME,
+                    -1) : -1;
+        }
+
+        private Long getTimeOut() {
+            return mSettings != null ? mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT,
+                    SettingsConstant.SETTINGS_PASSWORD_TIME_OUT_DEFAULT_VALUE) : -1;
+        }
+
+        private void putPauseTime() {
+            if (mSettings != null && mSettings.verifyValidSetting()) {
+                mSettings.putLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME, System.currentTimeMillis());
+            }
+        }
+
+        private void onResume() {
+            if (checkTimeOutOrPassword()) {
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        verifyEnterPassword();
+                    }
+                }, 250);
+            } else {
+                ZYJUtils.logD(TAG, "time not out");
+                BaseActivity.this.verifyEnterPasswordSuccess();
+            }
+            ZYJUtils.logD(TAG, "onResume");
+        }
+
+        private void onPause() {
+            ZYJUtils.logD(TAG, "onPause");
+            putPauseTime();
+        }
+
+        private void onDestroy() {
+            mLocalBroadcastManager.unregisterReceiver(mFinishReceiver);
+            getContentResolver().unregisterContentObserver(mListener);
+        }
+
+        private InputEnterPasswordDialog.VerifyResultCallBack mVerifyCallBack = new InputEnterPasswordDialog.VerifyResultCallBack() {
+            @Override
+            public void verifyEnterPasswordCallBack(boolean success) {
+                if (success) {
+                    ZYJUtils.logD(TAG, "verifyEnterPasswordSuccess");
+                    BaseActivity.this.verifyEnterPasswordSuccess();
+                } else {
+                    // verify faile, clear the buffer of password
+                    // TODO: 2016/5/26 清空密码
+                    ZYJUtils.logD(TAG, "verifyEnterPasswordFaile");
+                    mLocalBroadcastManager.sendBroadcast(new Intent(LOCAL_BROADCAST));
+                }
+            }
+        };
+
+        /**
+         * Reveive the broadcast to finish itself
+         */
+        private BroadcastReceiver mFinishReceiver = new BroadcastReceiver() {
+            public void onReceive(Context context, Intent intent) {
+                ZYJUtils.logD(TAG, "local broadcast finish");
+                finish();
+            }
+        };
+
+        /**
+         * Enter verify dialog and listener the result
+         */
+        private void verifyEnterPassword() {
+            if (mInputDialog != null && mInputDialog.isShowing()) {
+                ZYJUtils.logD(TAG, "verifing...");
+                return;
+            }
+            mInputDialog = new InputEnterPasswordDialog(mContext, !EntryptImple.getCurrentDatabasePath(mContext, false).exists());
+            mInputDialog.setResultCallBack(mVerifyCallBack);
+            mInputDialog.show();
+        }
+
+        private boolean checkTimeOutOrPassword() {
+            long timeOut = getTimeOut();
+            if (timeOut <= -1) {
+                return true;
+            }
+            long verifyLastTime = getLastTime();
+            if (verifyLastTime > 0 || verifyLastTime == InputEnterPasswordDialog.VERIFY_STATE_FAILE) {
+                ZYJUtils.logD(TAG, "verify last time: " + verifyLastTime);
+                return true;
+            }
+            long lastTime = getPauseTime();
+            if (lastTime < 0) {
+                ZYJUtils.logD(TAG, "LastTime: " + lastTime + " and init");
+                return true;
+            }
+            long current = System.currentTimeMillis();
+            boolean time = (lastTime + timeOut) < current;
+            ZYJUtils.logD(TAG, "Current time: " + current + ", Time out: " + (lastTime + timeOut) + (time ? " and time out" : ""));
+            return time;
+        }
     }
 }

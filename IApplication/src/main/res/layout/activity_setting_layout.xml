@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/setting_main_bg_color"
     android:fitsSystemWindows="true"
     tools:context=".act.aboutActivity.AboutActivity">
 
@@ -13,24 +14,91 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.design.widget.AppBarLayout
+        <include layout="@layout/toolbar_layout"/>
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:scrollbars="none">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay"/>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-        </android.support.design.widget.AppBarLayout>
+                <RelativeLayout
+                    android:id="@+id/password_time_out"
+                    style="@style/base_button_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/main_view_round_padd">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="asdgarge"/>
+                    <TextView
+                        style="@style/setting_item_title_style"
+                        android:text="@string/setting_password_time_out"/>
+
+                    <TextView
+                        android:id="@+id/password_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="1111111"/>
+
+                    <TextView
+                        android:id="@+id/password_time_explanation"
+                        style="@style/setting_item_explanation_style"
+                        android:layout_below="@id/password_time"
+                        android:text="1111111"/>
+
+                </RelativeLayout>
+
+                <View style="@style/while_line_style"/>
+
+                <RelativeLayout
+                    android:id="@+id/import_file"
+                    style="@style/base_button_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/main_view_round_padd">
+
+                    <TextView
+                        android:id="@+id/import_file_title"
+                        style="@style/setting_item_title_style"
+                        android:text="@string/setting_import_other_file"/>
+
+                    <TextView
+                        android:id="@+id/import_file_explanation"
+                        style="@style/setting_item_explanation_style"
+                        android:layout_below="@id/import_file_title"
+                        android:text="1111111"/>
+
+                </RelativeLayout>
+
+                <View style="@style/while_line_style"/>
+
+                <RelativeLayout
+                    android:id="@+id/export_file"
+                    style="@style/base_button_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/main_view_round_padd">
+
+                    <TextView
+                        android:id="@+id/export_file_title"
+                        style="@style/setting_item_title_style"
+                        android:text="@string/setting_export_other_file"/>
+
+                    <TextView
+                        android:id="@+id/export_file_explanation"
+                        style="@style/setting_item_explanation_style"
+                        android:layout_below="@id/export_file_title"
+                        android:text="1111111"/>
+
+                </RelativeLayout>
+
+                <View style="@style/while_line_style"/>
+
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

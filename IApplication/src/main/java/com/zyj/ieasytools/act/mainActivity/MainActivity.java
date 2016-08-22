@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -50,7 +51,7 @@ import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebView;
 import com.zyj.ieasytools.act.myServer.MyServer;
 import com.zyj.ieasytools.act.settingActivity.SettingActivity;
-import com.zyj.ieasytools.dialog.InputEnterPasswordDialog;
+import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
@@ -96,6 +97,8 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     private IMainContract.Presenter mPresenter;
 
+    private Handler mHandler;
+
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -112,6 +115,8 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mHandler = new Handler();
+
         bindService(new Intent(getApplicationContext(), MyServer.class), mConnection, Context.BIND_AUTO_CREATE);
 
         mToolbar = getViewById(R.id.toolbar);
@@ -122,7 +127,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             mTitleTextView = (TextView) view;
         }
         if (mTitleTextView != null) {
-            ZYJPreferencesUtils.putFloat(this, InputEnterPasswordDialog.mTitleTextSize, ((TextView) mTitleTextView).getTextSize());
+            ZYJPreferencesUtils.putFloat(this, SettingsConstant.TOOLBAR_TITLE_SIZE, mTitleTextView.getTextSize());
         }
 
         mProgressBar = getViewById(R.id.progress);
@@ -146,7 +151,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mNavigationView.setNavigationItemSelectedListener(mNavigationClick);
 
         DrawerLayout.LayoutParams lp = (DrawerLayout.LayoutParams) mNavigationView.getLayoutParams();
-        lp.width = ZYJUtils.getDisplayMetrics(this).widthPixels * 2 / 3;
+        lp.width = getResources().getDisplayMetrics().widthPixels * 2 / 3;
         mNavigationView.setLayoutParams(lp);
 
         mFab = getViewById(R.id.fab);
@@ -289,20 +294,20 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         return anim;
     }
 
-    private void addSwitchView(final View clickView, final BaseMainView view) {
+    private boolean addSwitchView(final View clickView, final BaseMainView view) {
         final View addView = view.getView();
         mCurrentView = view;
         if (clickView == null) {
             view.onReload();
             mMainViewLayout.addView(addView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            return;
+            return true;
         }
         final View[] views = new View[mMainViewLayout.getChildCount()];
         for (int i = 0; i < views.length; i++) {
             views[i] = mMainViewLayout.getChildAt(i);
             if (views[i].equals(addView)) {
                 ZYJUtils.logW(getClass(), "Duplicate add view");
-                return;
+                return false;
             }
         }
         if (mGroupWidth <= 0) {
@@ -332,6 +337,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             mCurrentView.onReload();
         }
         mMainViewLayout.addView(addView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        return true;
     }
 
     /**
@@ -418,44 +424,44 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         }
         switch (view.getId()) {
             case R.id.group_web:
-//                mToolbar.setTitle(R.string.password_catrgory_web);
-                animatorTitle(R.string.password_catrgory_web);
-                addSwitchView(view, mGroupWebView);
+                if (addSwitchView(view, mGroupWebView)) {
+                    animatorTitle(R.string.password_catrgory_web);
+                }
                 mCurrentView = mGroupEmailView;
                 mPresenter.setCategory(PasswordEntry.CATEGORY_WEB);
                 break;
             case R.id.group_email:
-//                mToolbar.setTitle(R.string.password_catrgory_email);
-                animatorTitle(R.string.password_catrgory_email);
-                addSwitchView(view, mGroupEmailView);
+                if (addSwitchView(view, mGroupEmailView)) {
+                    animatorTitle(R.string.password_catrgory_email);
+                }
                 mCurrentView = mGroupEmailView;
                 mPresenter.setCategory(PasswordEntry.CATEGORY_EMAIL);
                 break;
             case R.id.group_wallet:
-//                mToolbar.setTitle(R.string.password_catrgory_wallet);
-                animatorTitle(R.string.password_catrgory_wallet);
-                addSwitchView(view, mGroupWalletView);
+                if (addSwitchView(view, mGroupWalletView)) {
+                    animatorTitle(R.string.password_catrgory_wallet);
+                }
                 mCurrentView = mGroupWalletView;
                 mPresenter.setCategory(PasswordEntry.CATEGORY_WALLET);
                 break;
             case R.id.group_app:
-//                mToolbar.setTitle(R.string.password_catrgory_app);
-                animatorTitle(R.string.password_catrgory_app);
-                addSwitchView(view, mGroupAppView);
+                if (addSwitchView(view, mGroupAppView)) {
+                    animatorTitle(R.string.password_catrgory_app);
+                }
                 mCurrentView = mGroupAppView;
                 mPresenter.setCategory(PasswordEntry.CATEGORY_APP);
                 break;
             case R.id.group_game:
-//                mToolbar.setTitle(R.string.password_catrgory_game);
-                animatorTitle(R.string.password_catrgory_game);
-                addSwitchView(view, mGroupGameView);
+                if (addSwitchView(view, mGroupGameView)) {
+                    animatorTitle(R.string.password_catrgory_game);
+                }
                 mCurrentView = mGroupGameView;
                 mPresenter.setCategory(PasswordEntry.CATEGORY_GAME);
                 break;
             case R.id.group_other:
-//                mToolbar.setTitle(R.string.password_catrgory_other);
-                animatorTitle(R.string.password_catrgory_other);
-                addSwitchView(view, mGroupOtherView);
+                if (addSwitchView(view, mGroupOtherView)) {
+                    animatorTitle(R.string.password_catrgory_other);
+                }
                 mCurrentView = mGroupOtherView;
                 mPresenter.setCategory(PasswordEntry.CATEGORY_OTHER);
                 break;

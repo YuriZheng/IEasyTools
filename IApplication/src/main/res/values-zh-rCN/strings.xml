@@ -9,7 +9,15 @@
     <string name="settings_settings">操作设置</string>
     <string name="settings_feedback">反馈意见</string>
     <string name="settings_view_other">查看其它</string>
-    <string name="more_import">导入</string>
+    <string name="setting_password_time_out">设置密码过期时间</string>
+    <string name="setting_import_other_file">导入其它数据库</string>
+    <string name="setting_export_other_file">导出数据库文件到本地</string>
+    <string name="setting_password_time_out_grade_1">10分钟</string>
+    <string name="setting_password_time_out_grade_2">30分钟</string>
+    <string name="setting_password_time_out_grade_3">1个小时</string>
+    <string name="setting_password_time_out_grade_4">2个小时</string>
+    <string name="setting_password_time_out_grade_5">1天</string>
+    <string name="setting_password_time_out_grade_6">永不</string>
 
     <string name="verify_enterpassword_input">键盘输入</string>
     <string name="verify_enterpassword_ios">数字验证</string>

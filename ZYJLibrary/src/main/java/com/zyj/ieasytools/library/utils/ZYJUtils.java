@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.telephony.TelephonyManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
@@ -103,14 +102,6 @@ public final class ZYJUtils {
             e.printStackTrace();
             return -1;
         }
-    }
-
-    /**
-     * @param context interface quote
-     * @return return a array, one is width, other is height
-     */
-    public static DisplayMetrics getDisplayMetrics(Context context) {
-        return context.getResources().getDisplayMetrics();
     }
 
     /**

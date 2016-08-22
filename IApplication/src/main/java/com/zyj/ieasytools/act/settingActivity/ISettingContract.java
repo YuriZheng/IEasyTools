@@ -1,5 +1,7 @@
 package com.zyj.ieasytools.act.settingActivity;
 
+import android.content.Context;
+
 import com.zyj.ieasytools.act.IBasePresenter;
 import com.zyj.ieasytools.act.IBaseView;
 
@@ -12,11 +14,15 @@ public interface ISettingContract {
 
     interface View extends IBaseView<Presenter> {
 
+        Context getContext();
 
     }
 
     interface Presenter extends IBasePresenter {
 
+        long getTimeOut();
+
+        void setTimeOut(long time);
 
     }
 
