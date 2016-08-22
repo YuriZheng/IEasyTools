@@ -50,6 +50,7 @@ import com.zyj.ieasytools.act.mainActivity.childViews.walletView.WalletView;
 import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebView;
 import com.zyj.ieasytools.act.myServer.MyServer;
+import com.zyj.ieasytools.act.seachActivity.SeachActivity;
 import com.zyj.ieasytools.act.settingActivity.SettingActivity;
 import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
@@ -376,7 +377,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 }, 300);
                 break;
             case R.id.menu_seach:
-                ZYJUtils.logD(TAG, "menu_seach");
+                startActivity(new Intent(getApplicationContext(), SeachActivity.class));
                 hideSildeDrawer();
                 break;
         }

@@ -40,6 +40,10 @@
             android:theme="@style/AppTheme.NoActionBar.Animation"/>
 
         <activity
+            android:name=".act.seachActivity.SeachActivity"
+            android:theme="@style/AppTheme.NoActionBar.Animation"/>
+
+        <activity
             android:name=".act.settingActivity.SettingActivity"
             android:theme="@style/AppTheme.NoActionBar.Animation"/>
 

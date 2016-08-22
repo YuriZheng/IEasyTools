@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/toolbar_layout"/>
+        <include layout="@layout/toolbar_layout" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -35,24 +34,23 @@
 
                     <TextView
                         style="@style/setting_item_title_style"
-                        android:text="@string/setting_password_time_out"/>
+                        android:text="@string/setting_password_time_out" />
 
                     <TextView
                         android:id="@+id/password_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:text="1111111"/>
+                        android:layout_alignParentRight="true" />
 
                     <TextView
                         android:id="@+id/password_time_explanation"
                         style="@style/setting_item_explanation_style"
                         android:layout_below="@id/password_time"
-                        android:text="1111111"/>
+                        android:text="@string/setting_password_time_explanation" />
 
                 </RelativeLayout>
 
-                <View style="@style/while_line_style"/>
+                <View style="@style/while_line_style" />
 
                 <RelativeLayout
                     android:id="@+id/import_file"
@@ -64,17 +62,17 @@
                     <TextView
                         android:id="@+id/import_file_title"
                         style="@style/setting_item_title_style"
-                        android:text="@string/setting_import_other_file"/>
+                        android:text="@string/setting_import_other_file" />
 
                     <TextView
                         android:id="@+id/import_file_explanation"
                         style="@style/setting_item_explanation_style"
                         android:layout_below="@id/import_file_title"
-                        android:text="1111111"/>
+                        android:text="1111111" />
 
                 </RelativeLayout>
 
-                <View style="@style/while_line_style"/>
+                <View style="@style/while_line_style" />
 
                 <RelativeLayout
                     android:id="@+id/export_file"
@@ -86,17 +84,17 @@
                     <TextView
                         android:id="@+id/export_file_title"
                         style="@style/setting_item_title_style"
-                        android:text="@string/setting_export_other_file"/>
+                        android:text="@string/setting_export_other_file" />
 
                     <TextView
                         android:id="@+id/export_file_explanation"
                         style="@style/setting_item_explanation_style"
                         android:layout_below="@id/export_file_title"
-                        android:text="1111111"/>
+                        android:text="1111111" />
 
                 </RelativeLayout>
 
-                <View style="@style/while_line_style"/>
+                <View style="@style/while_line_style" />
 
             </LinearLayout>
         </ScrollView>

@@ -11,12 +11,16 @@
     <string name="setting_password_time_out">Setting password expiration</string>
     <string name="setting_import_other_file">Import other database</string>
     <string name="setting_export_other_file">Export the database to local</string>
+    <string name="setting_password_time_out_title">Choose:</string>
     <string name="setting_password_time_out_grade_1">Ten minutes</string>
     <string name="setting_password_time_out_grade_2">Thirty minutes</string>
     <string name="setting_password_time_out_grade_3">One hour</string>
     <string name="setting_password_time_out_grade_4">Two hours</string>
     <string name="setting_password_time_out_grade_5">One day</string>
     <string name="setting_password_time_out_grade_6">Never</string>
+    <string name="setting_password_time_explanation">Within a set time "Enter password" effective, over time you need to enter the "Enter Password" again for authentication</string>
+    <string name="setting_password_time_never">Any period of time into the applications no longer need to verify identity</string>
+    <string name="setting_password_time_warn">Safety warning</string>
 
     <string name="verify_enterpassword_input">Key Input</string>
     <string name="verify_enterpassword_ios">Verify Number</string>

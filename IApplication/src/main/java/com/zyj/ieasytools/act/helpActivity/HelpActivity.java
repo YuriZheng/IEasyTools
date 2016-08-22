@@ -11,6 +11,8 @@ import com.zyj.ieasytools.act.BaseActivity;
  * Author: Yuri.zheng<br>
  * Date: 8/21/16<br>
  * Email: 497393102@qq.com<br>
+ * <p/>
+ * 查看密码
  */
 public class HelpActivity extends BaseActivity implements IHelpContract.View {
 

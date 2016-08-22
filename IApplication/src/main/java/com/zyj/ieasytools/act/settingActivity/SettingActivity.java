@@ -3,8 +3,11 @@ package com.zyj.ieasytools.act.settingActivity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.BaseActivity;
+import com.zyj.ieasytools.act.helpActivity.HelpActivity;
 import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
@@ -59,7 +63,7 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
 
         new SettingPresenter(this);
 
-        mPresenter.getTimeOut();
+        setTimeOutText();
     }
 
     @Override
@@ -88,8 +92,59 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
         }
     }
 
+    @Override
+    public void onChange(boolean selfChange, Uri uri) {
+        setTimeOutText();
+    }
+
+    @Override
+    public void setTimeOutText() {
+        mPasswordTime.setText(getTimeString(mPresenter.getTimeOut()));
+    }
+
+    private String getTimeString(long time) {
+        final String[] times = getResources().getStringArray(R.array.password_time_out_array);
+        if (time == SettingPresenter.PASSWORD_TIME_OUT_1) {
+            return times[0];
+        } else if (time == SettingPresenter.PASSWORD_TIME_OUT_2) {
+            return times[1];
+        } else if (time == SettingPresenter.PASSWORD_TIME_OUT_3) {
+            return times[2];
+        } else if (time == SettingPresenter.PASSWORD_TIME_OUT_4) {
+            return times[3];
+        } else if (time == SettingPresenter.PASSWORD_TIME_OUT_5) {
+            return times[4];
+        } else if (time == SettingPresenter.PASSWORD_TIME_OUT_6) {
+            return times[5];
+        } else {
+            ZYJUtils.logD(TAG, "Error: " + time);
+            return times[1];
+        }
+    }
+
+    private long getTimeLong(String timeString) {
+        final String[] times = getResources().getStringArray(R.array.password_time_out_array);
+        if (TextUtils.isEmpty(timeString)) {
+            return SettingPresenter.PASSWORD_TIME_OUT_1;
+        } else if (times[0].equals(timeString)) {
+            return SettingPresenter.PASSWORD_TIME_OUT_1;
+        } else if (times[1].equals(timeString)) {
+            return SettingPresenter.PASSWORD_TIME_OUT_2;
+        } else if (times[2].equals(timeString)) {
+            return SettingPresenter.PASSWORD_TIME_OUT_3;
+        } else if (times[3].equals(timeString)) {
+            return SettingPresenter.PASSWORD_TIME_OUT_4;
+        } else if (times[4].equals(timeString)) {
+            return SettingPresenter.PASSWORD_TIME_OUT_5;
+        } else if (times[5].equals(timeString)) {
+            return SettingPresenter.PASSWORD_TIME_OUT_6;
+        } else {
+            return -1;
+        }
+    }
+
     private void showChoosePasswordTime() {
-        String[] times = getResources().getStringArray(R.array.password_time_out_array);
+        final String[] times = getResources().getStringArray(R.array.password_time_out_array);
         long time = mPresenter.getTimeOut();
         if (time < 0) {
             time = SettingPresenter.PASSWORD_TIME_OUT_1;
@@ -112,30 +167,44 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
             ZYJUtils.logD(TAG, "Error: " + time);
         }
         AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setTitle("");
+        builder.setTitle(R.string.setting_password_time_out_title);
         builder.setSingleChoiceItems(times, select, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                mPresenter.setTimeOut((which));
+                if (which == 5) {
+                    showWarnDialog();
+                } else {
+                    mPresenter.setTimeOut(getTimeLong(times[which]));
+                }
+                dialog.dismiss();
             }
         });
+        builder.setNegativeButton(R.string.add_see_password_help, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent i = new Intent(getApplicationContext(), HelpActivity.class);
+                startActivity(i);
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
-    public long getTimeForIndex(int select) {
-        if (select == 0) {
-            return SettingPresenter.PASSWORD_TIME_OUT_1;
-        } else if (select == 1) {
-            return SettingPresenter.PASSWORD_TIME_OUT_2;
-        } else if (select == 2) {
-            return SettingPresenter.PASSWORD_TIME_OUT_3;
-        } else if (select == 3) {
-            return SettingPresenter.PASSWORD_TIME_OUT_4;
-        } else if (select == 4) {
-            return SettingPresenter.PASSWORD_TIME_OUT_5;
-        } else if (select == 5) {
-            return SettingPresenter.PASSWORD_TIME_OUT_6;
-        } else {
-            ZYJUtils.logD(TAG, "Error: " + select);
-            return -1;
-        }
+    private void showWarnDialog() {
+        AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle(R.string.setting_password_time_warn);
+        builder.setMessage(R.string.setting_password_time_never);
+        builder.setIcon(android.R.drawable.stat_sys_warning);
+        builder.setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                mPresenter.setTimeOut(SettingPresenter.PASSWORD_TIME_OUT_6);
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 }
