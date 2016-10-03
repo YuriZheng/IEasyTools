@@ -1,8 +1,8 @@
 package com.zyj.ieasytools.act.settingActivity;
 
+import com.zyj.ieasytools.data.DatabaseUtils;
 import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
-import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 
 /**
  * Author: Yuri.zheng<br>
@@ -43,7 +43,7 @@ public class SettingPresenter implements ISettingContract.Presenter {
     public SettingPresenter(ISettingContract.View mView) {
         this.mView = mView;
         mView.setPresenter(this);
-        mSettings = ZYJDatabaseUtils.getSettingsInstance(mView.getContext());
+        mSettings = DatabaseUtils.getSettingsInstance(mView.getContext());
     }
 
     @Override

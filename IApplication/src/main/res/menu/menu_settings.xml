@@ -12,24 +12,24 @@
             android:title="@string/settings_settings"/>
 
         <item
-            android:id="@+id/settings_view_other"
+            android:id="@+id/settings_about"
             android:orderInCategory="2"
+            android:title="@string/settings_about"/>
+
+        <item
+            android:id="@+id/settings_view_other"
+            android:orderInCategory="3"
             android:title="@string/settings_view_other"/>
 
         <item
             android:id="@+id/settings_feedback"
-            android:orderInCategory="2"
+            android:orderInCategory="4"
             android:title="@string/settings_feedback"/>
 
         <item
             android:id="@+id/settings_help"
-            android:orderInCategory="4"
+            android:orderInCategory="5"
             android:title="@string/settings_help"/>
-
-        <item
-            android:id="@+id/settings_about"
-            android:orderInCategory="3"
-            android:title="@string/settings_about"/>
 
     </group>
 </menu>

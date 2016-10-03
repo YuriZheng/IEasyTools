@@ -33,6 +33,11 @@ public interface IEntrypt extends IData {
     boolean validDatabase();
 
     /**
+     * {@link ZYJDatabaseEncrypts#onDestroy()}
+     */
+    void destroy();
+
+    /**
      * {@link ZYJDatabaseEncrypts#insertEntry(PasswordEntry, String)}
      */
     long insertEntry(PasswordEntry entry, String password);

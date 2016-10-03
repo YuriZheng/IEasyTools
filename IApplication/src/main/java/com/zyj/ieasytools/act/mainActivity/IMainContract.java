@@ -18,6 +18,8 @@ public interface IMainContract {
 
         void showSnackbarToast();
 
+        void enableAddButton(boolean enable);
+
         Context getContext();
 
     }
@@ -29,6 +31,8 @@ public interface IMainContract {
         String getCategory();
 
         boolean hasOtherDatabase();
+
+        boolean isOurDatabase();
 
         void destory();
 

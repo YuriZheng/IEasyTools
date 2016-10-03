@@ -7,5 +7,13 @@ package com.zyj.ieasytools.act.mainActivity.childViews;
  */
 public interface IViewsPresenter extends com.zyj.ieasytools.act.IBasePresenter {
 
+    /**
+     * Get the datas by category
+     */
     void requestEntryByCategory(String category);
+
+    /**
+     * Destroy resources
+     */
+    void destory();
 }

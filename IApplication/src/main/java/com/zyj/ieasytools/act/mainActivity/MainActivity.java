@@ -215,6 +215,13 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         unbindService(mConnection);
         // Only call once
         mPresenter.destory();
+        // Destory views
+        mGroupWebView.destory();
+        mGroupEmailView.destory();
+        mGroupWalletView.destory();
+        mGroupAppView.destory();
+        mGroupGameView.destory();
+        mGroupOtherView.destory();
     }
 
     @Override
@@ -228,6 +235,11 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         if (mCurrentView != null) {
             mCurrentView.verifyEnterPasswordSuccess();
         }
+    }
+
+    @Override
+    public void enableAddButton(boolean enable) {
+        mMenuAdd.setEnabled(enable);
     }
 
     /**

@@ -7,8 +7,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.zyj.ieasytools.data.DatabaseUtils;
 import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
-import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 /**
@@ -36,7 +36,7 @@ public class MyServer extends Service {
 
     private ZYJDatabaseSettings getSetting() {
         if (mSetting == null) {
-            mSetting = ZYJDatabaseUtils.getSettingsInstance(this);
+            mSetting = DatabaseUtils.getSettingsInstance(this);
         }
         return mSetting;
     }

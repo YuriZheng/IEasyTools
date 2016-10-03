@@ -15,13 +15,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 
+import com.zyj.ieasytools.data.DatabaseUtils;
+import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.dialog.InputEnterPasswordDialog;
 import com.zyj.ieasytools.library.db.ZYJContentProvider;
 import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
-import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
-import com.zyj.ieasytools.data.EntryptImple;
-import com.zyj.ieasytools.data.SettingsConstant;
 
 import java.lang.reflect.Field;
 
@@ -137,7 +136,7 @@ public class BaseActivity extends AppCompatActivity {
 
         private BasePresenter(Context context) {
             mContext = context;
-            this.mSettings = ZYJDatabaseUtils.getSettingsInstance(context);
+            this.mSettings = DatabaseUtils.getSettingsInstance(context);
 
             mHandler = new Handler(getMainLooper());
             mListener = new ContentObserver(mHandler) {
@@ -229,7 +228,7 @@ public class BaseActivity extends AppCompatActivity {
                 ZYJUtils.logD(TAG, "verifing...");
                 return;
             }
-            mInputDialog = new InputEnterPasswordDialog(mContext, !EntryptImple.getCurrentDatabasePath(mContext, false).exists());
+            mInputDialog = new InputEnterPasswordDialog(mContext, !DatabaseUtils.getCurrentDatabasePath(mContext, false).exists());
             mInputDialog.setResultCallBack(mVerifyCallBack);
             mInputDialog.show();
         }

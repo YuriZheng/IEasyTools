@@ -22,7 +22,7 @@ import java.util.Map;
  * Author: Yuri.zheng<br>
  * Date: 8/21/16<br>
  * Email: 497393102@qq.com<br>
- *
+ * <p>
  * Get the encrypt util
  */
 public final class ZYJDatabaseUtils {
@@ -34,7 +34,7 @@ public final class ZYJDatabaseUtils {
 
     private static final String TEST_FROM = "!@#$%^&*()_+~zhengyujie497393102";
 
-    private static final String OUR_DATABASE_KEY = "our";
+    private static final String OUR_DATABASE_KEY = "_our";
     /**
      * Keep the instance of {@link ZYJDatabaseEncrypts} by database's path
      */
@@ -56,7 +56,7 @@ public final class ZYJDatabaseUtils {
                 Class<?> cls = Class.forName(ZYJDatabaseSettings.class.getName());
                 Constructor<?> con = cls.getDeclaredConstructor(new Class<?>[]{Context.class});
                 con.setAccessible(true);
-                ZYJDatabaseSettings settings = (ZYJDatabaseSettings) con.newInstance(new Object[]{c});
+                ZYJDatabaseSettings settings = (ZYJDatabaseSettings) con.newInstance(new Object[]{c.getApplicationContext()});
                 mInstance = settings;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -75,7 +75,7 @@ public final class ZYJDatabaseUtils {
     public static ZYJDatabaseEncrypts getCurrentEncryptDatabase(Context context, String password) {
         ZYJDatabaseEncrypts e = sEncryptMap.get(OUR_DATABASE_KEY);
         if (e == null) {
-            return getEncryptDatabaseFromPath(context, OUR_DATABASE_KEY, password);
+            return getEncryptDatabaseFromPath(context.getApplicationContext(), OUR_DATABASE_KEY, password);
         } else {
             return e;
         }
@@ -178,21 +178,22 @@ public final class ZYJDatabaseUtils {
     }
 
     /**
-     * Destory all entrypt instance
+     * Destory entrypt by key
      */
-    public static void destoryDatabases() {
-        for (String path : sEncryptMap.keySet()) {
-            ZYJDatabaseEncrypts e = sEncryptMap.get(path);
-            if (e != null && !e.isDestory()) {
-                e.onDestroy();
-            }
-            e = null;
+    public static void destoryDatabases(String key) {
+        if (TextUtils.isEmpty(key)) {
+            key = OUR_DATABASE_KEY;
         }
-        sEncryptMap.clear();
-        if (mInstance != null) {
+        ZYJDatabaseEncrypts e = sEncryptMap.remove(key);
+        if (e != null && !e.isDestory()) {
+            e.onDestroy();
+        }
+        e = null;
+        if (sEncryptMap.size() <= 0) {
             mInstance.onDestroy();
+            mInstance = null;
+            ZYJUtils.logD(ZYJDatabaseUtils.class, "Destory ZYJDatabaseUtils instance");
         }
-        mInstance = null;
     }
 
     /**

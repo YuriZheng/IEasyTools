@@ -48,7 +48,6 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
 
     /**
      * Control the access permission, so It's a private constructor<br>
-     * Call {@link ZYJDatabaseUtils#destoryDatabases()} to destory resources
      *
      * @param context context
      */

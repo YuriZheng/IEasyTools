@@ -5,9 +5,7 @@ import android.text.TextUtils;
 
 import com.zyj.ieasytools.library.db.ZYJDatabaseEncrypts;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
-import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -19,95 +17,73 @@ public final class EntryptImple implements IEntrypt {
 
     private ZYJDatabaseEncrypts mZYJEncrypts;
 
-    private EntryptImple(Context context) {
-        String password = ZYJDatabaseUtils.getSettingsInstance(context).getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null);
+    private String mRecordkey;
+
+    /**
+     * Get our database
+     */
+    public EntryptImple(Context context) {
+        String password = DatabaseUtils.getSettingsInstance(context).getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null);
         if (!TextUtils.isEmpty(password)) {
-            mZYJEncrypts = getCurrentEncryptDatabase(context, password);
+            mZYJEncrypts = DatabaseUtils.getCurrentEncryptDatabase(context, password);
+            mRecordkey = null;
         }
     }
 
-    public static EntryptImple getEntryptImple(Context context) {
-        EntryptImple e = new EntryptImple(context);
-        if (e.mZYJEncrypts == null) {
-            return null;
-        } else {
-            return e;
+    /**
+     * Get other database
+     */
+    public EntryptImple(Context context, String path, String password) {
+        if (!TextUtils.isEmpty(path) && !TextUtils.isEmpty(password)) {
+            mZYJEncrypts = DatabaseUtils.getEncryptDatabaseFromPath(context, path, password);
+            mRecordkey = path;
         }
     }
 
     @Override
     public void setEncryptListener(ZYJDatabaseEncrypts.EncryptListener l) {
-        mZYJEncrypts.setEncryptListener(l);
+        if (mZYJEncrypts != null) {
+            mZYJEncrypts.setEncryptListener(l);
+        }
     }
 
     @Override
     public boolean isCurrentDatabase() {
-        return mZYJEncrypts.isCurrentDatabase();
+        return mZYJEncrypts != null ? mZYJEncrypts.isCurrentDatabase() : false;
     }
 
     @Override
     public boolean isDestory() {
-        return mZYJEncrypts.isDestory();
+        return mZYJEncrypts != null ? mZYJEncrypts.isDestory() : false;
+    }
+
+    @Override
+    public void destroy() {
+        DatabaseUtils.destoryDatabases(mRecordkey);
     }
 
     @Override
     public boolean validDatabase() {
-        return mZYJEncrypts.validDatabase();
+        return mZYJEncrypts != null ? mZYJEncrypts.validDatabase() : false;
     }
 
     @Override
     public long insertEntry(PasswordEntry entry, String password) {
-        return mZYJEncrypts.insertEntry(entry, password);
+        return mZYJEncrypts != null ? mZYJEncrypts.insertEntry(entry, password) : -1;
     }
 
     @Override
     public int deleteEntry(PasswordEntry entry, String password) {
-        return mZYJEncrypts.deleteEntry(entry, password);
+        return mZYJEncrypts != null ? mZYJEncrypts.deleteEntry(entry, password) : -1;
     }
 
     @Override
     public long updateEntry(PasswordEntry entry, String password) {
-        return mZYJEncrypts.updateEntry(entry, password);
+        return mZYJEncrypts != null ? mZYJEncrypts.updateEntry(entry, password) : -1;
     }
 
     @Override
     public List<PasswordEntry> queryEntry(String[] columns, String selection, String[] selectionArgs, String orderBy, String password) {
-        return mZYJEncrypts.queryEntry(columns, selection, selectionArgs, orderBy, password);
+        return mZYJEncrypts != null ? mZYJEncrypts.queryEntry(columns, selection, selectionArgs, orderBy, password) : null;
     }
-
-    /**
-     * Get our encrypt database
-     *
-     * @param context  context
-     * @param password the database's password
-     * @return return {@link ZYJDatabaseEncrypts}
-     */
-    public static ZYJDatabaseEncrypts getCurrentEncryptDatabase(Context context, String password) {
-        return ZYJDatabaseUtils.getCurrentEncryptDatabase(context, password);
-    }
-
-    public static ZYJDatabaseEncrypts getEncryptDatabaseFromPath(Context context, String path, String password) {
-        return ZYJDatabaseUtils.getEncryptDatabaseFromPath(context, path, password);
-    }
-
-    public static File getCurrentDatabasePath(Context context, boolean isCreate) {
-        return ZYJDatabaseUtils.getCurrentDatabasePath(context, isCreate);
-    }
-
-    public static List<String> getDatabasePathsBesidesCurrent(Context context) {
-        return ZYJDatabaseUtils.getDatabasePathsBesidesCurrent(context);
-    }
-
-    public static void destoryEntrypt() {
-        ZYJDatabaseUtils.destoryDatabases();
-    }
-
-    public static boolean checkEncryptPassword(String method, String password, String from, String to, int version) {
-        return ZYJDatabaseUtils.checkEncryptPassword(method, password, from, to, version);
-    }
-
-    public static String[] generateTestTo(String method, String password, int version) {
-        return ZYJDatabaseUtils.generateTestTo(method, password, version);
-    }
-
 }

@@ -17,13 +17,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
-import com.zyj.ieasytools.data.EntryptImple;
+import com.zyj.ieasytools.data.DatabaseUtils;
 import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.db.BaseDatabase;
 import com.zyj.ieasytools.library.db.ZYJDatabaseEncrypts;
 import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
-import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
@@ -86,7 +85,7 @@ public class InputEnterPasswordDialog extends Dialog {
 
     public InputEnterPasswordDialog(Context context, boolean isSetting) {
         super(context, R.style.enter_password_dialog_style);
-        mSettings = ZYJDatabaseUtils.getSettingsInstance(context);
+        mSettings = DatabaseUtils.getSettingsInstance(context);
         if (mSettings == null) {
             ZYJUtils.logW(TAG, "Settings is null");
             dismiss();
@@ -303,7 +302,7 @@ public class InputEnterPasswordDialog extends Dialog {
                     iSubTitle.setText(R.string.verify_enter_copy);
                 } else {
                     if (iRecordPassword.equals(input)) {
-                        ZYJDatabaseEncrypts encrypt = EntryptImple.getCurrentEncryptDatabase(mContext, input);
+                        ZYJDatabaseEncrypts encrypt = DatabaseUtils.getCurrentEncryptDatabase(mContext, input);
                         if (encrypt == null || !encrypt.validDatabase()) {
                             if (encrypt == null) {
                                 iSubTitle.setText(mContext.getResources().getString(R.string.database_open_error, "null"));
@@ -337,7 +336,7 @@ public class InputEnterPasswordDialog extends Dialog {
                     }
                 }
             } else {
-                ZYJDatabaseEncrypts encrypt = EntryptImple.getCurrentEncryptDatabase(mContext, input);
+                ZYJDatabaseEncrypts encrypt = DatabaseUtils.getCurrentEncryptDatabase(mContext, input);
                 if (encrypt == null || !encrypt.validDatabase()) {
                     if (encrypt == null) {
                         iSubTitle.setText(mContext.getResources().getString(R.string.database_open_error, "null"));

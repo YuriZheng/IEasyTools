@@ -53,8 +53,11 @@ public abstract class BaseMainView<P extends IViewsPresenter> {
         return mViewGroup;
     }
 
-    protected View findViewById(int id) {
-        return mViewGroup.findViewById(id);
+    /**
+     * {@link IViewsView#destory()}
+     */
+    public void destory() {
+        mPresenter.destory();
     }
 
     /**
@@ -64,6 +67,11 @@ public abstract class BaseMainView<P extends IViewsPresenter> {
         mAdapter.setList(list);
         mAdapter.notifyDataSetChanged();
     }
+
+    protected View findViewById(int id) {
+        return mViewGroup.findViewById(id);
+    }
+
 
     /**
      * {@link IViewsView#getContext()}
@@ -87,7 +95,7 @@ public abstract class BaseMainView<P extends IViewsPresenter> {
     }
 
     /**
-     * Call this method When the main activity switch view
+     * {@link IViewsView#onReload()}
      */
     public void onReload() {
         mPresenter.requestEntryByCategory(mCategory);

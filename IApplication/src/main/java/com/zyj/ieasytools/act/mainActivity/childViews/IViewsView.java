@@ -22,6 +22,16 @@ public interface IViewsView<T extends IViewsPresenter> extends com.zyj.ieasytool
     View getView();
 
     /**
+     * Call this method When the main activity switch view
+     */
+    void onReload();
+
+    /**
+     * Destory the view and Recycling resources
+     */
+    void destory();
+
+    /**
      * Get the context
      */
     Context getContext();
