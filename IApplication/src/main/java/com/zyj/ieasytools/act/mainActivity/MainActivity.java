@@ -212,7 +212,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mConnection);
         // Only call once
         mPresenter.destory();
         // Destory views
@@ -222,6 +221,8 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mGroupAppView.destory();
         mGroupGameView.destory();
         mGroupOtherView.destory();
+
+        unbindService(mConnection);
     }
 
     @Override

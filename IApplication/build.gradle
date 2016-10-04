@@ -2,7 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '24.0.3'
+
+    // Lambda
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
         applicationId "com.zyj.ieasytools"
@@ -10,6 +16,12 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+
+        // Lambda
+        jackOptions {
+            enabled true
+        }
     }
 
     signingConfigs {
@@ -58,7 +70,6 @@ android {
 
         }
     }
-
 }
 
 dependencies {

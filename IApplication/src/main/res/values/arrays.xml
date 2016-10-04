@@ -2,12 +2,12 @@
 <resources>
 
     <array name="password_time_out_array">
-        <item>@string/setting_password_time_out_grade_1</item>
-        <item>@string/setting_password_time_out_grade_2</item>
-        <item>@string/setting_password_time_out_grade_3</item>
-        <item>@string/setting_password_time_out_grade_4</item>
-        <item>@string/setting_password_time_out_grade_5</item>
-        <item>@string/setting_password_time_out_grade_6</item>
+        <item>@string/settings_password_time_out_grade_1</item>
+        <item>@string/settings_password_time_out_grade_2</item>
+        <item>@string/settings_password_time_out_grade_3</item>
+        <item>@string/settings_password_time_out_grade_4</item>
+        <item>@string/settings_password_time_out_grade_5</item>
+        <item>@string/settings_password_time_out_grade_6</item>
     </array>
 
 </resources>

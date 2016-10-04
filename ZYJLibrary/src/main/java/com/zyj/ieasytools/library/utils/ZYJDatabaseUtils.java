@@ -28,7 +28,7 @@ import java.util.Map;
 public final class ZYJDatabaseUtils {
 
     /**
-     * Singleton ZYJDatabaseSettings
+     * Singleton ZYJDatabaseSettings, Destory database settings instance in server
      */
     private static ZYJDatabaseSettings mInstance;
 
@@ -51,7 +51,7 @@ public final class ZYJDatabaseUtils {
      * Get settings instance
      */
     public static ZYJDatabaseSettings getSettingsInstance(Context c) {
-        if (mInstance == null) {
+        if (mInstance == null || !mInstance.verifyValidSetting()) {
             try {
                 Class<?> cls = Class.forName(ZYJDatabaseSettings.class.getName());
                 Constructor<?> con = cls.getDeclaredConstructor(new Class<?>[]{Context.class});
@@ -187,13 +187,9 @@ public final class ZYJDatabaseUtils {
         ZYJDatabaseEncrypts e = sEncryptMap.remove(key);
         if (e != null && !e.isDestory()) {
             e.onDestroy();
+            e = null;
         }
-        e = null;
-        if (sEncryptMap.size() <= 0) {
-            mInstance.onDestroy();
-            mInstance = null;
-            ZYJUtils.logD(ZYJDatabaseUtils.class, "Destory ZYJDatabaseUtils instance");
-        }
+        ZYJUtils.logD(ZYJDatabaseUtils.class, "Destory ZYJDatabaseUtils instance");
     }
 
     /**

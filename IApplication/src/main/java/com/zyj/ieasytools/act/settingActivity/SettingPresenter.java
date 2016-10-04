@@ -1,8 +1,20 @@
 package com.zyj.ieasytools.act.settingActivity;
 
+import android.os.Environment;
+import android.text.TextUtils;
+
 import com.zyj.ieasytools.data.DatabaseUtils;
-import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
+import com.zyj.ieasytools.library.utils.ZYJUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+
+import static com.zyj.ieasytools.data.SettingsConstant.SETTINGS_DIRECTORY_RECORD_PATH;
+import static com.zyj.ieasytools.data.SettingsConstant.SETTINGS_PASSWORD_TIME_OUT;
+import static com.zyj.ieasytools.data.SettingsConstant.SETTINGS_PASSWORD_TIME_OUT_DEFAULT_VALUE;
 
 /**
  * Author: Yuri.zheng<br>
@@ -48,13 +60,67 @@ public class SettingPresenter implements ISettingContract.Presenter {
 
     @Override
     public long getTimeOut() {
-        return mSettings != null ? mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, SettingsConstant.SETTINGS_PASSWORD_TIME_OUT_DEFAULT_VALUE) : -1;
+        return mSettings != null ? mSettings.getLongProperties(SETTINGS_PASSWORD_TIME_OUT, SETTINGS_PASSWORD_TIME_OUT_DEFAULT_VALUE) : -1;
     }
 
     @Override
     public void setTimeOut(long time) {
         if (mSettings != null) {
-            mSettings.putLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT, time);
+            mSettings.putLongProperties(SETTINGS_PASSWORD_TIME_OUT, time);
         }
+    }
+
+    @Override
+    public void exportFile() {
+        mView.actionProgressBar("", "", true);
+        new Thread(() -> {
+            ZYJUtils.logD(getClass(),"1111111R");
+        }).start();
+    }
+
+    @Override
+    public String getRecordRootPath() {
+        String path = null;
+        if (mSettings != null) {
+            path = mSettings.getStringProperties(SETTINGS_DIRECTORY_RECORD_PATH, null);
+        }
+        if (TextUtils.isEmpty(path)) {
+            path = Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
+        return path;
+    }
+
+    @Override
+    public void restoryDirectoryPath(String path) {
+        if (mSettings != null && !TextUtils.isEmpty(path)) {
+            mSettings.putStringProperties(SETTINGS_DIRECTORY_RECORD_PATH, path);
+        }
+    }
+
+    private boolean copyFile(String oldPath, String newPath) {
+        try {
+            int byteread = 0;
+            File oldfile = new File(oldPath);
+            File newFile = new File(newPath);
+            if (newFile.exists()) {
+                newFile.delete();
+            }
+            newFile.createNewFile();
+            if (oldfile.exists()) { //文件存在时
+                InputStream inStream = new FileInputStream(oldPath); //读入原文件
+                FileOutputStream fs = new FileOutputStream(newPath);
+                byte[] buffer = new byte[1024];
+                while ((byteread = inStream.read(buffer)) != -1) {
+                    fs.write(buffer, 0, byteread);
+                }
+                fs.flush();
+                fs.close();
+                inStream.close();
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

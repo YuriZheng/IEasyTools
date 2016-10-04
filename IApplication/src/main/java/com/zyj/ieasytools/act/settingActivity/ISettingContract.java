@@ -18,6 +18,8 @@ public interface ISettingContract {
 
         Context getContext();
 
+        void actionProgressBar(String title, String message, boolean show);
+
     }
 
     interface Presenter extends IBasePresenter {
@@ -25,6 +27,21 @@ public interface ISettingContract {
         long getTimeOut();
 
         void setTimeOut(long time);
+
+        /**
+         * Export our database file
+         */
+        void exportFile();
+
+        /**
+         * Get the directory, if has hostory then return path of last time
+         */
+        String getRecordRootPath();
+
+        /**
+         * Save the path
+         */
+        void restoryDirectoryPath(String path);
 
     }
 

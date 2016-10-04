@@ -34,7 +34,7 @@
 
                     <TextView
                         style="@style/setting_item_title_style"
-                        android:text="@string/setting_password_time_out" />
+                        android:text="@string/settings_password_time_out" />
 
                     <TextView
                         android:id="@+id/password_time"
@@ -46,7 +46,7 @@
                         android:id="@+id/password_time_explanation"
                         style="@style/setting_item_explanation_style"
                         android:layout_below="@id/password_time"
-                        android:text="@string/setting_password_time_explanation" />
+                        android:text="@string/settings_password_time_explanation" />
 
                 </RelativeLayout>
 
@@ -62,7 +62,7 @@
                     <TextView
                         android:id="@+id/import_file_title"
                         style="@style/setting_item_title_style"
-                        android:text="@string/setting_import_other_file" />
+                        android:text="@string/settings_import_other_file" />
 
                     <TextView
                         android:id="@+id/import_file_explanation"
@@ -84,7 +84,7 @@
                     <TextView
                         android:id="@+id/export_file_title"
                         style="@style/setting_item_title_style"
-                        android:text="@string/setting_export_other_file" />
+                        android:text="@string/settings_export_other_file" />
 
                     <TextView
                         android:id="@+id/export_file_explanation"

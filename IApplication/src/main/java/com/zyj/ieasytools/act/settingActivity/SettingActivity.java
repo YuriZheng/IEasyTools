@@ -1,8 +1,9 @@
 package com.zyj.ieasytools.act.settingActivity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.BaseActivity;
@@ -34,6 +36,8 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
 
     private RelativeLayout mExportFile;
     private RelativeLayout mImportFile;
+
+    private ProgressDialog mProgressBar;
 
     private ISettingContract.Presenter mPresenter;
 
@@ -83,12 +87,30 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
                 showChoosePasswordTime();
                 break;
             case R.id.import_file:
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("file/");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                try {
+                    startActivityForResult(Intent.createChooser(intent, getString(R.string.settings_import_file_title)), Activity.RESULT_OK);
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(this, R.string.settings_import_no_manager, Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.export_file:
+                // TODO: 10/4/16 直接导出到一个指定路径
+                mPresenter.exportFile();
                 break;
             case R.id.back:
                 onBackPressed();
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Activity.RESULT_OK && resultCode == Activity.RESULT_OK) {
+            Uri uri = data.getData();
+            chooseFile(uri.toString());
         }
     }
 
@@ -167,44 +189,55 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
             ZYJUtils.logD(TAG, "Error: " + time);
         }
         AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setTitle(R.string.setting_password_time_out_title);
-        builder.setSingleChoiceItems(times, select, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 5) {
-                    showWarnDialog();
-                } else {
-                    mPresenter.setTimeOut(getTimeLong(times[which]));
-                }
-                dialog.dismiss();
+        builder.setTitle(R.string.settings_password_time_out_title);
+        builder.setSingleChoiceItems(times, select, (dialog, which) -> {
+            if (which == 5) {
+                showWarnDialog();
+            } else {
+                mPresenter.setTimeOut(getTimeLong(times[which]));
             }
+            dialog.dismiss();
         });
-        builder.setNegativeButton(R.string.add_see_password_help, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent i = new Intent(getApplicationContext(), HelpActivity.class);
-                startActivity(i);
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton(R.string.add_see_password_help, ((dialog, which) -> {
+            Intent i = new Intent(getApplicationContext(), HelpActivity.class);
+            startActivity(i);
+            dialog.dismiss();
+        }));
         builder.create().show();
     }
 
     private void showWarnDialog() {
         AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setTitle(R.string.setting_password_time_warn);
-        builder.setMessage(R.string.setting_password_time_never);
+        builder.setTitle(R.string.settings_password_time_warn);
+        builder.setMessage(R.string.settings_password_time_never);
         builder.setIcon(android.R.drawable.stat_sys_warning);
-        builder.setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                mPresenter.setTimeOut(SettingPresenter.PASSWORD_TIME_OUT_6);
-                dialog.dismiss();
-            }
+        builder.setNegativeButton(android.R.string.ok, (dialog, which) -> {
+            mPresenter.setTimeOut(SettingPresenter.PASSWORD_TIME_OUT_6);
+            dialog.dismiss();
         });
-        builder.setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
+        builder.setPositiveButton(android.R.string.cancel, (dialog, which) -> {
+            dialog.dismiss();
         });
         builder.create().show();
+    }
+
+    private void chooseFile(String path) {
+        ZYJUtils.logD(getClass(), "Path: " + path);
+    }
+
+    @Override
+    public void actionProgressBar(String title, String message, boolean show) {
+        if (show) {
+            if (mProgressBar == null) {
+                mProgressBar = new ProgressDialog(this, android.R.style.Widget_DeviceDefault_Light_ProgressBar);
+            }
+            mProgressBar.setTitle(title);
+            mProgressBar.setMessage(message);
+            mProgressBar.show();
+        } else {
+            if (mProgressBar != null && mProgressBar.isShowing()) {
+                mProgressBar.dismiss();
+            }
+        }
     }
 }

@@ -32,6 +32,11 @@ public final class SettingsConstant {
      * key: {@link Long}
      */
     public static final String SETTINGS_VERIFY_STATE_LAST_TIME = "settings_verify_state_last_time";
+    /**
+     * Get the directory path if already open once<br>
+     * key: {@link String}
+     */
+    public static final String SETTINGS_DIRECTORY_RECORD_PATH = "settings_directory_path";
 
     /**
      * Enter password style: <br>
