@@ -1,11 +1,11 @@
 package com.zyj.ieasytools.act.settingActivity;
 
 import android.os.Environment;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import com.zyj.ieasytools.data.DatabaseUtils;
 import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
-import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,13 +49,14 @@ public class SettingPresenter implements ISettingContract.Presenter {
     public static final long PASSWORD_TIME_OUT_6 = Long.MAX_VALUE >> 1;
 
     private final ISettingContract.View mView;
-
     private final ZYJDatabaseSettings mSettings;
+    private Handler mHandler;
 
     public SettingPresenter(ISettingContract.View mView) {
         this.mView = mView;
         mView.setPresenter(this);
         mSettings = DatabaseUtils.getSettingsInstance(mView.getContext());
+        mHandler = new Handler(mView.getContext().getApplicationContext().getMainLooper());
     }
 
     @Override
@@ -72,9 +73,16 @@ public class SettingPresenter implements ISettingContract.Presenter {
 
     @Override
     public void exportFile() {
-        mView.actionProgressBar("", "", true);
+        mView.actionProgressBar("标题", "正在干什么干什么什么什么什么什么什么什么什么", true);
         new Thread(() -> {
-            ZYJUtils.logD(getClass(),"1111111R");
+            try {
+                Thread.sleep(10000);
+                mHandler.post(() -> {
+                    mView.actionProgressBar("", "", false);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }).start();
     }
 

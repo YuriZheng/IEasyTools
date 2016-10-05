@@ -229,7 +229,9 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
     public void actionProgressBar(String title, String message, boolean show) {
         if (show) {
             if (mProgressBar == null) {
-                mProgressBar = new ProgressDialog(this, android.R.style.Widget_DeviceDefault_Light_ProgressBar);
+                mProgressBar = new ProgressDialog(this);
+                mProgressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                mProgressBar.setCancelable(false);
             }
             mProgressBar.setTitle(title);
             mProgressBar.setMessage(message);
