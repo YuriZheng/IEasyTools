@@ -52,6 +52,11 @@ public class SettingPresenter implements ISettingContract.Presenter {
 
     private final String EXPORT_FILE_NAME = "i_easytools";
 
+    // Copy exception
+    private final int COPY_FILE_EXCEPTION = -1;
+    // Copy file is not exist
+    private final int COPY_FILE_EXIST = -2;
+
     private final ISettingContract.View mView;
     private final ZYJDatabaseSettings mSettings;
 
@@ -75,6 +80,7 @@ public class SettingPresenter implements ISettingContract.Presenter {
 
     @Override
     public void exportFile() {
+        // /data/user/0/com.zyj.ieasytools/databases/encrypt.izyj
         File currentDatabasePath = DatabaseUtils.getCurrentDatabasePath(mView.getContext(), false);
         if (!currentDatabasePath.exists()) {
             mView.toast(R.string.settings_exportint_exists);
@@ -83,26 +89,36 @@ public class SettingPresenter implements ISettingContract.Presenter {
             if (tagDir == null) {
                 mView.toast(R.string.settings_exportint_sd_error);
             } else {
-                mView.actionProgressBar(R.string.settings_exportint_title,
-                        mView.getContext().getString(R.string.settings_exportint_file, ""), 0, true);
-                // /storage/emulated/0/Android/data/com.zyj.ieasytools/files/i_easytools.izyj
                 String exportPath = tagDir.getAbsolutePath() + "/" + EXPORT_FILE_NAME + "." + DATABASE_FILE_SUFFIX;
-                ZYJUtils.logD(getClass(), "P1: " + exportPath);
-                File tagFile = new File(exportPath);
-                if (tagFile.exists()) {
-                    tagFile.delete();
+                final int titleRes = R.string.settings_exportint_title;
+                String tmpPath = null;
+                if (exportPath.contains("Android")) {
+                    tmpPath = "Android" + exportPath.split("Android")[1];
                 }
+                final String message = mView.getContext().getString(R.string.settings_exportint_file, tmpPath);
+                mView.actionProgressBar(titleRes, message, 0, true);
+                new Thread(() -> {
+                    // /storage/emulated/0/Android/data/com.zyj.ieasytools/files/i_easytools.izyj
+                    copyFile(currentDatabasePath.getAbsolutePath(), exportPath, (progress) -> {
+                        if (progress >= 0) {
+                            if (progress >= 100) {
+                                mView.actionProgressBar(-1, "", 100, false);
+                            } else {
+                                mView.actionProgressBar(titleRes, message, (int) progress, true);
+                            }
+                        } else {
+                            mView.actionProgressBar(-1, "", 100, false);
+                            mView.toast(R.string.settings_exportint_exception);
+                        }
+                    });
+                }).start();
             }
         }
+    }
 
-        new Thread(() -> {
-            try {
-                Thread.sleep(10000);
-                mView.actionProgressBar(R.string.settings_exportint_title, "", 100, false);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
+    @Override
+    public void importFile() {
+        // 上次写到这里了,开始写导入文件!!!
     }
 
     @Override
@@ -124,30 +140,58 @@ public class SettingPresenter implements ISettingContract.Presenter {
         }
     }
 
-    private boolean copyFile(String oldPath, String newPath) {
+    private void copyFile(String oldPath, String newPath, CopyProgressListener listener) {
         try {
-            int byteread = 0;
+            // Sleep 500 to show progress dialog
+            Thread.sleep(500);
             File oldfile = new File(oldPath);
             File newFile = new File(newPath);
-            if (newFile.exists()) {
-                newFile.delete();
-            }
-            newFile.createNewFile();
-            if (oldfile.exists()) { //文件存在时
-                InputStream inStream = new FileInputStream(oldPath); //读入原文件
+            if (oldfile.exists()) {
+                ZYJUtils.logD(getClass(), "Copy from: " + oldPath + "\n" + "to: " + newPath);
+                if (newFile.exists()) {
+                    ZYJUtils.logW(getClass(), "The copy tag file is exists, delete: " + newFile.delete());
+                }
+                newFile.createNewFile();
+                long totleSize = oldfile.length();
+                int byteread = 0;
+                float readSize = 0;
+                InputStream inStream = new FileInputStream(oldPath);
                 FileOutputStream fs = new FileOutputStream(newPath);
-                byte[] buffer = new byte[1024];
+                byte[] buffer = new byte[64];
                 while ((byteread = inStream.read(buffer)) != -1) {
                     fs.write(buffer, 0, byteread);
+                    readSize += byteread;
+                    float progress = (readSize / totleSize) * 100;
+                    if (listener != null) {
+                        listener.setProgress(progress);
+                    }
+                }
+                if (listener != null) {
+                    listener.setProgress(100);
                 }
                 fs.flush();
                 fs.close();
                 inStream.close();
-                return true;
+            } else {
+                if (listener != null) {
+                    listener.setProgress(COPY_FILE_EXIST);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            ZYJUtils.logW(getClass(), "Copy file faile: " + e.getLocalizedMessage());
+            if (listener != null) {
+                listener.setProgress(COPY_FILE_EXCEPTION);
+            }
         }
-        return false;
+    }
+
+    interface CopyProgressListener {
+        /**
+         * @param progress the progress of copy<br>
+         *                 {@link #COPY_FILE_EXCEPTION}<br>
+         *                 {@link #COPY_FILE_EXIST}<br>
+         */
+        void setProgress(float progress);
     }
 }

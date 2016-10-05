@@ -92,7 +92,7 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
                 break;
             case R.id.import_file:
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("file/");
+                intent.setType("*/*");
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 try {
                     startActivityForResult(Intent.createChooser(intent, getString(R.string.settings_import_file_title)), Activity.RESULT_OK);
@@ -101,7 +101,6 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
                 }
                 break;
             case R.id.export_file:
-                // TODO: 10/4/16 直接导出到一个指定路径
                 mPresenter.exportFile();
                 break;
             case R.id.back:
@@ -112,6 +111,7 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ZYJUtils.logD(getClass(),"R: " + requestCode + ", R" + resultCode);
         if (requestCode == Activity.RESULT_OK && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             chooseFile(uri.toString());
@@ -242,10 +242,13 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
                 mProgressBar.setProgress(progress);
                 mProgressBar.setTitle(title);
                 mProgressBar.setMessage(message);
-                mProgressBar.show();
+                if (!mProgressBar.isShowing()) {
+                    mProgressBar.show();
+                }
             } else {
                 if (mProgressBar != null && mProgressBar.isShowing()) {
                     mProgressBar.dismiss();
+                    mProgressBar = null;
                 }
             }
         });

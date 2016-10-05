@@ -36,6 +36,11 @@ public interface ISettingContract {
         void exportFile();
 
         /**
+         * Import other database file to application dir
+         */
+        void importFile();
+
+        /**
          * Get the directory, if has hostory then return path of last time
          */
         String getRecordRootPath();

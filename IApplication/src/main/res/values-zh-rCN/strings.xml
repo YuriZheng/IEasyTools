@@ -17,7 +17,8 @@
     <string name="settings_exportint_title">导出</string>
     <string name="settings_exportint_exists">数据库文件不存在,请退出应用重新启动!</string>
     <string name="settings_exportint_sd_error">SD卡不存在,或存储空间不足</string>
-    <string name="settings_exportint_file">正在导出文件到: %1$s</string>
+    <string name="settings_exportint_file">正在导出文件到:\n%1$s</string>
+    <string name="settings_exportint_exception">拷贝文件异常,请重启应用重试</string>
     <string name="settings_password_time_out_title">请选择:</string>
     <string name="settings_password_time_out_grade_1">10分钟</string>
     <string name="settings_password_time_out_grade_2">30分钟</string>
