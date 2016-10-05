@@ -13,6 +13,10 @@
     <string name="settings_import_file_title">Choose a file</string>
     <string name="settings_import_no_manager">Please install the file manager</string>
     <string name="settings_export_other_file">Export the database to local</string>
+    <string name="settings_exportint_title">Export</string>
+    <string name="settings_exportint_exists">Database file is not exists, Please restart application!</string>
+    <string name="settings_exportint_sd_error">The SD card does not exist, or there is not enough storage space</string>
+    <string name="settings_exportint_file">Exporting file to: %1$s</string>
     <string name="settings_password_time_out_title">Choose:</string>
     <string name="settings_password_time_out_grade_1">Ten minutes</string>
     <string name="settings_password_time_out_grade_2">Thirty minutes</string>

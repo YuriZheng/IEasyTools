@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -41,6 +42,8 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
 
     private ISettingContract.Presenter mPresenter;
 
+    private Handler mHandler;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +69,7 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
         findViewById(R.id.back).setOnClickListener(this);
 
         new SettingPresenter(this);
+        mHandler = new Handler(getMainLooper());
 
         setTimeOutText();
     }
@@ -226,20 +230,31 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
     }
 
     @Override
-    public void actionProgressBar(String title, String message, boolean show) {
-        if (show) {
-            if (mProgressBar == null) {
-                mProgressBar = new ProgressDialog(this);
-                mProgressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                mProgressBar.setCancelable(false);
+    public void actionProgressBar(int title, String message, int progress, boolean show) {
+        mHandler.post(() -> {
+            if (show) {
+                if (mProgressBar == null) {
+                    mProgressBar = new ProgressDialog(this);
+                    mProgressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    mProgressBar.setCancelable(false);
+                    mProgressBar.setMax(100);
+                }
+                mProgressBar.setProgress(progress);
+                mProgressBar.setTitle(title);
+                mProgressBar.setMessage(message);
+                mProgressBar.show();
+            } else {
+                if (mProgressBar != null && mProgressBar.isShowing()) {
+                    mProgressBar.dismiss();
+                }
             }
-            mProgressBar.setTitle(title);
-            mProgressBar.setMessage(message);
-            mProgressBar.show();
-        } else {
-            if (mProgressBar != null && mProgressBar.isShowing()) {
-                mProgressBar.dismiss();
-            }
+        });
+    }
+
+    @Override
+    public void toast(int message) {
+        if (message != 0) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
     }
 }

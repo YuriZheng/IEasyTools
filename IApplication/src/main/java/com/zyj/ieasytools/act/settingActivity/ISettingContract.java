@@ -18,7 +18,9 @@ public interface ISettingContract {
 
         Context getContext();
 
-        void actionProgressBar(String title, String message, boolean show);
+        void actionProgressBar(int title, String message, int progress, boolean show);
+
+        void toast(int message);
 
     }
 

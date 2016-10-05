@@ -1,11 +1,12 @@
 package com.zyj.ieasytools.act.settingActivity;
 
 import android.os.Environment;
-import android.os.Handler;
 import android.text.TextUtils;
 
+import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.data.DatabaseUtils;
 import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
+import com.zyj.ieasytools.library.utils.ZYJUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +16,7 @@ import java.io.InputStream;
 import static com.zyj.ieasytools.data.SettingsConstant.SETTINGS_DIRECTORY_RECORD_PATH;
 import static com.zyj.ieasytools.data.SettingsConstant.SETTINGS_PASSWORD_TIME_OUT;
 import static com.zyj.ieasytools.data.SettingsConstant.SETTINGS_PASSWORD_TIME_OUT_DEFAULT_VALUE;
+import static com.zyj.ieasytools.library.db.DatabaseColumns.DATABASE_FILE_SUFFIX;
 
 /**
  * Author: Yuri.zheng<br>
@@ -48,15 +50,15 @@ public class SettingPresenter implements ISettingContract.Presenter {
      */
     public static final long PASSWORD_TIME_OUT_6 = Long.MAX_VALUE >> 1;
 
+    private final String EXPORT_FILE_NAME = "i_easytools";
+
     private final ISettingContract.View mView;
     private final ZYJDatabaseSettings mSettings;
-    private Handler mHandler;
 
     public SettingPresenter(ISettingContract.View mView) {
         this.mView = mView;
         mView.setPresenter(this);
         mSettings = DatabaseUtils.getSettingsInstance(mView.getContext());
-        mHandler = new Handler(mView.getContext().getApplicationContext().getMainLooper());
     }
 
     @Override
@@ -73,13 +75,30 @@ public class SettingPresenter implements ISettingContract.Presenter {
 
     @Override
     public void exportFile() {
-        mView.actionProgressBar("标题", "正在干什么干什么什么什么什么什么什么什么什么", true);
+        File currentDatabasePath = DatabaseUtils.getCurrentDatabasePath(mView.getContext(), false);
+        if (!currentDatabasePath.exists()) {
+            mView.toast(R.string.settings_exportint_exists);
+        } else {
+            File tagDir = mView.getContext().getExternalFilesDir(null);
+            if (tagDir == null) {
+                mView.toast(R.string.settings_exportint_sd_error);
+            } else {
+                mView.actionProgressBar(R.string.settings_exportint_title,
+                        mView.getContext().getString(R.string.settings_exportint_file, ""), 0, true);
+                // /storage/emulated/0/Android/data/com.zyj.ieasytools/files/i_easytools.izyj
+                String exportPath = tagDir.getAbsolutePath() + "/" + EXPORT_FILE_NAME + "." + DATABASE_FILE_SUFFIX;
+                ZYJUtils.logD(getClass(), "P1: " + exportPath);
+                File tagFile = new File(exportPath);
+                if (tagFile.exists()) {
+                    tagFile.delete();
+                }
+            }
+        }
+
         new Thread(() -> {
             try {
                 Thread.sleep(10000);
-                mHandler.post(() -> {
-                    mView.actionProgressBar("", "", false);
-                });
+                mView.actionProgressBar(R.string.settings_exportint_title, "", 100, false);
             } catch (Exception e) {
                 e.printStackTrace();
             }
