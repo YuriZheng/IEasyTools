@@ -8,7 +8,7 @@ package com.zyj.localserver;
 public final class ZYJJniLib {
 
     static {
-        System.loadLibrary("zyj_ndk_itools");
+//        System.loadLibrary("zyj_ndk_itools");
     }
 
     protected ZYJJniLib() {

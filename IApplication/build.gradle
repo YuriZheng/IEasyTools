@@ -17,8 +17,6 @@ android {
         versionCode 1
         versionName "1.0"
 
-
-        // Lambda
         jackOptions {
             enabled true
         }
@@ -73,5 +71,6 @@ android {
 }
 
 dependencies {
+    testCompile 'junit:junit:4.12'
     compile project(':ZYJLibrary')
 }
