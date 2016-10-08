@@ -33,6 +33,9 @@
     <string name="settings_password_time_never">任何时间段进入应用都不再需要验证身份</string>
     <string name="settings_password_time_warn">安全警告</string>
 
+    <string name="file_manager_title">文件管理</string>
+    <string name="file_manager_can_not_read">文件路径不可读！</string>
+
     <string name="verify_enterpassword_input">键盘输入</string>
     <string name="verify_enterpassword_ios">数字验证</string>
     <string name="verify_enterpassword_fingerprint">指纹验证</string>

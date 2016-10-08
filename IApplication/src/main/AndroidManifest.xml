@@ -61,6 +61,10 @@
             android:name=".act.settingActivity.SettingActivity"
             android:theme="@style/AppTheme.NoActionBar.Animation" />
 
+        <activity
+            android:name=".act.fileManagerActivity.FileManagerActivity"
+            android:theme="@style/AppTheme.NoActionBar.Animation" />
+
         <service android:name=".act.myServer.MyServer" />
 
     </application>

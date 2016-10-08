@@ -40,7 +40,7 @@ public abstract class BaseMainView<P extends IViewsPresenter> {
         mViewGroup = (ViewGroup) LayoutInflater.from(context).inflate(layoutId, null);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setAdapter(mAdapter = new DataAdapter());

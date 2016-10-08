@@ -15,14 +15,16 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.BaseActivity;
+import com.zyj.ieasytools.act.fileManagerActivity.FileManagerActivity;
 import com.zyj.ieasytools.act.helpActivity.HelpActivity;
 import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
+
+import static com.zyj.ieasytools.library.db.DatabaseColumns.DATABASE_FILE_SUFFIX;
 
 /**
  * Author: Yuri.zheng<br>
@@ -94,14 +96,10 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
                 showChoosePasswordTime();
                 break;
             case R.id.import_file:
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                try {
-                    startActivityForResult(Intent.createChooser(intent, getString(R.string.settings_import_file_title)), Activity.RESULT_OK);
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(this, R.string.settings_import_no_manager, Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent(getApplicationContext(), FileManagerActivity.class);
+                intent.putExtra(FileManagerActivity.RECORD_HOSTORY, mPresenter.getRecordRootPath());
+                intent.putExtra(FileManagerActivity.TYPE, DATABASE_FILE_SUFFIX);
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.settings_import_file_title)), Activity.RESULT_OK);
                 break;
             case R.id.export_file:
                 mPresenter.exportFile();
