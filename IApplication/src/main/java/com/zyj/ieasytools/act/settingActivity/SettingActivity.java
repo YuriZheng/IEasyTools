@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
@@ -32,6 +33,7 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
 
     private TextView mToolbarTextView;
 
+    private View mRootView;
     private RelativeLayout mPasswordTimeOut;
     private TextView mPasswordTime;
 
@@ -47,7 +49,8 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting_layout);
+        mRootView = View.inflate(this, R.layout.activity_setting_layout, null);
+        setContentView(mRootView);
 
         mToolbarTextView = (TextView) findViewById(R.id.title);
         mToolbarTextView.setText(R.string.settings_settings);
@@ -111,7 +114,7 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ZYJUtils.logD(getClass(),"R: " + requestCode + ", R" + resultCode);
+        ZYJUtils.logD(getClass(), "R: " + requestCode + ", R" + resultCode);
         if (requestCode == Activity.RESULT_OK && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
             chooseFile(uri.toString());
@@ -255,9 +258,18 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
     }
 
     @Override
-    public void toast(int message) {
-        if (message != 0) {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        }
+    public void snackBar(int message, int actionRes, boolean isLong, View.OnClickListener listener) {
+        snackBar(getString(message), getString(actionRes), isLong, listener);
+    }
+
+    @Override
+    public void snackBar(String message, String actionRes, boolean isLong, View.OnClickListener listener) {
+        Snackbar.make(mRootView, message, isLong ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG)
+                .setAction(actionRes, listener).show();
+    }
+
+    @Override
+    public void closeApp() {
+        exitApp();
     }
 }

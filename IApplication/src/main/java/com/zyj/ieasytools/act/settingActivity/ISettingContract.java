@@ -20,7 +20,11 @@ public interface ISettingContract {
 
         void actionProgressBar(int title, String message, int progress, boolean show);
 
-        void toast(int message);
+        void snackBar(int message, int actionRes, boolean isLong, android.view.View.OnClickListener listener);
+
+        void snackBar(String message, String actionRes, boolean isLong, android.view.View.OnClickListener listener);
+
+        void closeApp();
 
     }
 

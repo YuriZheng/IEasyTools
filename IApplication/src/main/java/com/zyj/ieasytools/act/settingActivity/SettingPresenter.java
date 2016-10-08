@@ -50,7 +50,7 @@ public class SettingPresenter implements ISettingContract.Presenter {
      */
     public static final long PASSWORD_TIME_OUT_6 = Long.MAX_VALUE >> 1;
 
-    private final String EXPORT_FILE_NAME = "i_easytools";
+    private final String EXPORT_FILE_NAME = "MyPD";
 
     // Copy exception
     private final int COPY_FILE_EXCEPTION = -1;
@@ -83,32 +83,37 @@ public class SettingPresenter implements ISettingContract.Presenter {
         // /data/user/0/com.zyj.ieasytools/databases/encrypt.izyj
         File currentDatabasePath = DatabaseUtils.getCurrentDatabasePath(mView.getContext(), false);
         if (!currentDatabasePath.exists()) {
-            mView.toast(R.string.settings_exportint_exists);
+            mView.snackBar(R.string.settings_export_exists, R.string.application_reboot, false, (view) -> {
+                mView.closeApp();
+            });
         } else {
             File tagDir = mView.getContext().getExternalFilesDir(null);
             if (tagDir == null) {
-                mView.toast(R.string.settings_exportint_sd_error);
+                mView.snackBar(R.string.settings_export_sd_error, R.string.application_reboot, false, (view) -> {
+                    mView.closeApp();
+                });
             } else {
+                // /storage/emulated/0/Android/data/com.zyj.ieasytools/files/i_easytools.izyj
                 String exportPath = tagDir.getAbsolutePath() + "/" + EXPORT_FILE_NAME + "." + DATABASE_FILE_SUFFIX;
-                final int titleRes = R.string.settings_exportint_title;
-                String tmpPath = null;
-                if (exportPath.contains("Android")) {
-                    tmpPath = "Android" + exportPath.split("Android")[1];
-                }
-                final String message = mView.getContext().getString(R.string.settings_exportint_file, tmpPath);
+                final int titleRes = R.string.settings_export_title;
+                final String tmpPath = exportPath.contains("Android") ? ("Android" + exportPath.split("Android")[1]) : exportPath;
+                final String message = mView.getContext().getString(R.string.settings_export_file, tmpPath);
                 mView.actionProgressBar(titleRes, message, 0, true);
                 new Thread(() -> {
-                    // /storage/emulated/0/Android/data/com.zyj.ieasytools/files/i_easytools.izyj
                     copyFile(currentDatabasePath.getAbsolutePath(), exportPath, (progress) -> {
                         if (progress >= 0) {
                             if (progress >= 100) {
+                                // Success
                                 mView.actionProgressBar(-1, "", 100, false);
+                                mView.snackBar(mView.getContext().getString(R.string.settings_export_exists_success, tmpPath), "", true, null);
                             } else {
                                 mView.actionProgressBar(titleRes, message, (int) progress, true);
                             }
                         } else {
                             mView.actionProgressBar(-1, "", 100, false);
-                            mView.toast(R.string.settings_exportint_exception);
+                            mView.snackBar(R.string.settings_export_exception, android.R.string.ok, false, (view) -> {
+                                exportFile();
+                            });
                         }
                     });
                 }).start();

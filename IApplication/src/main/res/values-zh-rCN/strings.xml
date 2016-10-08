@@ -3,6 +3,8 @@
     <!-- 标题 -->
     <string name="app_name">易密保</string>
 
+    <string name="application_reboot">退出</string>
+
     <!-- 设置 -->
     <string name="settings_help">使用手册</string>
     <string name="settings_about">关于我们</string>
@@ -14,11 +16,12 @@
     <string name="settings_import_file_title">请选择一个文件</string>
     <string name="settings_import_no_manager">请安装文件管理器</string>
     <string name="settings_export_other_file">导出数据库文件到本地</string>
-    <string name="settings_exportint_title">导出</string>
-    <string name="settings_exportint_exists">数据库文件不存在,请退出应用重新启动!</string>
-    <string name="settings_exportint_sd_error">SD卡不存在,或存储空间不足</string>
-    <string name="settings_exportint_file">正在导出文件到:\n%1$s</string>
-    <string name="settings_exportint_exception">拷贝文件异常,请重启应用重试</string>
+    <string name="settings_export_title">导出</string>
+    <string name="settings_export_exists">数据库文件不存在,请退出应用重新启动!</string>
+    <string name="settings_export_sd_error">SD卡不存在,或存储空间不足</string>
+    <string name="settings_export_file">正在导出文件到:\n%1$s</string>
+    <string name="settings_export_exception">拷贝文件异常,重试？</string>
+    <string name="settings_export_exists_success">复制成功: %1$s</string>
     <string name="settings_password_time_out_title">请选择:</string>
     <string name="settings_password_time_out_grade_1">10分钟</string>
     <string name="settings_password_time_out_grade_2">30分钟</string>

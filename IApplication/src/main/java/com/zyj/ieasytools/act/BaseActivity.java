@@ -67,6 +67,13 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     /**
+     * Exit application in V
+     */
+    protected void exitApp() {
+        mBasePresenter.exitApp();
+    }
+
+    /**
      * Get toolbar fields
      */
     protected <T> T getToolbarChildView(Toolbar toolbar, String value, Class<T> clz) {
@@ -205,7 +212,7 @@ public class BaseActivity extends AppCompatActivity {
                     // verify faile, clear the buffer of password
                     // TODO: 2016/5/26 清空密码
                     ZYJUtils.logD(TAG, "verifyEnterPasswordFaile");
-                    mLocalBroadcastManager.sendBroadcast(new Intent(LOCAL_BROADCAST));
+                    exitApp();
                 }
             }
         };
@@ -252,6 +259,10 @@ public class BaseActivity extends AppCompatActivity {
             boolean time = (lastTime + timeOut) < current;
             ZYJUtils.logD(TAG, "Current time: " + current + ", Time out: " + (lastTime + timeOut) + (time ? " and time out" : ""));
             return time;
+        }
+
+        private void exitApp() {
+            mLocalBroadcastManager.sendBroadcast(new Intent(LOCAL_BROADCAST));
         }
     }
 }
