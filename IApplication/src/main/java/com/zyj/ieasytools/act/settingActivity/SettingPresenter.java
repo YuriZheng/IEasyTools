@@ -1,5 +1,6 @@
 package com.zyj.ieasytools.act.settingActivity;
 
+import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
 
@@ -7,6 +8,7 @@ import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.data.DatabaseUtils;
 import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
+import com.zyj.ieasytools.library.utils.ZYJVersion;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -80,7 +82,7 @@ public class SettingPresenter implements ISettingContract.Presenter {
 
     @Override
     public void exportFile() {
-        // /data/user/0/com.zyj.ieasytools/databases/encrypt.izyj
+        // /data/data/com.zyj.ieasytools/databases/encrypt.izyj
         File currentDatabasePath = DatabaseUtils.getCurrentDatabasePath(mView.getContext(), false);
         if (!currentDatabasePath.exists()) {
             mView.snackBar(R.string.settings_export_exists, R.string.application_reboot, false, (view) -> {
@@ -122,8 +124,38 @@ public class SettingPresenter implements ISettingContract.Presenter {
     }
 
     @Override
-    public void importFile() {
-        // 上次写到这里了,开始写导入文件!!!
+    public void importFile(Uri sourcePath) {
+        final String realPath = sourcePath.getPath();
+        if (TextUtils.isEmpty(realPath)) {
+            mView.snackBar(R.string.settings_import_path_error, -1, false, null);
+        } else {
+            if (!realPath.endsWith("." + DATABASE_FILE_SUFFIX)) {
+                mView.snackBar(R.string.settings_import_error_suffix, -1, false, null);
+                return;
+            }
+            final String realName = realPath.substring(realPath.lastIndexOf("/") + 1, realPath.lastIndexOf("."));
+            File file = new File(realPath);
+            if (!file.isFile() || !file.canRead()) {
+                mView.snackBar(R.string.settings_import_file_error, -1, false, null);
+            } else {
+                File currentDatabasePath = DatabaseUtils.getCurrentDatabasePath(mView.getContext(), false);
+                if (currentDatabasePath == null || !currentDatabasePath.canRead()) {
+                    mView.snackBar(R.string.settings_import_database_path_error, -1, false, null);
+                } else {
+                    new Thread(() -> {
+                        final String tagName = DatabaseUtils.getDefaultEncryptEntry(mView.getContext()).encrypt(realName, ZYJVersion.getCurrentVersion());
+                        ZYJUtils.logD(getClass(), "RealName: " + realName + ", Rename: " + tagName);
+                        final String tagPath = currentDatabasePath.getParentFile().getAbsolutePath() + "/" + tagName + "." + DATABASE_FILE_SUFFIX;
+                        if (new File(tagPath).exists()) {
+                            String message = mView.getContext().getString(R.string.settings_import_already, realName + "." + DATABASE_FILE_SUFFIX);
+                            mView.snackBar(message, "", false, null);
+                        } else {
+                            startImport(realPath, tagPath);
+                        }
+                    }).start();
+                }
+            }
+        }
     }
 
     @Override
@@ -139,10 +171,39 @@ public class SettingPresenter implements ISettingContract.Presenter {
     }
 
     @Override
-    public void restoryDirectoryPath(String path) {
-        if (mSettings != null && !TextUtils.isEmpty(path)) {
-            mSettings.putStringProperties(SETTINGS_DIRECTORY_RECORD_PATH, path);
+    public void restoryDirectoryPath(Uri path) {
+        if (mSettings != null && path != null && !TextUtils.isEmpty(path.getPath())) {
+            File file = new File(path.getPath());
+            if (file != null && file.exists()) {
+                File parent = file.getParentFile();
+                if (parent != null && parent.exists()) {
+                    String p = parent.getAbsolutePath();
+                    ZYJUtils.logD(getClass(), "Restory path: " + p);
+                    mSettings.putStringProperties(SETTINGS_DIRECTORY_RECORD_PATH, p);
+                }
+            }
         }
+    }
+
+    private void startImport(final String oldPath, final String newPath) {
+        final int titleRes = R.string.settings_import_title;
+        mView.actionProgressBar(titleRes, "", 100, true);
+        copyFile(oldPath, newPath, (progress) -> {
+            if (progress >= 0) {
+                if (progress >= 100) {
+                    // Success
+                    mView.actionProgressBar(-1, "", 100, false);
+                    mView.snackBar(R.string.settings_import_success, -1, false, null);
+                } else {
+                    mView.actionProgressBar(titleRes, "", (int) progress, true);
+                }
+            } else {
+                mView.actionProgressBar(-1, "", 100, false);
+                mView.snackBar(R.string.settings_export_exception, android.R.string.ok, false, (view) -> {
+                    mView.dismissSnackBar(R.string.settings_export_exception, android.R.string.ok);
+                });
+            }
+        });
     }
 
     private void copyFile(String oldPath, String newPath, CopyProgressListener listener) {

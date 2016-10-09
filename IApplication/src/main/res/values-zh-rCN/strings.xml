@@ -13,8 +13,15 @@
     <string name="settings_view_other">查看其它</string>
     <string name="settings_password_time_out">设置密码过期时间</string>
     <string name="settings_import_other_file">导入其它数据库</string>
+    <string name="settings_import_title">导入</string>
     <string name="settings_import_file_title">请选择一个文件</string>
     <string name="settings_import_no_manager">请安装文件管理器</string>
+    <string name="settings_import_path_error">路径错误</string>
+    <string name="settings_import_file_error">文件读取错误</string>
+    <string name="settings_import_database_path_error">数据库路径获取错误</string>
+    <string name="settings_import_error_suffix">文件格式选择错误</string>
+    <string name="settings_import_already">%1$s已经导入，不能重复导入！</string>
+    <string name="settings_import_success">导入成功</string>
     <string name="settings_export_other_file">导出数据库文件到本地</string>
     <string name="settings_export_title">导出</string>
     <string name="settings_export_exists">数据库文件不存在,请退出应用重新启动!</string>

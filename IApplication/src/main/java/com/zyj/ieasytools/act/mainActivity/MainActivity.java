@@ -183,6 +183,21 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        MenuItem otherItem = mNavigationView.getMenu().findItem(R.id.settings_view_other);
+        if (mPresenter.hasOtherDatabase()) {
+            if (otherItem == null) {
+                mNavigationView.getMenu().add(R.id.setting_menu, R.id.settings_view_other, 3, R.string.settings_view_other);
+            }
+        } else {
+            if (otherItem != null) {
+                mNavigationView.getMenu().removeItem(R.id.settings_view_other);
+            }
+        }
+    }
+
+    @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();

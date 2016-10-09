@@ -24,6 +24,8 @@ import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 
+import java.io.File;
+
 /**
  * Author: Yuri.zheng<br>
  * Date: 8/21/16<br>
@@ -99,6 +101,7 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("*/*");
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setDataAndType(Uri.fromFile(new File(mPresenter.getRecordRootPath())), "*/*");
                 try {
                     startActivityForResult(Intent.createChooser(intent, getString(R.string.settings_import_file_title)), FILE_CHOOSE_CODE);
                 } catch (android.content.ActivityNotFoundException ex) {
@@ -116,9 +119,8 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == FILE_CHOOSE_CODE && resultCode == Activity.RESULT_OK) {
-            Uri uri = data.getData();
-            chooseFile(uri.toString());
+        if (requestCode == FILE_CHOOSE_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            chooseFile(data.getData());
         }
     }
 
@@ -229,8 +231,13 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
         builder.create().show();
     }
 
-    private void chooseFile(String path) {
-        ZYJUtils.logD(getClass(), "Path: " + path);
+    private void chooseFile(Uri url) {
+        if (url == null) {
+            Toast.makeText(this, "Lllegal path", Toast.LENGTH_LONG).show();
+            return;
+        }
+        mPresenter.restoryDirectoryPath(url);
+        mPresenter.importFile(url);
     }
 
     @Override
@@ -260,13 +267,26 @@ public class SettingActivity extends BaseActivity implements ISettingContract.Vi
 
     @Override
     public void snackBar(int message, int actionRes, boolean isLong, View.OnClickListener listener) {
-        snackBar(getString(message), getString(actionRes), isLong, listener);
+        String messageStr = "";
+        String actionStr = "";
+        if (message > 0) {
+            messageStr = getString(message);
+        }
+        if (actionRes > 0) {
+            actionStr = getString(actionRes);
+        }
+        snackBar(messageStr, actionStr, isLong, listener);
     }
 
     @Override
     public void snackBar(String message, String actionRes, boolean isLong, View.OnClickListener listener) {
         Snackbar.make(mRootView, message, isLong ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG)
                 .setAction(actionRes, listener).show();
+    }
+
+    @Override
+    public void dismissSnackBar(int message, int actionRes) {
+        Snackbar.make(mRootView, message, Snackbar.LENGTH_LONG).dismiss();
     }
 
     @Override

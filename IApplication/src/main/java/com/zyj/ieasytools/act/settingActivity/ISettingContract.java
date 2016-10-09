@@ -1,6 +1,7 @@
 package com.zyj.ieasytools.act.settingActivity;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.zyj.ieasytools.act.IBasePresenter;
 import com.zyj.ieasytools.act.IBaseView;
@@ -24,6 +25,8 @@ public interface ISettingContract {
 
         void snackBar(String message, String actionRes, boolean isLong, android.view.View.OnClickListener listener);
 
+        void dismissSnackBar(int message, int actionRes);
+
         void closeApp();
 
     }
@@ -35,14 +38,14 @@ public interface ISettingContract {
         void setTimeOut(long time);
 
         /**
-         * Export our database file
+         * Export our database file to Android/data/com.zyj.ieasytools/files
          */
         void exportFile();
 
         /**
          * Import other database file to application dir
          */
-        void importFile();
+        void importFile(Uri sourcePath);
 
         /**
          * Get the directory, if has hostory then return path of last time
@@ -52,7 +55,7 @@ public interface ISettingContract {
         /**
          * Save the path
          */
-        void restoryDirectoryPath(String path);
+        void restoryDirectoryPath(Uri path);
 
     }
 

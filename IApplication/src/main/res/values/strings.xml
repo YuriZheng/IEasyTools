@@ -12,8 +12,15 @@
     <string name="settings_view_other">Other Database</string>
     <string name="settings_password_time_out">Setting password expiration</string>
     <string name="settings_import_other_file">Import other database</string>
+    <string name="settings_import_title">Import</string>
     <string name="settings_import_file_title">Choose a file</string>
     <string name="settings_import_no_manager">Please install the file manager</string>
+    <string name="settings_import_path_error">Path error</string>
+    <string name="settings_import_file_error">File read error</string>
+    <string name="settings_import_database_path_error">Database path is wrong</string>
+    <string name="settings_import_error_suffix">File format error</string>
+    <string name="settings_import_already">%1$s already import!</string>
+    <string name="settings_import_success">Import success</string>
     <string name="settings_export_other_file">Export the database to local</string>
     <string name="settings_export_title">Export</string>
     <string name="settings_export_exists">Database file is not exists, Please reboot application!</string>

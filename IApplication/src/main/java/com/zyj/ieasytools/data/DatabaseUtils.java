@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.zyj.ieasytools.library.db.ZYJDatabaseEncrypts;
 import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
+import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 
 import java.io.File;
@@ -57,6 +58,13 @@ public final class DatabaseUtils {
      */
     public static ZYJDatabaseEncrypts getEncryptDatabaseFromPath(Context context, String path, String password) {
         return ZYJDatabaseUtils.getEncryptDatabaseFromPath(context, path, password);
+    }
+
+    /**
+     * {@link ZYJDatabaseUtils#getSettingsEncrypt(Context)}
+     */
+    public static BaseEncrypt getDefaultEncryptEntry(Context c) {
+        return ZYJDatabaseUtils.getSettingsEncrypt(c.getApplicationContext());
     }
 
 }
