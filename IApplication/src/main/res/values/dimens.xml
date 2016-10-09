@@ -10,6 +10,9 @@
 
     <dimen name="main_view_round_padd">16dp</dimen>
 
+    <dimen name="file_manager_item_left_right">16dp</dimen>
+    <dimen name="file_manager_item_top_bottom">18dp</dimen>
+
     <dimen name="main_view_title_size">20sp</dimen>
     <dimen name="main_view_user_size">17sp</dimen>
     <dimen name="main_view_description_size">15sp</dimen>

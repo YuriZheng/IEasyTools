@@ -157,11 +157,8 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
         mFab = getViewById(R.id.fab);
 
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSnackbarToast();
-            }
+        mFab.setOnClickListener((v) -> {
+            showSnackbarToast();
         });
 
         initContentViews();

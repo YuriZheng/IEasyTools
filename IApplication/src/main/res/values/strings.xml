@@ -33,7 +33,7 @@
     <string name="settings_password_time_warn">Safety warning</string>
 
     <string name="file_manager_title">File Manager</string>
-    <string name="file_manager_can_not_read">File path can't read!</string>
+    <string name="file_manager_can_not_read">File path can\&apos;t read!</string>
 
     <string name="verify_enterpassword_input">Key Input</string>
     <string name="verify_enterpassword_ios">Verify Number</string>
