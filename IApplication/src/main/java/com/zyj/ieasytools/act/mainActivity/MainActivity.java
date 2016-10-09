@@ -50,6 +50,7 @@ import com.zyj.ieasytools.act.mainActivity.childViews.walletView.WalletView;
 import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebView;
 import com.zyj.ieasytools.act.myServer.MyServer;
+import com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity;
 import com.zyj.ieasytools.act.seachActivity.SeachActivity;
 import com.zyj.ieasytools.act.settingActivity.SettingActivity;
 import com.zyj.ieasytools.data.SettingsConstant;
@@ -64,6 +65,8 @@ import com.zyj.ieasytools.library.views.MenuRevealView;
  * Email: 497393102@qq.com<br>
  */
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener, IMainContract.View {
+
+    private final int REQUEST_OTHER_DB_CODE = 100;
 
     /**
      * The content main layout
@@ -255,6 +258,11 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mMenuAdd.setEnabled(enable);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     /**
      * Init the child view and add the default view
      */
@@ -412,25 +420,24 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         @Override
         public boolean onNavigationItemSelected(final MenuItem item) {
             hideSildeDrawer();
-            mHandler.postDelayed(new Runnable() {
-                public void run() {
-                    switch (item.getItemId()) {
-                        case R.id.settings_settings:
-                            startActivity(new Intent(getApplicationContext(), SettingActivity.class));
-                            break;
-                        case R.id.settings_view_other:
-                            // TODO: 2016/8/19
-                            break;
-                        case R.id.settings_feedback:
-                            startActivity(new Intent(getApplicationContext(), FeedbackActivity.class));
-                            break;
-                        case R.id.settings_about:
-                            startActivity(new Intent(getApplicationContext(), AboutActivity.class));
-                            break;
-                        case R.id.settings_help:
-                            startActivity(new Intent(getApplicationContext(), HelpActivity.class));
-                            break;
-                    }
+            mHandler.postDelayed(() -> {
+                switch (item.getItemId()) {
+                    case R.id.settings_settings:
+                        startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                        break;
+                    case R.id.settings_view_other:
+                        Intent intent = new Intent(getApplicationContext(), OtherDBActivity.class);
+                        startActivityForResult(intent, REQUEST_OTHER_DB_CODE);
+                        break;
+                    case R.id.settings_feedback:
+                        startActivity(new Intent(getApplicationContext(), FeedbackActivity.class));
+                        break;
+                    case R.id.settings_about:
+                        startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+                        break;
+                    case R.id.settings_help:
+                        startActivity(new Intent(getApplicationContext(), HelpActivity.class));
+                        break;
                 }
             }, 300);
             return true;
