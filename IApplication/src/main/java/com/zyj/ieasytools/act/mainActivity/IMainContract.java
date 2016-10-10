@@ -36,7 +36,7 @@ public interface IMainContract {
 
         void destory();
 
-        boolean switchDatabase(final String name, final String path);
+        String getCurrentDatabaseName();
 
     }
 

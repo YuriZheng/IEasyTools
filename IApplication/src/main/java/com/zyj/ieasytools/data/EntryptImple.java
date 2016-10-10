@@ -17,6 +17,9 @@ public final class EntryptImple implements IEntrypt {
 
     private ZYJDatabaseEncrypts mZYJEncrypts;
 
+    /**
+     * The key of database, if is null, mean our db
+     */
     private String mRecordkey;
 
     /**

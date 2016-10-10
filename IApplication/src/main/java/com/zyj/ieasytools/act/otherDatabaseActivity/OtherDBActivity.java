@@ -32,9 +32,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.zyj.ieasytools.act.mainActivity.MainActivity.ACTION_SWITCH_BROADCAST;
-import static com.zyj.ieasytools.act.mainActivity.MainActivity.ACTION_SWITCH_NAME;
-import static com.zyj.ieasytools.act.mainActivity.MainActivity.ACTION_SWITCH_PATH;
+import static com.zyj.ieasytools.act.mainActivity.MainPresenter.BROADCAST_SWITCH_DATABASE;
+import static com.zyj.ieasytools.act.mainActivity.MainPresenter.BROADCAST_SWITCH_DATABASE_NAME;
+import static com.zyj.ieasytools.act.mainActivity.MainPresenter.BROADCAST_SWITCH_DATABASE_PATH;
+import static com.zyj.ieasytools.act.mainActivity.MainPresenter.BROADCAST_SWITCH_DATABASE_PD;
 import static com.zyj.ieasytools.library.db.DatabaseColumns.DATABASE_FILE_SUFFIX;
 
 /**
@@ -120,9 +121,11 @@ public class OtherDBActivity extends BaseActivity implements IOtherDBContract.Vi
         mProgressBar.setMessage(getString(R.string.other_db_dialog_switching));
         mProgressBar.show();
 
-        Intent intent = new Intent(ACTION_SWITCH_BROADCAST);
-        intent.putExtra(ACTION_SWITCH_PATH, path);
-        intent.putExtra(ACTION_SWITCH_NAME, name);
+        Intent intent = new Intent(BROADCAST_SWITCH_DATABASE);
+        intent.putExtra(BROADCAST_SWITCH_DATABASE_PATH, path);
+        intent.putExtra(BROADCAST_SWITCH_DATABASE_NAME, name);
+        // TODO: 10/10/2016 需要密码的 
+        intent.putExtra(BROADCAST_SWITCH_DATABASE_PD, "");
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

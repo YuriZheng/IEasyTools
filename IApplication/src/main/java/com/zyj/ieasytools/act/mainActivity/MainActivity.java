@@ -4,11 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -18,11 +16,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +28,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zyj.ieasytools.BuildConfig;
 import com.zyj.ieasytools.R;
@@ -64,20 +59,12 @@ import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
 
-import java.io.File;
-
-import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.CLOASE_DIALOG;
-
 /**
  * Author: Yuri.zheng<br>
  * Date: 8/21/16<br>
  * Email: 497393102@qq.com<br>
  */
 public class MainActivity extends BaseActivity implements DrawerLayout.DrawerListener, IMainContract.View {
-
-    public static final String ACTION_SWITCH_BROADCAST = "_s_db";
-    public static final String ACTION_SWITCH_PATH = "_s_path";
-    public static final String ACTION_SWITCH_NAME = "_s_name";
 
     private final int REQUEST_OTHER_DB_CODE = 100;
 
@@ -124,19 +111,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-        }
-    };
-
-    private BroadcastReceiver mSwitchDatabaseBroadcast = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            new Thread(() -> {
-                try {
-                    Thread.sleep(1000);
-                    switchDatabase(intent.getStringExtra(ACTION_SWITCH_NAME), intent.getStringExtra(ACTION_SWITCH_PATH));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
         }
     };
 
@@ -200,7 +174,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             mDebug.setVisibility(View.VISIBLE);
         }
         new MainPresenter(this);
-        LocalBroadcastManager.getInstance(this).registerReceiver(mSwitchDatabaseBroadcast, new IntentFilter(ACTION_SWITCH_BROADCAST));
 
         if (!mPresenter.hasOtherDatabase()) {
             mNavigationView.getMenu().removeItem(R.id.settings_view_other);
@@ -265,7 +238,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mGroupOtherView.destory();
 
         unbindService(mConnection);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mSwitchDatabaseBroadcast);
     }
 
     @Override
@@ -291,18 +263,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void switchDatabase(final String name, final String path) {
-        if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(path) && new File(path).canRead()) {
-            ZYJUtils.logD(getClass(), "-----Name：" + name);
-            ZYJUtils.logD(getClass(), "-----Path：" + path);
-            mPresenter.switchDatabase(name, path);
-        } else {
-            Toast.makeText(this, "Error name: " + name + "\nError path: " + path, Toast.LENGTH_LONG).show();
-        }
-        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(CLOASE_DIALOG));
-    }
-
-
     /**
      * Init the child view and add the default view
      */
@@ -321,11 +281,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
                 new GamePresenter(mGroupGameView);
                 mGroupOtherView = new OtherView(MainActivity.this);
                 new OtherPresenter(mGroupOtherView);
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        addSwitchView(null, mGroupWebView);
-                        actionProgressBar(false);
-                    }
+                mHandler.post(() -> {
+                    addSwitchView(null, mGroupWebView);
+                    actionProgressBar(false);
                 });
             }
         }.start();
