@@ -26,6 +26,13 @@ public final class DatabaseUtils {
     }
 
     /**
+     * {@link ZYJDatabaseUtils#getEncryptDatabaseFromPath(Context, String, String)}
+     */
+    public static ZYJDatabaseEncrypts getEncryptDatabaseFromPath(Context context, String path, String password) {
+        return ZYJDatabaseUtils.getEncryptDatabaseFromPath(context, path, password);
+    }
+
+    /**
      * {@link ZYJDatabaseUtils#getSettingsInstance(Context)}
      */
     public static ZYJDatabaseSettings getSettingsInstance(Context c) {
@@ -51,13 +58,6 @@ public final class DatabaseUtils {
      */
     public static void destoryDatabases(String key) {
         ZYJDatabaseUtils.destoryDatabases(key);
-    }
-
-    /**
-     * {@link ZYJDatabaseUtils#getEncryptDatabaseFromPath(Context, String, String)}
-     */
-    public static ZYJDatabaseEncrypts getEncryptDatabaseFromPath(Context context, String path, String password) {
-        return ZYJDatabaseUtils.getEncryptDatabaseFromPath(context, path, password);
     }
 
     /**

@@ -1,5 +1,11 @@
 package com.zyj.ieasytools.act.otherDatabaseActivity;
 
+import android.content.Context;
+
+import com.zyj.ieasytools.data.DatabaseUtils;
+
+import java.util.List;
+
 /**
  * Author: Yuri.zheng<br>
  * Date: 09/10/2016<br>
@@ -12,5 +18,11 @@ public class OtherDBPresenter implements IOtherDBContract.Presenter {
 
     public OtherDBPresenter(IOtherDBContract.View view) {
         this.mView = view;
+        mView.setPresenter(this);
+    }
+
+    @Override
+    public List<String> getDatabasePathsBesidesCurrent(Context context) {
+        return DatabaseUtils.getDatabasePathsBesidesCurrent(context);
     }
 }

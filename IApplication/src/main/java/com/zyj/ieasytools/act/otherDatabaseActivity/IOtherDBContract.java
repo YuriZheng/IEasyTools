@@ -1,7 +1,11 @@
 package com.zyj.ieasytools.act.otherDatabaseActivity;
 
+import android.content.Context;
+
 import com.zyj.ieasytools.act.IBasePresenter;
 import com.zyj.ieasytools.act.IBaseView;
+
+import java.util.List;
 
 /**
  * Author: Yuri.zheng<br>
@@ -18,6 +22,7 @@ public interface IOtherDBContract {
 
     interface Presenter extends IBasePresenter {
 
+        List<String> getDatabasePathsBesidesCurrent(Context context);
 
     }
 

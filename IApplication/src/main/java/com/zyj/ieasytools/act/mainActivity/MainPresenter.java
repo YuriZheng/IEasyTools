@@ -66,6 +66,12 @@ public class MainPresenter implements IMainContract.Presenter {
     }
 
     @Override
+    public boolean switchDatabase(String name, String path) {
+
+        return true;
+    }
+
+    @Override
     public boolean isOurDatabase() {
         return isOurDatabase;
     }

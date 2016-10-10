@@ -9,4 +9,7 @@
     <item name="group_game_id" type="id"/>
     <item name="group_other_id" type="id"/>
 
+    <item name="other_list_item_name_tag" type="id"/>
+    <item name="other_list_item_path_tag" type="id"/>
+
 </resources>

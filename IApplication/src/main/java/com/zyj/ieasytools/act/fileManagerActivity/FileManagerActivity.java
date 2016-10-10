@@ -63,7 +63,7 @@ public class FileManagerActivity extends BaseActivity implements IFileContract.V
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.file_manager_layout);
+        setContentView(R.layout.activity_file_manager_layout);
         new FilePresenter(this);
         mHandler = new Handler(getMainLooper());
 
@@ -168,12 +168,9 @@ public class FileManagerActivity extends BaseActivity implements IFileContract.V
         @Override
         public void onBindViewHolder(VHolder holder, int position) {
             String path = datas.get(position);
-            String fileName = path;
-            if (path.contains("/")) {
-                fileName = path.substring(path.lastIndexOf("/") + 1, path.length());
-            }
+            File file = new File(path);
             holder.text.setTag(path);
-            holder.text.setText(fileName);
+            holder.text.setText(file.getName());
         }
 
         @Override

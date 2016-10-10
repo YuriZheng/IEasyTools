@@ -40,6 +40,11 @@
     <string name="settings_password_time_never">任何时间段进入应用都不再需要验证身份</string>
     <string name="settings_password_time_warn">安全警告</string>
 
+    <string name="other_db_title">其它数据库</string>
+    <string name="other_db_dialog_switch">切换</string>
+    <string name="other_db_dialog_switching">正在切换到其它数据库</string>
+    <string name="other_db_dialog_message">确认切换到其它数据库？</string>
+
     <string name="file_manager_title">文件管理</string>
     <string name="file_manager_can_not_read">文件路径不可读！</string>
 
