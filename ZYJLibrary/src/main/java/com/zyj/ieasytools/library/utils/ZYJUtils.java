@@ -23,7 +23,7 @@ public final class ZYJUtils {
     /**
      * To see the database's data
      */
-    public static final boolean isPasswordDebug = true;
+    public static final boolean isPasswordDebug = false;
 
     /**
      * Logcat debug

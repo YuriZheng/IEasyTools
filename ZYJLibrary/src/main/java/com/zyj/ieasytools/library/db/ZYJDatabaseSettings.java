@@ -294,7 +294,6 @@ public class ZYJDatabaseSettings extends BaseDatabase {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ZYJUtils.logD(TAG, "Settings destory");
     }
 
     @Override

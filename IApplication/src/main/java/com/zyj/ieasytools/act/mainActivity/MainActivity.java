@@ -293,9 +293,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     @Override
     protected void verifyEnterPasswordSuccess() {
         super.verifyEnterPasswordSuccess();
-        if (mCurrentView != null) {
-            mCurrentView.verifyEnterPasswordSuccess();
-        }
     }
 
     @Override

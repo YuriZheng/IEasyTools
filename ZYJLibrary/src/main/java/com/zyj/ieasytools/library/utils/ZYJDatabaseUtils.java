@@ -189,7 +189,22 @@ public final class ZYJDatabaseUtils {
             e.onDestroy();
             e = null;
         }
-        ZYJUtils.logD(ZYJDatabaseUtils.class, "Destory ZYJDatabaseUtils instance");
+    }
+
+    /**
+     * Make sure all database instance had destory, Only call once in this application onDestory() method
+     */
+    public static void destoryAllDatabase() {
+        if (sEncryptMap != null && sEncryptMap.size() > 0) {
+            for (String path : sEncryptMap.keySet()) {
+                ZYJDatabaseEncrypts e = sEncryptMap.remove(path);
+                if (e != null && !e.isDestory()) {
+                    e.onDestroy();
+                    e = null;
+                }
+            }
+            sEncryptMap.clear();
+        }
     }
 
     /**

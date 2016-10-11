@@ -16,6 +16,7 @@ import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.CLOAS
 import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT;
 import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_NULL;
 import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_RECOPY;
+import static com.zyj.ieasytools.library.utils.ZYJDatabaseUtils.destoryAllDatabase;
 
 /**
  * Created by ZYJ on 8/18/16.
@@ -120,6 +121,9 @@ public class MainPresenter implements IMainContract.Presenter {
 
     @Override
     public void destory() {
+
+        destoryAllDatabase();
+
         LocalBroadcastManager.getInstance(mView.getContext()).unregisterReceiver(mSwitchDatabaseReceiver);
     }
 }

@@ -98,6 +98,7 @@ public abstract class BaseDatabase {
                 mSQLDatabase.getSQLDatabase().close();
             }
         }
+        ZYJUtils.logD(getClass(), toString() + " destory database");
         mSQLDatabase = null;
     }
 

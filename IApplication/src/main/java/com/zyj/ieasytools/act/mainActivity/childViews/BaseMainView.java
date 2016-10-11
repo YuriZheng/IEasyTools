@@ -98,13 +98,6 @@ public abstract class BaseMainView<P extends IViewsPresenter> {
     }
 
     /**
-     * In the main activity called
-     */
-    public void verifyEnterPasswordSuccess() {
-        mPresenter.requestEntryByCategory(mCategory);
-    }
-
-    /**
      * {@link IViewsView#onReload()}
      */
     public void onReload() {
