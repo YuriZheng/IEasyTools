@@ -15,5 +15,6 @@ public class AppView extends BaseMainView<IAppContract.Presenter> implements IAp
     public AppView(MainActivity context) {
         super(context, R.layout.group_app_layout);
         mCategory = PasswordEntry.CATEGORY_APP;
+        new AppPresenter(this);
     }
 }

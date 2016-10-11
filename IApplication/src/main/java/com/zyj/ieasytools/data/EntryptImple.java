@@ -3,6 +3,7 @@ package com.zyj.ieasytools.data;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.zyj.ieasytools.library.db.BaseDatabase;
 import com.zyj.ieasytools.library.db.ZYJDatabaseEncrypts;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 
@@ -44,6 +45,11 @@ public final class EntryptImple implements IEntrypt {
     }
 
     @Override
+    public String getDatabaseName() {
+        return mZYJEncrypts != null ? mZYJEncrypts.getCurrentDatabase() : null;
+    }
+
+    @Override
     public void setEncryptListener(ZYJDatabaseEncrypts.EncryptListener l) {
         if (mZYJEncrypts != null) {
             mZYJEncrypts.setEncryptListener(l);
@@ -68,6 +74,10 @@ public final class EntryptImple implements IEntrypt {
     @Override
     public boolean validDatabase() {
         return mZYJEncrypts != null ? mZYJEncrypts.validDatabase() : false;
+    }
+
+    public BaseDatabase.DATABASE_OPEN_STATE getDatabaseState() {
+        return mZYJEncrypts != null ? mZYJEncrypts.getDatabaseState() : null;
     }
 
     @Override

@@ -47,6 +47,17 @@ public final class DatabaseUtils {
     }
 
     /**
+     * Get current database path, if the database file is null, then return null
+     */
+    public static String getCurrentDatabaseName(Context context) {
+        File file = getCurrentDatabasePath(context, false);
+        if (file != null) {
+            return file.getAbsolutePath();
+        }
+        return null;
+    }
+
+    /**
      * {@link ZYJDatabaseUtils#getDatabasePathsBesidesCurrent(Context)}
      */
     public static List<String> getDatabasePathsBesidesCurrent(Context context) {

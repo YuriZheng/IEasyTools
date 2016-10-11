@@ -18,11 +18,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.zyj.ieasytools.library.db.DatabaseColumns.EncryptColumns.DATABASE_NAME;
+
 /**
  * Author: Yuri.zheng<br>
  * Date: 8/21/16<br>
  * Email: 497393102@qq.com<br>
- *
+ * <p>
  * <h5>principle: <h5/>
  * Data storage after encrypted <br>
  * Read data after decrypted <br><br>
@@ -41,7 +43,8 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
 
     private final int VERSION = 1;
 
-    private boolean isCurrentDatabase = false;
+    //    private boolean isCurrentDatabase = false;
+    private String mDatabaseName;
     private boolean isDestory = false;
 
     private EncryptListener mListener;
@@ -67,7 +70,6 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
      * @see ZYJDatabaseUtils#getEncryptDatabaseFromPath(Context, String, String)
      */
     private MySQLiteDatabase openDatabase(String path, String password) {
-        isCurrentDatabase = false;
         return getSQLiteDatabase(path, password);
     }
 
@@ -87,10 +89,10 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
             my = openDatabase(null, null);
         } else {
             String path = file.getAbsolutePath();
+            mDatabaseName = file.getName();
             ZYJUtils.logD(TAG, "Path: " + path);
             my = openDatabase(path, password);
         }
-        isCurrentDatabase = true;
         return my;
     }
 
@@ -115,7 +117,14 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
      * @return true if open ourself,other return false
      */
     public boolean isCurrentDatabase() {
-        return isCurrentDatabase;
+        return mDatabaseName != null ? mDatabaseName.equals(DATABASE_NAME) : false;
+    }
+
+    /**
+     * Get our database name, if the file is not exists then return null
+     */
+    public String getCurrentDatabase() {
+        return mDatabaseName;
     }
 
     /**
@@ -148,7 +157,7 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
      * {@link SQLiteDatabase#insert(String, String, ContentValues)}
      */
     public long insertEntry(PasswordEntry entry, String password) {
-        if (!isCurrentDatabase) {
+        if (!isCurrentDatabase()) {
             return ERROR_READ_ONLY;
         }
         if (!checkDatabaseValid()) {
@@ -175,7 +184,7 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
      * @return if the password is wrong,then return {@link #ERROR_PASSWORD}, other return {@link SQLiteDatabase#delete(String, String, String[])}
      */
     public int deleteEntry(PasswordEntry entry, String password) {
-        if (!isCurrentDatabase) {
+        if (!isCurrentDatabase()) {
             return ERROR_READ_ONLY;
         }
         if (!checkDatabaseValid()) {
@@ -201,7 +210,7 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
      * @return if the password is wrong,then return {@link #ERROR_PASSWORD}, other return {@link SQLiteDatabase#update(String, ContentValues, String, String[])}
      */
     public long updateEntry(PasswordEntry entry, String password) {
-        if (!isCurrentDatabase) {
+        if (!isCurrentDatabase()) {
             return ERROR_READ_ONLY;
         }
         if (!checkDatabaseValid()) {

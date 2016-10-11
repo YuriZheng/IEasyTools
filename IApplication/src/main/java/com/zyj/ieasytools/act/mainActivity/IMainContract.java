@@ -16,11 +16,17 @@ public interface IMainContract {
 
         void actionProgressBar(boolean show);
 
-        void showSnackbarToast();
-
         void enableAddButton(boolean enable);
 
         Context getContext();
+
+        String getCurrentDatabaseName();
+
+        int onSwitchDatabase(final String name, final String path, final String password);
+
+        void snackBar(int message, int actionRes, boolean isLong, android.view.View.OnClickListener listener);
+
+        void dismissSnackBar(int message, int actionRes);
 
     }
 
@@ -35,8 +41,6 @@ public interface IMainContract {
         boolean isOurDatabase();
 
         void destory();
-
-        String getCurrentDatabaseName();
 
     }
 

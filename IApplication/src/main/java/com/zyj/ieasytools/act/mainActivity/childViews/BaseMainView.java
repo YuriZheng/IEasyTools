@@ -46,6 +46,10 @@ public abstract class BaseMainView<P extends IViewsPresenter> {
         mRecyclerView.setAdapter(mAdapter = new DataAdapter());
     }
 
+    public String getDatabaseName() {
+        return mPresenter.getDatabaseName();
+    }
+
     /**
      * {@link IViewsView#getView()}
      */
@@ -99,6 +103,13 @@ public abstract class BaseMainView<P extends IViewsPresenter> {
      */
     public void onReload() {
         mPresenter.requestEntryByCategory(mCategory);
+    }
+
+    /**
+     * {@link IViewsView#onSwitchDatabase(String, String, String)}
+     */
+    public int onSwitchDatabase(final String name, final String path, final String password) {
+        return mPresenter.onSwitchDatabase(name, path, password);
     }
 
 

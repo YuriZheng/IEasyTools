@@ -43,7 +43,10 @@
     <string name="other_db_title">其它数据库</string>
     <string name="other_db_dialog_switch">切换</string>
     <string name="other_db_dialog_switching">正在切换到其它数据库</string>
+    <string name="other_db_null_error">路径或者名称为空</string>
+    <string name="other_db_switch_same_db">当前数据库已经为选择的数据库，无法切换</string>
     <string name="other_db_dialog_message">确认切换到其它数据库？</string>
+    <string name="other_db_switch_success">切换成功</string>
 
     <string name="file_manager_title">文件管理</string>
     <string name="file_manager_can_not_read">文件路径不可读！</string>

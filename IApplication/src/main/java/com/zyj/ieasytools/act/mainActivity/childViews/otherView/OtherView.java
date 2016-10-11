@@ -15,5 +15,6 @@ public class OtherView extends BaseMainView<IOtherContract.Presenter> implements
     public OtherView(MainActivity context) {
         super(context, R.layout.group_other_layout);
         mCategory = PasswordEntry.CATEGORY_OTHER;
+        new OtherPresenter(this);
     }
 }

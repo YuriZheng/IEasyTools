@@ -5,12 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 
 import com.zyj.ieasytools.act.mainActivity.childViews.BaseMainPresenter;
 import com.zyj.ieasytools.data.DatabaseUtils;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 
 import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.CLOASE_DIALOG;
+import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT;
+import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_NULL;
+import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_RECOPY;
 
 /**
  * Created by ZYJ on 8/18/16.
@@ -49,8 +53,6 @@ public class MainPresenter implements IMainContract.Presenter {
 
     private boolean isOurDatabase = true;
 
-    private String mCurrentDatabaseName;
-
     /**
      * Switch database borodcast
      */
@@ -60,25 +62,41 @@ public class MainPresenter implements IMainContract.Presenter {
             String path = intent.getStringExtra(BROADCAST_SWITCH_DATABASE_PATH);
             String name = intent.getStringExtra(BROADCAST_SWITCH_DATABASE_NAME);
             String password = intent.getStringExtra(BROADCAST_SWITCH_DATABASE_PD);
-            switchDatabase(name, path, password);
+            new Thread(() -> {
+                switchDatabase(name, path, password);
+            }).start();
         }
     };
 
     public MainPresenter(IMainContract.View view) {
         this.mView = view;
         mView.setPresenter(this);
-        mView.getContext().registerReceiver(mSwitchDatabaseReceiver, new IntentFilter(BROADCAST_SWITCH_DATABASE));
+        LocalBroadcastManager.getInstance(mView.getContext()).registerReceiver(mSwitchDatabaseReceiver, new IntentFilter(BROADCAST_SWITCH_DATABASE));
     }
 
     private void switchDatabase(final String name, final String path, final String password) {
-        // TODO: 10/10/2016 在这里进行数据库的切换 
-//        if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(path) && new File(path).canRead()) {
-//            ZYJUtils.logD(getClass(), "-----Name：" + name);
-//            ZYJUtils.logD(getClass(), "-----Path：" + path);
-//        } else {
-//            Toast.makeText(this, "Error name: " + name + "\nError path: " + path, Toast.LENGTH_LONG).show();
-//        }
-        LocalBroadcastManager.getInstance(mView.getContext()).sendBroadcast(new Intent(CLOASE_DIALOG));
+        Intent intent = new Intent(CLOASE_DIALOG);
+        if (isEmpty(name, path, password)) {
+            intent.putExtra(SWITCH_RESULT, SWITCH_RESULT_NULL);
+            LocalBroadcastManager.getInstance(mView.getContext()).sendBroadcast(intent);
+            return;
+        }
+        String current = mView.getCurrentDatabaseName();
+        if (!TextUtils.isEmpty(current) && current.equals(name)) {
+            intent.putExtra(SWITCH_RESULT, SWITCH_RESULT_RECOPY);
+            LocalBroadcastManager.getInstance(mView.getContext()).sendBroadcast(intent);
+        } else {
+            intent.putExtra(SWITCH_RESULT, mView.onSwitchDatabase(name, path, password));
+            LocalBroadcastManager.getInstance(mView.getContext()).sendBroadcast(intent);
+        }
+    }
+
+    private boolean isEmpty(String... args) {
+        boolean empty = false;
+        for (String string : args) {
+            empty = (empty || TextUtils.isEmpty(string));
+        }
+        return empty;
     }
 
     @Override
@@ -103,11 +121,6 @@ public class MainPresenter implements IMainContract.Presenter {
 
     @Override
     public void destory() {
-        mView.getContext().unregisterReceiver(mSwitchDatabaseReceiver);
-    }
-
-    @Override
-    public String getCurrentDatabaseName() {
-        return "";
+        LocalBroadcastManager.getInstance(mView.getContext()).unregisterReceiver(mSwitchDatabaseReceiver);
     }
 }

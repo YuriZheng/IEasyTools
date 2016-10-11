@@ -25,4 +25,9 @@ public class OtherDBPresenter implements IOtherDBContract.Presenter {
     public List<String> getDatabasePathsBesidesCurrent(Context context) {
         return DatabaseUtils.getDatabasePathsBesidesCurrent(context);
     }
+
+    @Override
+    public String getOurDatabasePath(Context context) {
+        return DatabaseUtils.getCurrentDatabaseName(context);
+    }
 }

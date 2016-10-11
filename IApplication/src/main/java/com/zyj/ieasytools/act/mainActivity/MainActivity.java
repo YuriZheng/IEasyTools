@@ -19,6 +19,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,17 +38,11 @@ import com.zyj.ieasytools.act.addActivity.AddEntryActivity;
 import com.zyj.ieasytools.act.feedbackActivity.FeedbackActivity;
 import com.zyj.ieasytools.act.helpActivity.HelpActivity;
 import com.zyj.ieasytools.act.mainActivity.childViews.BaseMainView;
-import com.zyj.ieasytools.act.mainActivity.childViews.appView.AppPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.appView.AppView;
-import com.zyj.ieasytools.act.mainActivity.childViews.emailView.EmailPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.emailView.EmailView;
-import com.zyj.ieasytools.act.mainActivity.childViews.gameView.GamePresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.gameView.GameView;
-import com.zyj.ieasytools.act.mainActivity.childViews.otherView.OtherPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.otherView.OtherView;
-import com.zyj.ieasytools.act.mainActivity.childViews.walletView.WalletPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.walletView.WalletView;
-import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebPresenter;
 import com.zyj.ieasytools.act.mainActivity.childViews.webView.WebView;
 import com.zyj.ieasytools.act.myServer.MyServer;
 import com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity;
@@ -58,6 +53,8 @@ import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.MenuRevealView;
+
+import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_SUCCESS;
 
 /**
  * Author: Yuri.zheng<br>
@@ -141,7 +138,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mMainViewLayout = getViewById(R.id.main_view_layout);
         mDrawerLayout = getViewById(R.id.drawer_layout);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_toggle_text, R.string.drawer_toggle_text);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.blank_text, R.string.blank_text);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.addDrawerListener(this);
 
@@ -161,7 +158,7 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         mFab = getViewById(R.id.fab);
 
         mFab.setOnClickListener((v) -> {
-            showSnackbarToast();
+            // TODO: 2016/10/11 分享按钮
         });
 
         initContentViews();
@@ -186,6 +183,49 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
     @Override
+    public String getCurrentDatabaseName() {
+        if (mGroupWebView == null || mGroupEmailView == null
+                || mGroupWalletView == null || mGroupAppView == null
+                || mGroupGameView == null || mGroupOtherView == null) {
+            throw new RuntimeException("The view instance is null");
+        }
+        String name = mGroupWebView.getDatabaseName();
+        if (TextUtils.isEmpty(name)) {
+            ZYJUtils.logW(getClass(), "Get current database name is null");
+            return "";
+        }
+        if (!mGroupEmailView.getDatabaseName().equals(name) || !mGroupWalletView.getDatabaseName().equals(name)
+                || !mGroupAppView.getDatabaseName().equals(name) || !mGroupGameView.getDatabaseName().equals(name)
+                || !mGroupOtherView.getDatabaseName().equals(name)) {
+            throw new RuntimeException("The view open the diffience database");
+        }
+        ZYJUtils.logD(getClass(), "Get current database name: " + name);
+        return name;
+    }
+
+    @Override
+    public int onSwitchDatabase(String name, String path, String password) {
+        int result = mGroupWebView.onSwitchDatabase(name, path, password);
+        result = result + mGroupEmailView.onSwitchDatabase(name, path, password);
+        result = result + mGroupWalletView.onSwitchDatabase(name, path, password);
+        result = result + mGroupAppView.onSwitchDatabase(name, path, password);
+        result = result + mGroupGameView.onSwitchDatabase(name, path, password);
+        result = result + mGroupOtherView.onSwitchDatabase(name, path, password);
+        // The results are averaged to obtain the final result
+        result = result / 6;
+        if (result == SWITCH_RESULT_SUCCESS) {
+            ZYJUtils.logD(getClass(), "Switch success then reload");
+            mGroupWebView.onReload();
+            mGroupEmailView.onReload();
+            mGroupWalletView.onReload();
+            mGroupAppView.onReload();
+            mGroupGameView.onReload();
+            mGroupOtherView.onReload();
+        }
+        return result;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         MenuItem otherItem = mNavigationView.getMenu().findItem(R.id.settings_view_other);
@@ -197,6 +237,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             if (otherItem != null) {
                 mNavigationView.getMenu().removeItem(R.id.settings_view_other);
             }
+        }
+        if (mCurrentView != null) {
+            mCurrentView.onReload();
         }
     }
 
@@ -270,17 +313,11 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         new Thread() {
             public void run() {
                 mGroupWebView = new WebView(MainActivity.this);
-                new WebPresenter(mGroupWebView);
                 mGroupEmailView = new EmailView(MainActivity.this);
-                new EmailPresenter(mGroupEmailView);
                 mGroupWalletView = new WalletView(MainActivity.this);
-                new WalletPresenter(mGroupWalletView);
                 mGroupAppView = new AppView(MainActivity.this);
-                new AppPresenter(mGroupAppView);
                 mGroupGameView = new GameView(MainActivity.this);
-                new GamePresenter(mGroupGameView);
                 mGroupOtherView = new OtherView(MainActivity.this);
-                new OtherPresenter(mGroupOtherView);
                 mHandler.post(() -> {
                     addSwitchView(null, mGroupWebView);
                     actionProgressBar(false);
@@ -546,9 +583,14 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     }
 
     @Override
-    public void showSnackbarToast() {
-        Snackbar.make(mFab, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+    public void snackBar(int message, int actionRes, boolean isLong, View.OnClickListener listener) {
+        Snackbar.make(mFab, message, isLong ? Snackbar.LENGTH_INDEFINITE : Snackbar.LENGTH_LONG)
+                .setAction(actionRes, listener).show();
+    }
+
+    @Override
+    public void dismissSnackBar(int message, int actionRes) {
+        Snackbar.make(mFab, message, Snackbar.LENGTH_LONG).dismiss();
     }
 
     @Override

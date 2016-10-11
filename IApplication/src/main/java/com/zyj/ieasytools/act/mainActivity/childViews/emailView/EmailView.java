@@ -15,5 +15,6 @@ public class EmailView extends BaseMainView<IEmailContract.Presenter> implements
     public EmailView(MainActivity context) {
         super(context, R.layout.group_email_layout);
         mCategory = PasswordEntry.CATEGORY_EMAIL;
+        new EmailPresenter(this);
     }
 }

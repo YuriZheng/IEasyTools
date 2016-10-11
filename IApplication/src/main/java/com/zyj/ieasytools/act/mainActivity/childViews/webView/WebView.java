@@ -15,5 +15,6 @@ public class WebView extends BaseMainView<IWebContract.Presenter> implements IWe
     public WebView(MainActivity context) {
         super(context, R.layout.group_web_layout);
         mCategory = PasswordEntry.CATEGORY_WEB;
+        new WebPresenter(this);
     }
 }

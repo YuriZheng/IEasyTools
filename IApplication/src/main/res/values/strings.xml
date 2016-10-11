@@ -41,8 +41,11 @@
 
     <string name="other_db_title">Other Database</string>
     <string name="other_db_dialog_switch">Switch</string>
-    <string name="other_db_dialog_switching">Switch to other database</string>
+    <string name="other_db_dialog_switching">Switching to other database</string>
+    <string name="other_db_null_error">Path or name is null</string>
+    <string name="other_db_switch_same_db">Current database already handle</string>
     <string name="other_db_dialog_message">Make sure to switch to another database?</string>
+    <string name="other_db_switch_success">Switch database success</string>
 
     <string name="file_manager_title">File Manager</string>
     <string name="file_manager_can_not_read">File path can\&apos;t read!</string>
@@ -119,6 +122,6 @@
     <string name="password_catrgory_other">Other</string>
 
     <!-- No translatable-->
-    <string name="drawer_toggle_text" translatable="false"></string>
+    <string name="blank_text" translatable="false"></string>
 
 </resources>

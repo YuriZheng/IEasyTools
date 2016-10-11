@@ -15,5 +15,6 @@ public class GameView extends BaseMainView<IGameContract.Presenter> implements I
     public GameView(MainActivity context) {
         super(context, R.layout.group_game_layout);
         mCategory = PasswordEntry.CATEGORY_GAME;
+        new GamePresenter(this);
     }
 }

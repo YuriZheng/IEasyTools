@@ -1,5 +1,6 @@
 package com.zyj.ieasytools.data;
 
+import com.zyj.ieasytools.library.db.BaseDatabase;
 import com.zyj.ieasytools.library.db.ZYJDatabaseEncrypts;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 
@@ -11,6 +12,11 @@ import java.util.List;
  * Email: 497393102@qq.com<br>
  */
 public interface IEntrypt extends IData {
+
+    /**
+     * Get our database name, if the file is not exists then return null
+     */
+    String getDatabaseName();
 
     /**
      * {@link ZYJDatabaseEncrypts#setEncryptListener(ZYJDatabaseEncrypts.EncryptListener)}
@@ -31,6 +37,11 @@ public interface IEntrypt extends IData {
      * {@link ZYJDatabaseEncrypts#validDatabase()}
      */
     boolean validDatabase();
+
+    /**
+     * {@link ZYJDatabaseEncrypts#getDatabaseState()}
+     */
+    BaseDatabase.DATABASE_OPEN_STATE getDatabaseState();
 
     /**
      * {@link ZYJDatabaseEncrypts#onDestroy()}

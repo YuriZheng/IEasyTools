@@ -1,8 +1,17 @@
 package com.zyj.ieasytools.act.mainActivity.childViews;
 
+import android.text.TextUtils;
+
 import com.zyj.ieasytools.data.EntryptImple;
 import com.zyj.ieasytools.data.IEntrypt;
+import com.zyj.ieasytools.library.db.BaseDatabase;
 import com.zyj.ieasytools.library.db.DatabaseColumns;
+
+import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_EXCEPTION;
+import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_NULL;
+import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_PASSWORD;
+import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_SUCCESS;
+import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_UNKNOW;
 
 /**
  * Author: Yuri.zheng<br>
@@ -16,8 +25,11 @@ public abstract class BaseMainPresenter<V extends IViewsView> {
 
     public BaseMainPresenter(V view) {
         mView = view;
-
         mEntrypt = new EntryptImple(mView.getContext());
+    }
+
+    public String getDatabaseName() {
+        return mEntrypt.getDatabaseName();
     }
 
     public void destory() {
@@ -36,5 +48,27 @@ public abstract class BaseMainPresenter<V extends IViewsView> {
                     DatabaseColumns.EncryptColumns._REMARKS
             }, DatabaseColumns.EncryptColumns._CATEGORY + "=?", new String[]{category}, null, null));
         }
+    }
+
+    /**
+     * {@link IViewsPresenter#onSwitchDatabase(String, String, String)}
+     */
+    public int onSwitchDatabase(final String name, final String path, final String password) {
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(path) || TextUtils.isEmpty(password)) {
+            return SWITCH_RESULT_NULL;
+        }
+        mEntrypt = new EntryptImple(mView.getContext(), path, password);
+        if (!mEntrypt.validDatabase()) {
+            BaseDatabase.DATABASE_OPEN_STATE state = mEntrypt.getDatabaseState();
+            switch (state) {
+                case DATABASE_OPEN_FILE_EXCEPTION:
+                    return SWITCH_RESULT_EXCEPTION;
+                case DATABASE_OPEN_PASSWORD:
+                    return SWITCH_RESULT_PASSWORD;
+                case DATABASE_OPEN_UNKNOW:
+                    return SWITCH_RESULT_UNKNOW;
+            }
+        }
+        return SWITCH_RESULT_SUCCESS;
     }
 }

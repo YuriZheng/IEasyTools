@@ -15,5 +15,6 @@ public class WalletView extends BaseMainView<IWalletContract.Presenter> implemen
     public WalletView(MainActivity context) {
         super(context, R.layout.group_wallet_layout);
         mCategory = PasswordEntry.CATEGORY_WALLET;
+        new WalletPresenter(this);
     }
 }

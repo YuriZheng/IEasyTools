@@ -15,6 +15,11 @@ import java.util.List;
 public interface IViewsView<T extends IViewsPresenter> extends com.zyj.ieasytools.act.IBaseView<T> {
 
     /**
+     * Get the database name
+     */
+    String getDatabaseName();
+
+    /**
      * Get the root view
      *
      * @return return the root view instance
@@ -25,6 +30,11 @@ public interface IViewsView<T extends IViewsPresenter> extends com.zyj.ieasytool
      * Call this method When the main activity switch view
      */
     void onReload();
+
+    /**
+     * Switch database
+     */
+    int onSwitchDatabase(final String name, final String path, final String password);
 
     /**
      * Destory the view and Recycling resources

@@ -24,6 +24,8 @@ public interface IOtherDBContract {
 
         List<String> getDatabasePathsBesidesCurrent(Context context);
 
+        String getOurDatabasePath(Context context);
+
     }
 
 }
