@@ -33,11 +33,12 @@ public abstract class BaseMainPresenter<V extends IViewsView> {
 
     public String getDatabaseRealyName() {
         String name = mEntrypt.getDatabaseName();
-        if (!TextUtils.isEmpty(name)) {
+        if (!TextUtils.isEmpty(name) && !DatabaseColumns.EncryptColumns.DATABASE_NAME.equals(name) && name.contains(".")) {
             name = name.substring(0, name.lastIndexOf("."));
             name = DatabaseUtils.getDefaultEncryptEntry(mView.getContext()).decrypt(name, ZYJVersion.getCurrentVersion());
+            return name + "." + DATABASE_FILE_SUFFIX;
         }
-        return name + "." + DATABASE_FILE_SUFFIX;
+        return name;
     }
 
     public void destory() {

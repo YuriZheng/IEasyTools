@@ -17,14 +17,17 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.BaseActivity;
+import com.zyj.ieasytools.act.helpActivity.HelpActivity;
 import com.zyj.ieasytools.data.DatabaseUtils;
 import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.db.DatabaseColumns;
+import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.utils.ZYJVersion;
@@ -171,14 +174,38 @@ public class OtherDBActivity extends BaseActivity implements IOtherDBContract.Vi
                         dialog.dismiss();
                     })
                     .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                        showSwitchProgressDialog(name, path);
+                        showInputPasswordDialog(name, path);
                         dialog.dismiss();
                     });
             builder.create().show();
         }
     }
 
-    private void showSwitchProgressDialog(final String name, final String path) {
+    private void showInputPasswordDialog(final String name, final String path) {
+        final EditText et = new EditText(this);
+        et.setSingleLine(true);
+
+        new android.support.v7.app.AlertDialog.Builder(this).setMessage(R.string.add_input_see_password).setView(et)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    final String password = et.getText().toString();
+                    if (password.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN) {
+                        showToast(R.string.password_short);
+                        return;
+                    }
+                    if (password.length() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
+                        showToast(R.string.password_long);
+                        return;
+                    }
+                    showSwitchProgressDialog(name, path, password);
+                })
+                .setNegativeButton(R.string.add_enter_password_help, (dialog, which) -> {
+                    Intent intent = new Intent(getApplicationContext(), HelpActivity.class);
+                    startActivity(intent);
+                }).create().show();
+
+    }
+
+    private void showSwitchProgressDialog(final String name, final String path, final String password) {
         mProgressBar = new ProgressDialog(this);
         mProgressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mProgressBar.setCancelable(false);
@@ -189,9 +216,12 @@ public class OtherDBActivity extends BaseActivity implements IOtherDBContract.Vi
         Intent intent = new Intent(BROADCAST_SWITCH_DATABASE);
         intent.putExtra(BROADCAST_SWITCH_DATABASE_PATH, path);
         intent.putExtra(BROADCAST_SWITCH_DATABASE_NAME, name);
-        // TODO: 10/10/2016 需要密码的
-        intent.putExtra(BROADCAST_SWITCH_DATABASE_PD, "123456");
+        intent.putExtra(BROADCAST_SWITCH_DATABASE_PD, password);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void showToast(int message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
