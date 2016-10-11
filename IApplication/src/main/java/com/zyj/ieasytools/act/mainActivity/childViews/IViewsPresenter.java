@@ -10,7 +10,7 @@ public interface IViewsPresenter extends com.zyj.ieasytools.act.IBasePresenter {
     /**
      * Get the database name
      */
-    String getDatabaseName();
+    String getDatabaseRealyName();
 
     /**
      * Get the datas by category

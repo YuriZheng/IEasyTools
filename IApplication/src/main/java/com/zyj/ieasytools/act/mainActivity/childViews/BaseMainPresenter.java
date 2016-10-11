@@ -2,16 +2,19 @@ package com.zyj.ieasytools.act.mainActivity.childViews;
 
 import android.text.TextUtils;
 
+import com.zyj.ieasytools.data.DatabaseUtils;
 import com.zyj.ieasytools.data.EntryptImple;
 import com.zyj.ieasytools.data.IEntrypt;
 import com.zyj.ieasytools.library.db.BaseDatabase;
 import com.zyj.ieasytools.library.db.DatabaseColumns;
+import com.zyj.ieasytools.library.utils.ZYJVersion;
 
 import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_EXCEPTION;
 import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_NULL;
 import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_PASSWORD;
 import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_SUCCESS;
 import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.SWITCH_RESULT_UNKNOW;
+import static com.zyj.ieasytools.library.db.DatabaseColumns.DATABASE_FILE_SUFFIX;
 
 /**
  * Author: Yuri.zheng<br>
@@ -28,8 +31,13 @@ public abstract class BaseMainPresenter<V extends IViewsView> {
         mEntrypt = new EntryptImple(mView.getContext());
     }
 
-    public String getDatabaseName() {
-        return mEntrypt.getDatabaseName();
+    public String getDatabaseRealyName() {
+        String name = mEntrypt.getDatabaseName();
+        if (!TextUtils.isEmpty(name)) {
+            name = name.substring(0, name.lastIndexOf("."));
+            name = DatabaseUtils.getDefaultEncryptEntry(mView.getContext()).decrypt(name, ZYJVersion.getCurrentVersion());
+        }
+        return name + "." + DATABASE_FILE_SUFFIX;
     }
 
     public void destory() {

@@ -221,6 +221,8 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             mGroupAppView.onReload();
             mGroupGameView.onReload();
             mGroupOtherView.onReload();
+
+            enableAddButton(mPresenter.isOurDatabase());
         }
         return result;
     }
@@ -298,7 +300,9 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
 
     @Override
     public void enableAddButton(boolean enable) {
-        mMenuAdd.setEnabled(enable);
+        mHandler.post(() -> {
+            mMenuAdd.setEnabled(enable);
+        });
     }
 
     @Override

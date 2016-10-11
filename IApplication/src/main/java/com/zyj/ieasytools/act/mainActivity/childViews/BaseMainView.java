@@ -1,6 +1,7 @@
 package com.zyj.ieasytools.act.mainActivity.childViews;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,12 +33,15 @@ public abstract class BaseMainView<P extends IViewsPresenter> {
     protected DataAdapter mAdapter;
 
     protected String mCategory;
+    protected Handler mHandler;
 
     protected P mPresenter;
 
     public BaseMainView(MainActivity context, int layoutId) {
         this.mContext = context;
         mViewGroup = (ViewGroup) LayoutInflater.from(context).inflate(layoutId, null);
+
+        mHandler = new Handler(mContext.getApplicationContext().getMainLooper());
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -47,7 +51,7 @@ public abstract class BaseMainView<P extends IViewsPresenter> {
     }
 
     public String getDatabaseName() {
-        return mPresenter.getDatabaseName();
+        return mPresenter.getDatabaseRealyName();
     }
 
     /**
@@ -68,8 +72,10 @@ public abstract class BaseMainView<P extends IViewsPresenter> {
      * {@link IViewsView#setDatas(List)}
      */
     public void setDatas(List<PasswordEntry> list) {
-        mAdapter.setList(list);
-        mAdapter.notifyDataSetChanged();
+        mHandler.post(() -> {
+            mAdapter.setList(list);
+            mAdapter.notifyDataSetChanged();
+        });
     }
 
     protected View findViewById(int id) {

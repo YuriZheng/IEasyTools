@@ -43,7 +43,6 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
 
     private final int VERSION = 1;
 
-    //    private boolean isCurrentDatabase = false;
     private String mDatabaseName;
     private boolean isDestory = false;
 
@@ -70,6 +69,12 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
      * @see ZYJDatabaseUtils#getEncryptDatabaseFromPath(Context, String, String)
      */
     private MySQLiteDatabase openDatabase(String path, String password) {
+        if (!TextUtils.isEmpty(path)) {
+            File file = new File(path);
+            if (file.exists()) {
+                mDatabaseName = file.getName();
+            }
+        }
         return getSQLiteDatabase(path, password);
     }
 
@@ -89,7 +94,6 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
             my = openDatabase(null, null);
         } else {
             String path = file.getAbsolutePath();
-            mDatabaseName = file.getName();
             ZYJUtils.logD(TAG, "Path: " + path);
             my = openDatabase(path, password);
         }

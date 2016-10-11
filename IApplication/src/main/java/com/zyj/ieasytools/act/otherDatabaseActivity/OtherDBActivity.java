@@ -189,8 +189,8 @@ public class OtherDBActivity extends BaseActivity implements IOtherDBContract.Vi
         Intent intent = new Intent(BROADCAST_SWITCH_DATABASE);
         intent.putExtra(BROADCAST_SWITCH_DATABASE_PATH, path);
         intent.putExtra(BROADCAST_SWITCH_DATABASE_NAME, name);
-        // TODO: 10/10/2016 需要密码的 
-        intent.putExtra(BROADCAST_SWITCH_DATABASE_PD, "123");
+        // TODO: 10/10/2016 需要密码的
+        intent.putExtra(BROADCAST_SWITCH_DATABASE_PD, "123456");
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

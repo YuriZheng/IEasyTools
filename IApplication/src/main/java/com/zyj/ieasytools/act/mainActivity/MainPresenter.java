@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import com.zyj.ieasytools.act.mainActivity.childViews.BaseMainPresenter;
 import com.zyj.ieasytools.data.DatabaseUtils;
+import com.zyj.ieasytools.library.db.DatabaseColumns;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 
 import static com.zyj.ieasytools.act.otherDatabaseActivity.OtherDBActivity.CLOASE_DIALOG;
@@ -50,8 +51,6 @@ public class MainPresenter implements IMainContract.Presenter {
      * <li>{@link PasswordEntry#CATEGORY_OTHER}</li>
      */
     private String mCategory = PasswordEntry.CATEGORY_WEB;
-
-    private boolean isOurDatabase = true;
 
     /**
      * Switch database borodcast
@@ -116,7 +115,7 @@ public class MainPresenter implements IMainContract.Presenter {
 
     @Override
     public boolean isOurDatabase() {
-        return isOurDatabase;
+        return DatabaseColumns.EncryptColumns.DATABASE_NAME.equals(mView.getCurrentDatabaseName());
     }
 
     @Override
