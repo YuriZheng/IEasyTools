@@ -10,12 +10,15 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.data.DatabaseUtils;
@@ -71,11 +74,13 @@ public class InputEnterPasswordDialog extends Dialog {
      */
     private int mEnterStyle;
     // Setting or Verify: true is setting password, false is verify password
-    private final boolean isSettingPassword;
+    private final boolean hasPassword;
+    // The database is exists
+    private final boolean existsFile;
 
     private Handler mHandler;
 
-    public InputEnterPasswordDialog(Context context, boolean isSetting) {
+    public InputEnterPasswordDialog(Context context) {
         super(context, R.style.enter_password_dialog_style);
         mSettings = DatabaseUtils.getSettingsInstance(context);
         if (mSettings == null) {
@@ -97,10 +102,14 @@ public class InputEnterPasswordDialog extends Dialog {
             ZYJUtils.logW(getClass(), e.getLocalizedMessage());
         }
 
-        isSettingPassword = isSetting;
-        String password = mSettings.getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null);
-        if (TextUtils.isEmpty(password)) {
-            // Fingerprint can't to setting password
+        // 文件存在，密码存在：验证密码，进入的样式按照用户设置的样式
+        // --文件存在，密码不存在：验证密码然后保存，进入的样式强制设置为输入样式
+        // 文件不存在，密码存在：验证密码，然后使用密码新建文件，进入样式为用户设置样式
+        // --文件不存在，密码不存在：初始化设置，进入的样式强制设置为输入样式
+
+        existsFile = DatabaseUtils.getCurrentDatabasePath(mContext, false).exists();
+        hasPassword = !TextUtils.isEmpty(mSettings.getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null));
+        if (!hasPassword) {
             mEnterStyle = ENTER_PASSWORD_IMITATE_IOS;
         }
     }
@@ -216,11 +225,15 @@ public class InputEnterPasswordDialog extends Dialog {
             if (size > 0) {
                 iSubTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 5);
             }
-            if (isSettingPassword) {
+            if (isSettingPassword()) {
                 iSubTitle.setText(R.string.enter_password_setting);
             } else {
                 iSubTitle.setText(R.string.enter_password_verify);
             }
+        }
+
+        protected boolean isSettingPassword() {
+            return !existsFile && !hasPassword;
         }
 
         protected <T extends View> T findViewById(int resId) {
@@ -250,7 +263,7 @@ public class InputEnterPasswordDialog extends Dialog {
             iMain.findViewById(R.id.sure).setOnClickListener(this);
 
             View clear = findViewById(R.id.clear);
-            if (!isSettingPassword) {
+            if (!isSettingPassword()) {
                 clear.setVisibility(View.GONE);
             } else {
                 clear.setOnClickListener(this);
@@ -280,7 +293,7 @@ public class InputEnterPasswordDialog extends Dialog {
                 iSubTitle.setText(R.string.password_long);
                 return;
             }
-            if (isSettingPassword) {
+            if (isSettingPassword()) {
                 if (TextUtils.isEmpty(iRecordPassword)) {
                     iRecordPassword = input;
                     iSubTitle.setText(R.string.verify_enter_copy);
@@ -372,14 +385,21 @@ public class InputEnterPasswordDialog extends Dialog {
     private class VerifyIosView extends BaseVerifyView {
 
         private EffectButtonView[] mButtons = new EffectButtonView[10];
+        private HorizontalScrollView mScrollView;
         private LinearLayout mToastPoint;
+
+        private Toast mToast = null;
 
         private VerifyIosView() {
             super(R.layout.ios_input_layout);
 
+            mScrollView = findViewById(R.id.scrollView);
             mToastPoint = findViewById(R.id.input_point);
 
             setEffectButtonAttrs();
+            findViewById(R.id.password_question).setOnClickListener(this);
+            findViewById(R.id.del_password).setOnClickListener(this);
+
         }
 
         private void setEffectButtonAttrs() {
@@ -394,17 +414,75 @@ public class InputEnterPasswordDialog extends Dialog {
                 mButtons[i].setRimStrokeWidth(mContext.getResources().getDimension(R.dimen.iod_verify_effect_button_rim_width));
                 mButtons[i].setOnClickListener(mEffectListener);
                 mButtons[i].setText(mButtons[i].getTag().toString());
+                mButtons[i].setTextSize(mContext.getResources().getDimension(R.dimen.iod_verify_keyboard_textsize));
             }
         }
 
         private View.OnClickListener mEffectListener = (v) -> {
-            Integer tag = Integer.parseInt(v.getTag().toString());
-            System.out.println("Tag: " + tag);
+            if (isSettingPassword()) {
+                settingPassword(v);
+            } else {
+                verifyPassword(v);
+            }
         };
+
+        private void settingPassword(final View v) {
+            if (mToastPoint.getChildCount() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
+                if (mToast != null) {
+                    mToast.setText(R.string.password_long);
+                    mToast.setDuration(Toast.LENGTH_SHORT);
+                } else {
+                    mToast = Toast.makeText(mContext, R.string.password_long, Toast.LENGTH_SHORT);
+                }
+                mToast.show();
+                return;
+            }
+            Integer tag = Integer.parseInt(v.getTag().toString());
+            final EffectButtonView view = getPointView();
+            mToastPoint.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+                public void onChildViewAdded(View parent, View child) {
+                    if (child.equals(view)) {
+                        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
+                        mScrollView.fling(mToastPoint.getWidth() + view.getWidth() + lp.rightMargin);
+                        mHandler.postDelayed(() -> {
+                            view.select();
+                        }, 150);
+                    }
+                    mToastPoint.setOnHierarchyChangeListener(null);
+                }
+
+                public void onChildViewRemoved(View parent, View child) {
+
+                }
+            });
+            mToastPoint.addView(view);
+        }
+
+        private void verifyPassword(final View v) {
+
+        }
+
+        private EffectButtonView getPointView() {
+            EffectButtonView view = new EffectButtonView(mContext);
+            view.setRimStrokeWidth(mContext.getResources().getDimension(R.dimen.iod_verify_small_effect_button_rim_width));
+            int w_h = mContext.getResources().getDimensionPixelOffset(R.dimen.iod_verify_small_point);
+            int l_r = mContext.getResources().getDimensionPixelOffset(R.dimen.iod_verify_small_padd);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(w_h, w_h);
+            lp.leftMargin = l_r;
+            lp.rightMargin = l_r;
+            view.setLayoutParams(lp);
+            return view;
+        }
+
 
         @Override
         public void onClick(View v) {
+            int id = v.getId();
+            if (id == R.id.password_question) {
 
+            } else if (id == R.id.del_password) {
+
+            }
         }
 
         private void verify() {

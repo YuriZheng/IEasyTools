@@ -29,15 +29,15 @@ public class EffectButtonView extends View {
     /**
      * Normale color
      */
-    private int mNormalColor = Color.parseColor("#ffffffff");
+    private int mNormalColor = Color.parseColor("#00ffffff");
     /**
      * Press color
      */
-    private int mPressColor = Color.parseColor("#ff000000");
+    private int mPressColor = Color.parseColor("#ffCCCCCC");
     /**
      * The rim color
      */
-    private int mRimColor = Color.parseColor("#aaffffff");
+    private int mRimColor = Color.parseColor("#ffCCCCCC");
     /**
      * The rim paint
      */
@@ -70,6 +70,10 @@ public class EffectButtonView extends View {
      * The flag when move touch
      */
     private boolean isMoveOutBound = false;
+    /**
+     * Is selected
+     */
+    private boolean isSelect = false;
     /**
      * Click listener
      */
@@ -126,7 +130,7 @@ public class EffectButtonView extends View {
         float rimWidth = mRimPaint.getStrokeWidth();
         if (isCircle) {
             if (isRimVisible) {
-                canvas.drawCircle(getWidth() / 2, getHeight() / 2, (getWidth() - rimWidth) / 2, mRimPaint);
+                canvas.drawCircle(getWidth() / 2, getHeight() / 2, (getWidth() - rimWidth) / 2 - 1, mRimPaint);
             } else {
                 rimWidth = 0;
             }
@@ -142,10 +146,11 @@ public class EffectButtonView extends View {
 
         if (!TextUtils.isEmpty(mText)) {
             float width = mTextPaint.measureText(mText, 0, mText.length());
+            float hight = mTextPaint.measureText("1", 0, 1);
             if (width >= getWidth()) {
-                canvas.drawText(mText, 0, getHeight() / 2 + mTextPaint.getTextSize() / 2, mTextPaint);
+                canvas.drawText(mText, 0, getHeight() / 2 + hight / 2, mTextPaint);
             } else {
-                canvas.drawText(mText, (getWidth() - width) / 2, getHeight() / 2 + mTextPaint.getTextSize() / 2, mTextPaint);
+                canvas.drawText(mText, (getWidth() - width) / 2, getHeight() / 2 + hight / 2, mTextPaint);
             }
         }
     }
@@ -157,6 +162,14 @@ public class EffectButtonView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (isSelect) {
+            if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                if (mListener != null) {
+                    mListener.onClick(this);
+                }
+            }
+            return true;
+        }
         float x = event.getX();
         float y = event.getY();
         switch (event.getActionMasked()) {
@@ -196,7 +209,6 @@ public class EffectButtonView extends View {
         }
         mPressAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), mCirclePaint.getColor(), mPressColor).setDuration(D_TIME);
         mPressAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int color = (Integer) animation.getAnimatedValue();
                 mCirclePaint.setColor(color);
@@ -248,6 +260,41 @@ public class EffectButtonView extends View {
 
     public boolean isRimVisible() {
         return isRimVisible;
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    @Override
+    public boolean performClick() {
+        startPressAnimator();
+        if (mListener != null) {
+            mListener.onClick(this);
+        }
+        return true;
+    }
+
+    /**
+     * Select this view by animator
+     */
+    public void select() {
+        if (isSelect) {
+            return;
+        }
+        isSelect = true;
+        startPressAnimator();
+    }
+
+    /**
+     * Unselect this view by animator
+     */
+    public void unSelect() {
+        if (!isSelect) {
+            return;
+        }
+        isSelect = false;
+        startNormalAnimator();
     }
 
     /**

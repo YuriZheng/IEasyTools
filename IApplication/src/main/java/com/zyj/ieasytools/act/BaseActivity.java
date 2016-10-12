@@ -236,7 +236,7 @@ public class BaseActivity extends AppCompatActivity {
                 ZYJUtils.logD(TAG, "verifing...");
                 return;
             }
-            mInputDialog = new InputEnterPasswordDialog(mContext, !DatabaseUtils.getCurrentDatabasePath(mContext, false).exists());
+            mInputDialog = new InputEnterPasswordDialog(mContext);
             mInputDialog.setResultCallBack(mVerifyCallBack);
             mInputDialog.show();
         }

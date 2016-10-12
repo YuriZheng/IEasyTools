@@ -13,12 +13,23 @@
         style="@style/input_enter_password_dialog_sub_title"
         android:layout_marginTop="@dimen/iod_verify_top"/>
 
-    <LinearLayout
-        android:id="@+id/input_point"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/iod_verify_small_point"
-        android:gravity="center"
-        android:orientation="horizontal"/>
+    <HorizontalScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/iod_verify_toast_layout_padd"
+        android:layout_marginRight="@dimen/iod_verify_toast_layout_padd"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/input_point"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/iod_verify_small_point"
+            android:gravity="center"
+            android:orientation="horizontal"/>
+    </HorizontalScrollView>
 
     <GridLayout
         android:id="@+id/grid_layout"
@@ -99,11 +110,11 @@
             android:text="进入密码？"/>
 
         <TextView
-            android:id="@+id/forget_password"
+            android:id="@+id/del_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="忘记密码？"/>
+            android:text="删除"/>
     </RelativeLayout>
 
 
