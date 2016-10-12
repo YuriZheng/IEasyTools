@@ -187,8 +187,8 @@ public final class ZYJDatabaseUtils {
         ZYJDatabaseEncrypts e = sEncryptMap.remove(key);
         if (e != null && !e.isDestory()) {
             e.onDestroy();
-            e = null;
         }
+        e = null;
     }
 
     /**
@@ -200,8 +200,8 @@ public final class ZYJDatabaseUtils {
                 ZYJDatabaseEncrypts e = sEncryptMap.remove(path);
                 if (e != null && !e.isDestory()) {
                     e.onDestroy();
-                    e = null;
                 }
+                e = null;
             }
             sEncryptMap.clear();
         }

@@ -1,6 +1,5 @@
 package com.zyj.ieasytools.act.otherDatabaseActivity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,6 +9,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -185,7 +185,7 @@ public class OtherDBActivity extends BaseActivity implements IOtherDBContract.Vi
         final EditText et = new EditText(this);
         et.setSingleLine(true);
 
-        new android.support.v7.app.AlertDialog.Builder(this).setMessage(R.string.add_input_see_password).setView(et)
+        new AlertDialog.Builder(this).setMessage(R.string.add_input_see_password).setView(et)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     final String password = et.getText().toString();
                     if (password.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN) {

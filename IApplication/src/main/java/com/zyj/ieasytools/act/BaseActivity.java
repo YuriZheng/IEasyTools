@@ -102,7 +102,7 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected void verifyEnterPasswordSuccess() {
         // Subclass override method
-        // TODO: 11/10/2016 当第一次输入数据库密码时，不应该回调此方法，所以第一次输入密码应该单独给个输入框，后续改进 
+        // TODO: 11/10/2016 当第一次输入数据库密码时，不应该回调此方法，所以第一次输入密码应该单独给个输入框，后续改进
     }
 
     /**

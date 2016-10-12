@@ -68,5 +68,10 @@
         <item name="android:background">@color/div_while_line_color</item>
     </style>
 
+    <style name="ios_button_style">
+        <item name="android:layout_width">@dimen/iod_verify_keyboard_h_w</item>
+        <item name="android:layout_height">@dimen/iod_verify_keyboard_h_w</item>
+    </style>
+
 
 </resources>

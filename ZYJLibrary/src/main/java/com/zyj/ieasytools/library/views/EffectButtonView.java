@@ -61,7 +61,7 @@ public class EffectButtonView extends View {
     /**
      * Circle or Rectangle
      */
-    private boolean isCircle = false;
+    private boolean isCircle = true;
     /**
      * Rim visible
      */

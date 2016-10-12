@@ -16,6 +16,14 @@
     <dimen name="other_db_item_left_right">@dimen/file_manager_item_left_right</dimen>
     <dimen name="other_db_item_top_bottom">@dimen/file_manager_item_top_bottom</dimen>
 
+    <dimen name="iod_verify_top">45dp</dimen>
+    <dimen name="iod_verify_keyboard_top">35dp</dimen>
+    <dimen name="iod_verify_small_point">18dp</dimen>
+    <dimen name="iod_verify_keyboard_padd">22dp</dimen>
+    <dimen name="iod_verify_bottom_text_mar_top">40dp</dimen>
+    <dimen name="iod_verify_effect_button_rim_width">1.5dp</dimen>
+    <dimen name="iod_verify_keyboard_h_w">70dp</dimen>
+
     <dimen name="main_view_title_size">20sp</dimen>
     <dimen name="main_view_user_size">17sp</dimen>
     <dimen name="main_view_description_size">15sp</dimen>

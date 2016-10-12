@@ -2,7 +2,6 @@ package com.zyj.ieasytools.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ import com.zyj.ieasytools.library.db.ZYJDatabaseSettings;
 import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
+import com.zyj.ieasytools.library.views.EffectButtonView;
 
 /**
  * Author: Yuri.zheng<br>
@@ -37,21 +39,13 @@ public class InputEnterPasswordDialog extends Dialog {
 
     // TODO: 6/11/16 修改默认的验证方法
     /**
-     * Enter password style: gesture
-     */
-    public static final int ENTER_PASSWORD_GESTURE = 0XC1;
-    /**
      * Enter password style: imitate ios
      */
-    public static final int ENTER_PASSWORD_IMITATE_IOS = 0XC2;
+    public static final int ENTER_PASSWORD_IMITATE_IOS = 0XC1;
     /**
      * Enter password style: fingerprint
      */
-    public static final int ENTER_PASSWORD_FINGERPRINT = 0XC3;
-    /**
-     * Enter password style: input
-     */
-    public static final int ENTER_PASSWORD_INPUT = 0XC4;
+    public static final int ENTER_PASSWORD_FINGERPRINT = 0XC2;
     /**
      * Direct return, verify fail
      */
@@ -72,8 +66,6 @@ public class InputEnterPasswordDialog extends Dialog {
     // Setting or Verify call back
     private VerifyResultCallBack mResultCallBack;
     /**
-     * <li>{@link #ENTER_PASSWORD_INPUT}</li>
-     * <li>{@link #ENTER_PASSWORD_GESTURE}</li>
      * <li>{@link #ENTER_PASSWORD_IMITATE_IOS}</li>
      * <li>{@link #ENTER_PASSWORD_FINGERPRINT}</li>
      */
@@ -93,19 +85,23 @@ public class InputEnterPasswordDialog extends Dialog {
         mContext = context;
         mHandler = new Handler(mContext.getMainLooper());
         mMainView = new RelativeLayout(mContext);
-        mEnterStyle = mSettings.getIntProperties(SettingsConstant.SETTINGS_PASSWORD_INPUT_STYLE, ENTER_PASSWORD_INPUT);
+        mEnterStyle = mSettings.getIntProperties(SettingsConstant.SETTINGS_PASSWORD_INPUT_STYLE, ENTER_PASSWORD_IMITATE_IOS);
 
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.gravity = Gravity.BOTTOM;
-        lp.height = mContext.getResources().getDisplayMetrics().heightPixels - mContext.getResources().getDimensionPixelSize
-                (Resources.getSystem().getIdentifier("status_bar_height", "dimen", "android"));
-        getWindow().setAttributes(lp);
+        try {
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.gravity = Gravity.BOTTOM;
+            lp.height = mContext.getResources().getDisplayMetrics().heightPixels - mContext.getResources().getDimensionPixelSize
+                    (Resources.getSystem().getIdentifier("status_bar_height", "dimen", "android"));
+            getWindow().setAttributes(lp);
+        } catch (Exception e) {
+            ZYJUtils.logW(getClass(), e.getLocalizedMessage());
+        }
 
         isSettingPassword = isSetting;
         String password = mSettings.getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null);
-        if (TextUtils.isEmpty(password) && mEnterStyle == ENTER_PASSWORD_FINGERPRINT) {
+        if (TextUtils.isEmpty(password)) {
             // Fingerprint can't to setting password
-            mEnterStyle = ENTER_PASSWORD_INPUT;
+            mEnterStyle = ENTER_PASSWORD_IMITATE_IOS;
         }
     }
 
@@ -120,10 +116,6 @@ public class InputEnterPasswordDialog extends Dialog {
             title = R.string.verify_password_no_match;
         } else {
             switch (mEnterStyle) {
-                case ENTER_PASSWORD_GESTURE:
-                    mVerifyView = new VerifyGestureView();
-                    title = R.string.verify_enterpassword_gesture;
-                    break;
                 case ENTER_PASSWORD_IMITATE_IOS:
                     mVerifyView = new VerifyIosView();
                     title = R.string.verify_enterpassword_ios;
@@ -132,30 +124,24 @@ public class InputEnterPasswordDialog extends Dialog {
                     mVerifyView = new VerifyFingerprintView();
                     title = R.string.verify_enterpassword_fingerprint;
                     break;
-                case ENTER_PASSWORD_INPUT:
-                    mVerifyView = new VerifyInputView();
-                    title = R.string.verify_enterpassword_input;
-                    break;
             }
         }
-        addToolbar(title);
+        if (!(mVerifyView instanceof VerifyIosView)) {
+            addToolbar(title);
+        }
         if (mVerifyView != null) {
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             lp.addRule(RelativeLayout.BELOW, R.id.toolbar);
             mMainView.addView(mVerifyView.iMain, lp);
         }
-        setOnShowListener(new OnShowListener() {
-            public void onShow(DialogInterface dialog) {
-                if (mResultCallBack != null) {
-                    mVerifyView.iVerifyCallBack = mResultCallBack;
-                }
+        setOnShowListener((dialog) -> {
+            if (mResultCallBack != null) {
+                mVerifyView.iVerifyCallBack = mResultCallBack;
             }
         });
-        setOnDismissListener(new OnDismissListener() {
-            public void onDismiss(DialogInterface dialog) {
-                if (mVerifyView != null) {
-                    mVerifyView.dismiss();
-                }
+        setOnDismissListener((dialog) -> {
+            if (mVerifyView != null) {
+                mVerifyView.dismiss();
             }
         });
     }
@@ -242,10 +228,8 @@ public class InputEnterPasswordDialog extends Dialog {
         }
 
         protected void verifyFinish() {
-            mHandler.postDelayed(new Runnable() {
-                public void run() {
-                    InputEnterPasswordDialog.this.dismiss();
-                }
+            mHandler.postDelayed(() -> {
+                InputEnterPasswordDialog.this.dismiss();
             }, iDelayed);
         }
 
@@ -383,30 +367,40 @@ public class InputEnterPasswordDialog extends Dialog {
     }
 
     /**
-     * Gesture view to verify password
-     */
-    private class VerifyGestureView extends BaseVerifyView {
-        private VerifyGestureView() {
-            super(R.layout.gesture_input_layout);
-        }
-
-        @Override
-        public void onClick(View v) {
-
-        }
-
-        private void verify() {
-
-        }
-    }
-
-    /**
      * Imitate ios view to verify password
      */
     private class VerifyIosView extends BaseVerifyView {
+
+        private EffectButtonView[] mButtons = new EffectButtonView[10];
+        private LinearLayout mToastPoint;
+
         private VerifyIosView() {
             super(R.layout.ios_input_layout);
+
+            mToastPoint = findViewById(R.id.input_point);
+
+            setEffectButtonAttrs();
         }
+
+        private void setEffectButtonAttrs() {
+            GridLayout grid = findViewById(R.id.grid_layout);
+            for (int i = 0; i < grid.getChildCount(); i++) {
+                mButtons[i] = (EffectButtonView) grid.getChildAt(i);
+            }
+            int length = mButtons.length;
+            mButtons[length - 1] = findViewById(R.id.point_zero);
+
+            for (int i = 0; i < length; i++) {
+                mButtons[i].setRimStrokeWidth(mContext.getResources().getDimension(R.dimen.iod_verify_effect_button_rim_width));
+                mButtons[i].setOnClickListener(mEffectListener);
+                mButtons[i].setText(mButtons[i].getTag().toString());
+            }
+        }
+
+        private View.OnClickListener mEffectListener = (v) -> {
+            Integer tag = Integer.parseInt(v.getTag().toString());
+            System.out.println("Tag: " + tag);
+        };
 
         @Override
         public void onClick(View v) {
