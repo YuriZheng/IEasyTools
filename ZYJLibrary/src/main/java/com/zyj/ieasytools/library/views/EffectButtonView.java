@@ -266,6 +266,10 @@ public class EffectButtonView extends View {
         return isSelect;
     }
 
+    public int getAnimatorTime() {
+        return D_TIME;
+    }
+
     @Override
     public boolean performClick() {
         startPressAnimator();

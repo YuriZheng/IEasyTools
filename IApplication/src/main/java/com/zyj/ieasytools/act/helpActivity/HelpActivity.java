@@ -16,6 +16,20 @@ import com.zyj.ieasytools.act.BaseActivity;
  */
 public class HelpActivity extends BaseActivity implements IHelpContract.View {
 
+    /**
+     * The enter value key
+     */
+    public static final String ENTER_KEY = "_e";
+    /**
+     * Whether need authentication password
+     */
+    public static final String ENTER_NEED_VERIFY_KEY = "_n_v";
+
+    /**
+     * TODO: 15/10/2016 进入密码
+     */
+    public static final int ENTER_STYLE_ENTER_PASSWORD = 0x01;
+
     private Toolbar mToolbar;
     private IHelpContract.Presenter mPresenter;
 
@@ -27,6 +41,8 @@ public class HelpActivity extends BaseActivity implements IHelpContract.View {
         mToolbar = getViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.settings_help);
         setSupportActionBar(mToolbar);
+
+        needVerifyPassword = getIntent().getBooleanExtra(ENTER_NEED_VERIFY_KEY, true);
 
         new HelpPresenter(this);
     }

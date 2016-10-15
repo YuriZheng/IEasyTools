@@ -2,6 +2,7 @@ package com.zyj.ieasytools.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zyj.ieasytools.R;
+import com.zyj.ieasytools.act.helpActivity.HelpActivity;
 import com.zyj.ieasytools.data.DatabaseUtils;
 import com.zyj.ieasytools.data.SettingsConstant;
 import com.zyj.ieasytools.library.db.BaseDatabase;
@@ -30,6 +32,10 @@ import com.zyj.ieasytools.library.encrypt.BaseEncrypt;
 import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.EffectButtonView;
+
+import static com.zyj.ieasytools.act.helpActivity.HelpActivity.ENTER_KEY;
+import static com.zyj.ieasytools.act.helpActivity.HelpActivity.ENTER_NEED_VERIFY_KEY;
+import static com.zyj.ieasytools.act.helpActivity.HelpActivity.ENTER_STYLE_ENTER_PASSWORD;
 
 /**
  * Author: Yuri.zheng<br>
@@ -398,6 +404,7 @@ public class InputEnterPasswordDialog extends Dialog {
 
             setEffectButtonAttrs();
             findViewById(R.id.password_question).setOnClickListener(this);
+            findViewById(R.id.enter_password).setOnClickListener(this);
             findViewById(R.id.del_password).setOnClickListener(this);
 
         }
@@ -479,9 +486,20 @@ public class InputEnterPasswordDialog extends Dialog {
         public void onClick(View v) {
             int id = v.getId();
             if (id == R.id.password_question) {
-
+                Intent intent = new Intent(getContext(), HelpActivity.class);
+                intent.putExtra(ENTER_KEY, ENTER_STYLE_ENTER_PASSWORD);
+                intent.putExtra(ENTER_NEED_VERIFY_KEY, false);
+                getContext().startActivity(intent);
             } else if (id == R.id.del_password) {
-
+                if (mToastPoint.getChildCount() > 0) {
+                    final EffectButtonView lastView = (EffectButtonView) mToastPoint.getChildAt(mToastPoint.getChildCount() - 1);
+                    lastView.unSelect();
+                    mHandler.postDelayed(() -> {
+                        mToastPoint.removeView(lastView);
+                    }, lastView.getAnimatorTime());
+                }
+            } else if (id == R.id.enter_password) {
+                ZYJUtils.logD(getClass(), "_------____--_-_______--__---_---");
             }
         }
 

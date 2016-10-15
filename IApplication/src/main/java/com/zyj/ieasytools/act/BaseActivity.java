@@ -34,6 +34,12 @@ public class BaseActivity extends AppCompatActivity {
     protected final Class<?> TAG = getClass();
 
     /**
+     * Whether authentication is required, default needed<br>
+     * true mean need
+     */
+    protected boolean needVerifyPassword = true;
+
+    /**
      * Logic class
      */
     private BasePresenter mBasePresenter;
@@ -180,17 +186,19 @@ public class BaseActivity extends AppCompatActivity {
         }
 
         private void onResume() {
+            ZYJUtils.logD(TAG, "onResume");
+            if (!needVerifyPassword) {
+                ZYJUtils.logD(TAG, "not need verify");
+                return;
+            }
             if (checkTimeOutOrPassword()) {
-                mHandler.postDelayed(new Runnable() {
-                    public void run() {
-                        verifyEnterPassword();
-                    }
+                mHandler.postDelayed(() -> {
+                    verifyEnterPassword();
                 }, 250);
             } else {
                 ZYJUtils.logD(TAG, "time not out");
                 BaseActivity.this.verifyEnterPasswordSuccess();
             }
-            ZYJUtils.logD(TAG, "onResume");
         }
 
         private void onPause() {
