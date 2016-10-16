@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.StringBuilderPrinter;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,6 +34,10 @@ import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.EffectButtonView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.R.id.input;
 import static com.zyj.ieasytools.act.helpActivity.HelpActivity.ENTER_KEY;
 import static com.zyj.ieasytools.act.helpActivity.HelpActivity.ENTER_NEED_VERIFY_KEY;
 import static com.zyj.ieasytools.act.helpActivity.HelpActivity.ENTER_STYLE_ENTER_PASSWORD;
@@ -394,6 +399,8 @@ public class InputEnterPasswordDialog extends Dialog {
         private HorizontalScrollView mScrollView;
         private LinearLayout mToastPoint;
 
+        private List<String> mRecoList = new ArrayList<>(BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX);
+
         private Toast mToast = null;
 
         private VerifyIosView() {
@@ -426,11 +433,7 @@ public class InputEnterPasswordDialog extends Dialog {
         }
 
         private View.OnClickListener mEffectListener = (v) -> {
-            if (isSettingPassword()) {
-                settingPassword(v);
-            } else {
-                verifyPassword(v);
-            }
+            settingPassword(v);
         };
 
         private void settingPassword(final View v) {
@@ -444,7 +447,6 @@ public class InputEnterPasswordDialog extends Dialog {
                 mToast.show();
                 return;
             }
-            Integer tag = Integer.parseInt(v.getTag().toString());
             final EffectButtonView view = getPointView();
             mToastPoint.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
                 public void onChildViewAdded(View parent, View child) {
@@ -462,11 +464,95 @@ public class InputEnterPasswordDialog extends Dialog {
 
                 }
             });
+            mRecoList.add(v.getTag().toString());
             mToastPoint.addView(view);
         }
 
-        private void verifyPassword(final View v) {
-
+        private void verify(final String password) {
+            if (password.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN) {
+                iSubTitle.setText(R.string.password_short);
+                return;
+            }
+            if (password.length() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
+                iSubTitle.setText(R.string.password_long);
+                return;
+            }
+            if (isSettingPassword()) {
+                if (TextUtils.isEmpty(iRecordPassword)) {
+                    iRecordPassword = password;
+                    iSubTitle.setText(R.string.verify_enter_copy);
+                } else {
+                    if (iRecordPassword.equals(password)) {
+                        ZYJDatabaseEncrypts encrypt = DatabaseUtils.getCurrentEncryptDatabase(mContext, password);
+                        if (encrypt == null || !encrypt.validDatabase()) {
+                            if (encrypt == null) {
+                                iSubTitle.setText(mContext.getResources().getString(R.string.database_open_error, "null"));
+                            } else {
+                                BaseDatabase.DATABASE_OPEN_STATE state = encrypt.getDatabaseState();
+                                if (state == BaseDatabase.DATABASE_OPEN_STATE.DATABASE_OPEN_FILE_EXCEPTION) {
+                                    iSubTitle.setText(mContext.getResources().getString(R.string.database_open_file_exception));
+                                } else if (state == BaseDatabase.DATABASE_OPEN_STATE.DATABASE_OPEN_PASSWORD) {
+                                    iSubTitle.setText(mContext.getResources().getString(R.string.database_open_password_wrong));
+                                } else if (state == BaseDatabase.DATABASE_OPEN_STATE.DATABASE_OPEN_UNKNOW) {
+                                    iSubTitle.setText(mContext.getResources().getString(R.string.database_open_open_unknow));
+                                } else {
+                                    iSubTitle.setText(mContext.getResources().getString(R.string.database_open_unknow));
+                                }
+                            }
+                            iSuccess = false;
+                            mInputText.setEnabled(false);
+                            v.setOnClickListener(null);
+                            verifyFinish();
+                        } else {
+                            // Save the password
+                            mSettings.putStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, password);
+                            iSubTitle.setText(R.string.setting_password_finish);
+                            iSuccess = true;
+                            mInputText.setEnabled(false);
+                            v.setOnClickListener(null);
+                            verifyFinish();
+                        }
+                    } else {
+                        iSubTitle.setText(R.string.verify_password_no_match);
+                    }
+                }
+            } else {
+                ZYJDatabaseEncrypts encrypt = DatabaseUtils.getCurrentEncryptDatabase(mContext, password);
+                if (encrypt == null || !encrypt.validDatabase()) {
+                    if (encrypt == null) {
+                        iSubTitle.setText(mContext.getResources().getString(R.string.database_open_error, "null"));
+                    } else {
+                        BaseDatabase.DATABASE_OPEN_STATE state = encrypt.getDatabaseState();
+                        if (state == BaseDatabase.DATABASE_OPEN_STATE.DATABASE_OPEN_FILE_EXCEPTION) {
+                            iSubTitle.setText(mContext.getResources().getString(R.string.database_open_file_exception));
+                        } else if (state == BaseDatabase.DATABASE_OPEN_STATE.DATABASE_OPEN_PASSWORD) {
+                            iSubTitle.setText(mContext.getResources().getString(R.string.database_open_password_wrong));
+                        } else if (state == BaseDatabase.DATABASE_OPEN_STATE.DATABASE_OPEN_UNKNOW) {
+                            iSubTitle.setText(mContext.getResources().getString(R.string.database_open_open_unknow));
+                        } else {
+                            iSubTitle.setText(mContext.getResources().getString(R.string.database_open_unknow));
+                        }
+                    }
+                    iRecordCount++;
+                    if (iRecordCount >= WRONG_COUNT) {
+                        iSuccess = false;
+                        iSubTitle.setText(mContext.getResources().getString(R.string.verify_five_minutes_later, mTimeOut / 1000 / 60));
+                        // TODO: 2016/8/22  输入五次，mTimeOut分钟之后再试
+                        mSettings.putLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, System.currentTimeMillis());
+                        mInputText.setEnabled(false);
+                        v.setOnClickListener(null);
+                        verifyFinish();
+                    } else {
+                        iSubTitle.setText(mContext.getResources().getString(R.string.verify_error_count, iRecordCount));
+                    }
+                } else {
+                    iSuccess = true;
+                    iSubTitle.setText(R.string.verify_passed);
+                    mInputText.setEnabled(false);
+                    v.setOnClickListener(null);
+                    verifyFinish();
+                }
+            }
         }
 
         private EffectButtonView getPointView() {
@@ -480,7 +566,6 @@ public class InputEnterPasswordDialog extends Dialog {
             view.setLayoutParams(lp);
             return view;
         }
-
 
         @Override
         public void onClick(View v) {
@@ -499,12 +584,22 @@ public class InputEnterPasswordDialog extends Dialog {
                     }, lastView.getAnimatorTime());
                 }
             } else if (id == R.id.enter_password) {
-                ZYJUtils.logD(getClass(), "_------____--_-_______--__---_---");
+                StringBuilder sb = new StringBuilder(BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX);
+                mRecoList.forEach((String i) -> {
+                    sb.append(i);
+                });
+                ZYJUtils.logD(getClass(), "Password: " + sb.toString());
+                verify(sb.toString());
             }
         }
 
-        private void verify() {
 
+
+        private void clear() {
+            iSubTitle.setText(R.string.enter_password_setting);
+            mRecoList.clear();
+            iRecordPassword = "";
+            iRecordCount = 0;
         }
     }
 

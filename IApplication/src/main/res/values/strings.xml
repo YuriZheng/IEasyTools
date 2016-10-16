@@ -54,7 +54,7 @@
     <string name="verify_enterpassword_ios">Verify Number</string>
     <string name="verify_enterpassword_fingerprint">Verify Finger</string>
     <string name="verify_enterpassword_gesture">Verify gesture</string>
-    <string name="enter_password_setting">Setting Password</string>
+    <string name="enter_password_setting">Setting Enter Password</string>
     <string name="enter_password_verify">Verify Password</string>
     <string name="verify_enter_clear">Clear</string>
     <string name="verify_enter_copy">Input Again</string>

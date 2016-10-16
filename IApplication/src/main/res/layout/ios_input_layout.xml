@@ -120,7 +120,7 @@
             android:id="@+id/del_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="删除" />
+            android:text="清空／重置" />
 
         <TextView
             android:id="@+id/enter_password"
