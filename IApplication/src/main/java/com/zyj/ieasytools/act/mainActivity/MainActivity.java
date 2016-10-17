@@ -161,8 +161,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
             // TODO: 2016/10/11 分享按钮
         });
 
-        initContentViews();
-
         if (BuildConfig.FUNCTION_DEBUG) {
             mDebug = getViewById(R.id.debug);
             Object[] versions = ZYJUtils.getVersion(this);
@@ -175,6 +173,15 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
         if (!mPresenter.hasOtherDatabase()) {
             mNavigationView.getMenu().removeItem(R.id.settings_view_other);
         }
+
+        mGroupWebView = new WebView(MainActivity.this);
+        mGroupEmailView = new EmailView(MainActivity.this);
+        mGroupWalletView = new WalletView(MainActivity.this);
+        mGroupAppView = new AppView(MainActivity.this);
+        mGroupGameView = new GameView(MainActivity.this);
+        mGroupOtherView = new OtherView(MainActivity.this);
+        addSwitchView(null, mGroupWebView);
+        actionProgressBar(false);
     }
 
     @Override
@@ -293,6 +300,12 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     @Override
     protected void verifyEnterPasswordSuccess() {
         super.verifyEnterPasswordSuccess();
+        mGroupWebView.verifyEnterPasswordSuccess();
+        mGroupEmailView.verifyEnterPasswordSuccess();
+        mGroupWalletView.verifyEnterPasswordSuccess();
+        mGroupAppView.verifyEnterPasswordSuccess();
+        mGroupGameView.verifyEnterPasswordSuccess();
+        mGroupOtherView.verifyEnterPasswordSuccess();
     }
 
     @Override
@@ -305,26 +318,6 @@ public class MainActivity extends BaseActivity implements DrawerLayout.DrawerLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    /**
-     * Init the child view and add the default view
-     */
-    private void initContentViews() {
-        new Thread() {
-            public void run() {
-                mGroupWebView = new WebView(MainActivity.this);
-                mGroupEmailView = new EmailView(MainActivity.this);
-                mGroupWalletView = new WalletView(MainActivity.this);
-                mGroupAppView = new AppView(MainActivity.this);
-                mGroupGameView = new GameView(MainActivity.this);
-                mGroupOtherView = new OtherView(MainActivity.this);
-                mHandler.post(() -> {
-                    addSwitchView(null, mGroupWebView);
-                    actionProgressBar(false);
-                });
-            }
-        }.start();
     }
 
     /**

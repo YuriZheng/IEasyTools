@@ -1,6 +1,7 @@
 package com.zyj.ieasytools.library.utils;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.zyj.ieasytools.library.db.DatabaseColumns;
@@ -28,29 +29,33 @@ import java.util.Map;
 public final class ZYJDatabaseUtils {
 
     /**
+     * Our database flag in map
+     */
+    public static final String OUR_DATABASE_KEY = "_our";
+
+    /**
      * Singleton ZYJDatabaseSettings, Destory database settings instance in server
      */
     private static ZYJDatabaseSettings mInstance;
 
     private static final String TEST_FROM = "!@#$%^&*()_+~zhengyujie497393102";
 
-    private static final String OUR_DATABASE_KEY = "_our";
     /**
      * Keep the instance of {@link ZYJDatabaseEncrypts} by database's path
      */
-    private static Map<String, ZYJDatabaseEncrypts> sEncryptMap = new HashMap<String, ZYJDatabaseEncrypts>();
+    private static Map<String, ZYJDatabaseEncrypts> sEncryptMap = new HashMap<>();
 
     /**
      * Get the settings default encrypt bean
      */
-    public static BaseEncrypt getSettingsEncrypt(Context context) {
+    public synchronized static BaseEncrypt getSettingsEncrypt(Context context) {
         return EncryptFactory.getInstance().getEncryptInstance(BaseEncrypt.ENCRYPT_AES, ZYJUtils.getSettingPassword(context));
     }
 
     /**
      * Get settings instance
      */
-    public static ZYJDatabaseSettings getSettingsInstance(Context c) {
+    public synchronized static ZYJDatabaseSettings getSettingsInstance(Context c) {
         if (mInstance == null || !mInstance.verifyValidSetting()) {
             try {
                 Class<?> cls = Class.forName(ZYJDatabaseSettings.class.getName());
@@ -72,13 +77,8 @@ public final class ZYJDatabaseUtils {
      * @param password the database's password
      * @return return {@link ZYJDatabaseEncrypts}
      */
-    public static ZYJDatabaseEncrypts getCurrentEncryptDatabase(Context context, String password) {
-        ZYJDatabaseEncrypts e = sEncryptMap.get(OUR_DATABASE_KEY);
-        if (e == null) {
-            return getEncryptDatabaseFromPath(context.getApplicationContext(), OUR_DATABASE_KEY, password);
-        } else {
-            return e;
-        }
+    public synchronized static ZYJDatabaseEncrypts getCurrentEncryptDatabase(Context context, String password) {
+        return getEncryptDatabaseFromPath(context.getApplicationContext(), OUR_DATABASE_KEY, password);
     }
 
     /**
@@ -89,12 +89,12 @@ public final class ZYJDatabaseUtils {
      * @param password the database's password
      * @return return {@link ZYJDatabaseEncrypts}
      */
-    public static ZYJDatabaseEncrypts getEncryptDatabaseFromPath(Context context, String path, String password) {
+    public synchronized static ZYJDatabaseEncrypts getEncryptDatabaseFromPath(Context context, String path, String password) {
         if (TextUtils.isEmpty(path)) {
             return null;
         }
         ZYJDatabaseEncrypts entrypt = sEncryptMap.get(path);
-        if (entrypt != null) {
+        if (entrypt != null && entrypt.validDatabase()) {
             return entrypt;
         }
         try {
@@ -119,6 +119,7 @@ public final class ZYJDatabaseUtils {
             Method method = ZYJDatabaseEncrypts.class.getDeclaredMethod("initDatabase");
             method.setAccessible(true);
             method.invoke(encrypt);
+            ZYJUtils.logD(ZYJDatabaseUtils.class, "Cache database: " + path + ", Encrypt: " + encrypt);
             sEncryptMap.put(path, encrypt);
             return encrypt;
         } catch (Exception e) {
@@ -133,7 +134,8 @@ public final class ZYJDatabaseUtils {
      *
      * @return the file of database, if create new file faile,then return null
      */
-    public static File getCurrentDatabasePath(Context context, boolean isCreate) {
+    @Nullable
+    public synchronized static File getCurrentDatabasePath(Context context, boolean isCreate) {
         String root = context.getDatabasePath(DatabaseColumns.EncryptColumns.DATABASE_NAME).getAbsolutePath();
         File file = new File(root);
         if (!isCreate) {
@@ -158,7 +160,7 @@ public final class ZYJDatabaseUtils {
     /**
      * Get other database paths
      */
-    public static List<String> getDatabasePathsBesidesCurrent(Context context) {
+    public synchronized static List<String> getDatabasePathsBesidesCurrent(Context context) {
         List<String> paths = new ArrayList<String>();
         String root = context.getDatabasePath(DatabaseColumns.EncryptColumns.DATABASE_NAME).getAbsolutePath();
         File file = new File(new File(root).getParent());
@@ -180,10 +182,11 @@ public final class ZYJDatabaseUtils {
     /**
      * Destory entrypt by key
      */
-    public static void destoryDatabases(String key) {
+    public synchronized static void destoryDatabases(String key) {
         if (TextUtils.isEmpty(key)) {
-            key = OUR_DATABASE_KEY;
+            return;
         }
+        ZYJUtils.logD(ZYJDatabaseUtils.class, "Destory database: " + key);
         ZYJDatabaseEncrypts e = sEncryptMap.remove(key);
         if (e != null && !e.isDestory()) {
             e.onDestroy();
@@ -194,7 +197,7 @@ public final class ZYJDatabaseUtils {
     /**
      * Make sure all database instance had destory, Only call once in this application onDestory() method
      */
-    public static void destoryAllDatabase() {
+    public synchronized static void destoryAllDatabase() {
         if (sEncryptMap != null && sEncryptMap.size() > 0) {
             for (String path : sEncryptMap.keySet()) {
                 ZYJDatabaseEncrypts e = sEncryptMap.remove(path);
@@ -217,7 +220,7 @@ public final class ZYJDatabaseUtils {
      * @param version  the app's version
      * @return true if the password is right,other return false
      */
-    public static boolean checkEncryptPassword(String method, String password, String from, String to, int version) {
+    public synchronized static boolean checkEncryptPassword(String method, String password, String from, String to, int version) {
         BaseEncrypt encrypt = EncryptFactory.getInstance().getEncryptInstance(method, password);
         String decryptString = encrypt.decrypt(from, version);
         return to.equals(decryptString);
@@ -231,7 +234,7 @@ public final class ZYJDatabaseUtils {
      * @param version  the app's version
      * @return return arrays of test string,args[0]=from,args[1]=to
      */
-    public static String[] generateTestTo(String method, String password, int version) {
+    public synchronized static String[] generateTestTo(String method, String password, int version) {
         String[] args = new String[2];
         BaseEncrypt encrypt = EncryptFactory.getInstance().getEncryptInstance(method, password);
         args[0] = TEST_FROM;

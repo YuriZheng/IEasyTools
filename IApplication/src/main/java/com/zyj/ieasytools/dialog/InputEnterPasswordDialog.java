@@ -1,5 +1,6 @@
 package com.zyj.ieasytools.dialog;
 
+import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -7,14 +8,12 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.StringBuilderPrinter;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -34,10 +33,6 @@ import com.zyj.ieasytools.library.utils.ZYJPreferencesUtils;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.library.views.EffectButtonView;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.R.id.input;
 import static com.zyj.ieasytools.act.helpActivity.HelpActivity.ENTER_KEY;
 import static com.zyj.ieasytools.act.helpActivity.HelpActivity.ENTER_NEED_VERIFY_KEY;
 import static com.zyj.ieasytools.act.helpActivity.HelpActivity.ENTER_STYLE_ENTER_PASSWORD;
@@ -68,6 +63,23 @@ public class InputEnterPasswordDialog extends Dialog {
     // Verify faile and verify again delayed time
     private final int mTimeOut = 1000 * 60 * 1;
 
+    /**
+     * Database file and password already exists. Verify. User setting enter style.
+     */
+    private final int ENTER_STYLE_FILE_PASSWORD = 0x1;
+    /**
+     * Database file already exists. Verify. Input enter style forced.
+     */
+    private final int ENTER_STYLE_FILE = 0x2;
+    /**
+     * Password already exists. Verify. User setting enter style.
+     */
+    private final int ENTER_STYLE_PASSWORD = 0x4;
+    /**
+     * Database file and password not exists. Init password. Input enter style forced.
+     */
+    private final int ENTER_STYLE_ = 0x8;
+
     private final Context mContext;
 
     // Main view, switch views in it
@@ -83,11 +95,14 @@ public class InputEnterPasswordDialog extends Dialog {
      * <li>{@link #ENTER_PASSWORD_IMITATE_IOS}</li>
      * <li>{@link #ENTER_PASSWORD_FINGERPRINT}</li>
      */
-    private int mEnterStyle;
-    // Setting or Verify: true is setting password, false is verify password
-    private final boolean hasPassword;
-    // The database is exists
-    private final boolean existsFile;
+    private final int mEnterStyle;
+    /**
+     * <li>{@link #ENTER_STYLE_FILE_PASSWORD}</li>
+     * <li>{@link #ENTER_STYLE_FILE}</li>
+     * <li>{@link #ENTER_STYLE_PASSWORD}</li>
+     * <li>{@link #ENTER_STYLE_}</li>
+     */
+    private final int mSettingPasswordStyle;
 
     private Handler mHandler;
 
@@ -101,7 +116,6 @@ public class InputEnterPasswordDialog extends Dialog {
         mContext = context;
         mHandler = new Handler(mContext.getMainLooper());
         mMainView = new RelativeLayout(mContext);
-        mEnterStyle = mSettings.getIntProperties(SettingsConstant.SETTINGS_PASSWORD_INPUT_STYLE, ENTER_PASSWORD_IMITATE_IOS);
 
         try {
             WindowManager.LayoutParams lp = getWindow().getAttributes();
@@ -113,15 +127,21 @@ public class InputEnterPasswordDialog extends Dialog {
             ZYJUtils.logW(getClass(), e.getLocalizedMessage());
         }
 
-        // 文件存在，密码存在：验证密码，进入的样式按照用户设置的样式
-        // --文件存在，密码不存在：验证密码然后保存，进入的样式强制设置为输入样式
-        // 文件不存在，密码存在：验证密码，然后使用密码新建文件，进入样式为用户设置样式
-        // --文件不存在，密码不存在：初始化设置，进入的样式强制设置为输入样式
-
-        existsFile = DatabaseUtils.getCurrentDatabasePath(mContext, false).exists();
-        hasPassword = !TextUtils.isEmpty(mSettings.getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null));
-        if (!hasPassword) {
+        boolean existsFile = DatabaseUtils.getCurrentDatabasePath(mContext, false).exists();
+        boolean hasPassword = !TextUtils.isEmpty(mSettings.getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null));
+        if (existsFile && hasPassword) {
+            mSettingPasswordStyle = ENTER_STYLE_FILE_PASSWORD;
+        } else if (existsFile && !hasPassword) {
+            mSettingPasswordStyle = ENTER_STYLE_FILE;
+        } else if (!existsFile && hasPassword) {
+            mSettingPasswordStyle = ENTER_STYLE_PASSWORD;
+        } else {
+            mSettingPasswordStyle = ENTER_STYLE_;
+        }
+        if (mSettingPasswordStyle == ENTER_STYLE_FILE || mSettingPasswordStyle == ENTER_STYLE_) {
             mEnterStyle = ENTER_PASSWORD_IMITATE_IOS;
+        } else {
+            mEnterStyle = mSettings.getIntProperties(SettingsConstant.SETTINGS_PASSWORD_INPUT_STYLE, ENTER_PASSWORD_IMITATE_IOS);
         }
     }
 
@@ -168,11 +188,8 @@ public class InputEnterPasswordDialog extends Dialog {
 
     private void addToolbar(int title) {
         View toolbarLayout = LayoutInflater.from(mContext).inflate(R.layout.toolbar_layout, null);
-        toolbarLayout.findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
+        toolbarLayout.findViewById(R.id.back).setOnClickListener((v) -> {
+            dismiss();
         });
         TextView titleView = (TextView) toolbarLayout.findViewById(R.id.title);
         float size = ZYJPreferencesUtils.getFloat(mContext, SettingsConstant.TOOLBAR_TITLE_SIZE);
@@ -182,6 +199,20 @@ public class InputEnterPasswordDialog extends Dialog {
         titleView.setText(title);
         toolbarLayout.measure(0, 0);
         mMainView.addView(toolbarLayout, RelativeLayout.LayoutParams.MATCH_PARENT, toolbarLayout.getMeasuredHeight());
+    }
+
+    /**
+     * <li>{@link #ENTER_STYLE_FILE_PASSWORD}</li>
+     * <li>{@link #ENTER_STYLE_FILE}</li>
+     * <li>{@link #ENTER_STYLE_PASSWORD}</li>
+     * <li>{@link #ENTER_STYLE_}</li><p>
+     * 文件存在，密码存在：验证密码，进入的样式按照用户设置的样式<br><p>
+     * 文件存在，密码不存在：验证密码然后保存，进入的样式强制设置为输入样式<br><p>
+     * 文件不存在，密码存在：验证密码，然后使用密码新建文件，进入样式为用户设置样式<br><p>
+     * 文件不存在，密码不存在：初始化设置，进入的样式强制设置为输入样式
+     */
+    protected int getSettingPasswordStyle() {
+        return mSettingPasswordStyle;
     }
 
     /**
@@ -213,6 +244,20 @@ public class InputEnterPasswordDialog extends Dialog {
 
         protected boolean iSuccess = false;
 
+        protected BaseVerifyView(int layoutRes) {
+            iMain = LayoutInflater.from(mContext).inflate(layoutRes, null);
+            iSubTitle = (TextView) iMain.findViewById(R.id.sub_title);
+            float size = ZYJPreferencesUtils.getFloat(mContext, SettingsConstant.TOOLBAR_TITLE_SIZE);
+            if (size > 0) {
+                iSubTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 5);
+            }
+            if (getSettingPasswordStyle() == ENTER_STYLE_) {
+                iSubTitle.setText(R.string.enter_password_setting);
+            } else {
+                iSubTitle.setText(R.string.enter_password_verify);
+            }
+        }
+
         protected void dismiss() {
             if (mResultCallBack != null) {
                 mResultCallBack.verifyEnterPasswordCallBack(iSuccess);
@@ -229,165 +274,16 @@ public class InputEnterPasswordDialog extends Dialog {
             }
         }
 
-        protected BaseVerifyView(int layoutRes) {
-            iMain = LayoutInflater.from(mContext).inflate(layoutRes, null);
-            iSubTitle = (TextView) iMain.findViewById(R.id.sub_title);
-            float size = ZYJPreferencesUtils.getFloat(mContext, SettingsConstant.TOOLBAR_TITLE_SIZE);
-            if (size > 0) {
-                iSubTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, size - 5);
-            }
-            if (isSettingPassword()) {
-                iSubTitle.setText(R.string.enter_password_setting);
-            } else {
-                iSubTitle.setText(R.string.enter_password_verify);
-            }
-        }
-
-        protected boolean isSettingPassword() {
-            return !existsFile && !hasPassword;
-        }
-
-        protected <T extends View> T findViewById(int resId) {
-            return (T) iMain.findViewById(resId);
-        }
-
         protected void verifyFinish() {
             mHandler.postDelayed(() -> {
                 InputEnterPasswordDialog.this.dismiss();
             }, iDelayed);
         }
 
-    }
-
-    /**
-     * Input view to verify password
-     */
-    private class VerifyInputView extends BaseVerifyView {
-
-        private EditText mInputText;
-
-        private VerifyInputView() {
-            super(R.layout.input_input_layout);
-
-            mInputText = findViewById(R.id.input_password);
-
-            iMain.findViewById(R.id.sure).setOnClickListener(this);
-
-            View clear = findViewById(R.id.clear);
-            if (!isSettingPassword()) {
-                clear.setVisibility(View.GONE);
-            } else {
-                clear.setOnClickListener(this);
-            }
+        protected <T extends View> T findViewById(int resId) {
+            return (T) iMain.findViewById(resId);
         }
 
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.clear:
-                    clear();
-                    break;
-                case R.id.sure:
-                    verify(v);
-                    break;
-            }
-        }
-
-        private void verify(final View v) {
-            String input = mInputText.getText().toString();
-            mInputText.setText("");
-            if (input.length() < BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MIN) {
-                iSubTitle.setText(R.string.password_short);
-                return;
-            }
-            if (input.length() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
-                iSubTitle.setText(R.string.password_long);
-                return;
-            }
-            if (isSettingPassword()) {
-                if (TextUtils.isEmpty(iRecordPassword)) {
-                    iRecordPassword = input;
-                    iSubTitle.setText(R.string.verify_enter_copy);
-                } else {
-                    if (iRecordPassword.equals(input)) {
-                        ZYJDatabaseEncrypts encrypt = DatabaseUtils.getCurrentEncryptDatabase(mContext, input);
-                        if (encrypt == null || !encrypt.validDatabase()) {
-                            if (encrypt == null) {
-                                iSubTitle.setText(mContext.getResources().getString(R.string.database_open_error, "null"));
-                            } else {
-                                BaseDatabase.DATABASE_OPEN_STATE state = encrypt.getDatabaseState();
-                                if (state == BaseDatabase.DATABASE_OPEN_STATE.DATABASE_OPEN_FILE_EXCEPTION) {
-                                    iSubTitle.setText(mContext.getResources().getString(R.string.database_open_file_exception));
-                                } else if (state == BaseDatabase.DATABASE_OPEN_STATE.DATABASE_OPEN_PASSWORD) {
-                                    iSubTitle.setText(mContext.getResources().getString(R.string.database_open_password_wrong));
-                                } else if (state == BaseDatabase.DATABASE_OPEN_STATE.DATABASE_OPEN_UNKNOW) {
-                                    iSubTitle.setText(mContext.getResources().getString(R.string.database_open_open_unknow));
-                                } else {
-                                    iSubTitle.setText(mContext.getResources().getString(R.string.database_open_unknow));
-                                }
-                            }
-                            iSuccess = false;
-                            mInputText.setEnabled(false);
-                            v.setOnClickListener(null);
-                            verifyFinish();
-                        } else {
-                            // Save the password
-                            mSettings.putStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, input);
-                            iSubTitle.setText(R.string.setting_password_finish);
-                            iSuccess = true;
-                            mInputText.setEnabled(false);
-                            v.setOnClickListener(null);
-                            verifyFinish();
-                        }
-                    } else {
-                        iSubTitle.setText(R.string.verify_password_no_match);
-                    }
-                }
-            } else {
-                ZYJDatabaseEncrypts encrypt = DatabaseUtils.getCurrentEncryptDatabase(mContext, input);
-                if (encrypt == null || !encrypt.validDatabase()) {
-                    if (encrypt == null) {
-                        iSubTitle.setText(mContext.getResources().getString(R.string.database_open_error, "null"));
-                    } else {
-                        BaseDatabase.DATABASE_OPEN_STATE state = encrypt.getDatabaseState();
-                        if (state == BaseDatabase.DATABASE_OPEN_STATE.DATABASE_OPEN_FILE_EXCEPTION) {
-                            iSubTitle.setText(mContext.getResources().getString(R.string.database_open_file_exception));
-                        } else if (state == BaseDatabase.DATABASE_OPEN_STATE.DATABASE_OPEN_PASSWORD) {
-                            iSubTitle.setText(mContext.getResources().getString(R.string.database_open_password_wrong));
-                        } else if (state == BaseDatabase.DATABASE_OPEN_STATE.DATABASE_OPEN_UNKNOW) {
-                            iSubTitle.setText(mContext.getResources().getString(R.string.database_open_open_unknow));
-                        } else {
-                            iSubTitle.setText(mContext.getResources().getString(R.string.database_open_unknow));
-                        }
-                    }
-                    iRecordCount++;
-                    if (iRecordCount >= WRONG_COUNT) {
-                        iSuccess = false;
-                        iSubTitle.setText(mContext.getResources().getString(R.string.verify_five_minutes_later, mTimeOut / 1000 / 60));
-                        // TODO: 2016/8/22  输入五次，mTimeOut分钟之后再试
-                        mSettings.putLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, System.currentTimeMillis());
-                        mInputText.setEnabled(false);
-                        v.setOnClickListener(null);
-                        verifyFinish();
-                    } else {
-                        iSubTitle.setText(mContext.getResources().getString(R.string.verify_error_count, iRecordCount));
-                    }
-                } else {
-                    iSuccess = true;
-                    iSubTitle.setText(R.string.verify_passed);
-                    mInputText.setEnabled(false);
-                    v.setOnClickListener(null);
-                    verifyFinish();
-                }
-            }
-        }
-
-        private void clear() {
-            iSubTitle.setText(R.string.enter_password_setting);
-            mInputText.setText("");
-            iRecordPassword = "";
-            iRecordCount = 0;
-        }
     }
 
     /**
@@ -398,10 +294,13 @@ public class InputEnterPasswordDialog extends Dialog {
         private EffectButtonView[] mButtons = new EffectButtonView[10];
         private HorizontalScrollView mScrollView;
         private LinearLayout mToastPoint;
-
-        private List<String> mRecoList = new ArrayList<>(BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX);
+        private TextView mLeftButton;
 
         private Toast mToast = null;
+
+        private boolean enableClick = true;
+
+        private final int mDuration = 100;
 
         private VerifyIosView() {
             super(R.layout.ios_input_layout);
@@ -409,10 +308,12 @@ public class InputEnterPasswordDialog extends Dialog {
             mScrollView = findViewById(R.id.scrollView);
             mToastPoint = findViewById(R.id.input_point);
 
+            mLeftButton = findViewById(R.id.del_password);
+
             setEffectButtonAttrs();
             findViewById(R.id.password_question).setOnClickListener(this);
             findViewById(R.id.enter_password).setOnClickListener(this);
-            findViewById(R.id.del_password).setOnClickListener(this);
+            mLeftButton.setOnClickListener(this);
 
         }
 
@@ -433,21 +334,24 @@ public class InputEnterPasswordDialog extends Dialog {
         }
 
         private View.OnClickListener mEffectListener = (v) -> {
-            settingPassword(v);
+            if (enableClick) {
+                settingPassword(v.getTag().toString());
+                setLeftBottomButton(R.string.verify_enter_del);
+                if (getSettingPasswordStyle() == ENTER_STYLE_) {
+                    iSubTitle.setText(R.string.enter_password_setting);
+                } else {
+                    iSubTitle.setText(R.string.enter_password_verify);
+                }
+            }
         };
 
-        private void settingPassword(final View v) {
+        private void settingPassword(final String tag) {
             if (mToastPoint.getChildCount() > BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX) {
-                if (mToast != null) {
-                    mToast.setText(R.string.password_long);
-                    mToast.setDuration(Toast.LENGTH_SHORT);
-                } else {
-                    mToast = Toast.makeText(mContext, R.string.password_long, Toast.LENGTH_SHORT);
-                }
-                mToast.show();
+                toast(R.string.password_long);
                 return;
             }
             final EffectButtonView view = getPointView();
+            view.setTag(tag);
             mToastPoint.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
                 public void onChildViewAdded(View parent, View child) {
                     if (child.equals(view)) {
@@ -464,8 +368,17 @@ public class InputEnterPasswordDialog extends Dialog {
 
                 }
             });
-            mRecoList.add(v.getTag().toString());
             mToastPoint.addView(view);
+        }
+
+        private void toast(int messageRes) {
+            if (mToast != null) {
+                mToast.setText(messageRes);
+                mToast.setDuration(Toast.LENGTH_SHORT);
+            } else {
+                mToast = Toast.makeText(mContext, messageRes, Toast.LENGTH_SHORT);
+            }
+            mToast.show();
         }
 
         private void verify(final String password) {
@@ -477,9 +390,11 @@ public class InputEnterPasswordDialog extends Dialog {
                 iSubTitle.setText(R.string.password_long);
                 return;
             }
-            if (isSettingPassword()) {
+            if (getSettingPasswordStyle() == ENTER_STYLE_) {
                 if (TextUtils.isEmpty(iRecordPassword)) {
                     iRecordPassword = password;
+                    setLeftBottomButton(R.string.verify_enter_clear);
+                    mToastPoint.removeAllViews();
                     iSubTitle.setText(R.string.verify_enter_copy);
                 } else {
                     if (iRecordPassword.equals(password)) {
@@ -500,16 +415,14 @@ public class InputEnterPasswordDialog extends Dialog {
                                 }
                             }
                             iSuccess = false;
-                            mInputText.setEnabled(false);
-                            v.setOnClickListener(null);
+                            enableClick = false;
                             verifyFinish();
                         } else {
                             // Save the password
                             mSettings.putStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, password);
                             iSubTitle.setText(R.string.setting_password_finish);
                             iSuccess = true;
-                            mInputText.setEnabled(false);
-                            v.setOnClickListener(null);
+                            enableClick = false;
                             verifyFinish();
                         }
                     } else {
@@ -517,6 +430,7 @@ public class InputEnterPasswordDialog extends Dialog {
                     }
                 }
             } else {
+                enableClick = false;
                 ZYJDatabaseEncrypts encrypt = DatabaseUtils.getCurrentEncryptDatabase(mContext, password);
                 if (encrypt == null || !encrypt.validDatabase()) {
                     if (encrypt == null) {
@@ -539,8 +453,7 @@ public class InputEnterPasswordDialog extends Dialog {
                         iSubTitle.setText(mContext.getResources().getString(R.string.verify_five_minutes_later, mTimeOut / 1000 / 60));
                         // TODO: 2016/8/22  输入五次，mTimeOut分钟之后再试
                         mSettings.putLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, System.currentTimeMillis());
-                        mInputText.setEnabled(false);
-                        v.setOnClickListener(null);
+                        enableClick = false;
                         verifyFinish();
                     } else {
                         iSubTitle.setText(mContext.getResources().getString(R.string.verify_error_count, iRecordCount));
@@ -548,8 +461,6 @@ public class InputEnterPasswordDialog extends Dialog {
                 } else {
                     iSuccess = true;
                     iSubTitle.setText(R.string.verify_passed);
-                    mInputText.setEnabled(false);
-                    v.setOnClickListener(null);
                     verifyFinish();
                 }
             }
@@ -569,6 +480,9 @@ public class InputEnterPasswordDialog extends Dialog {
 
         @Override
         public void onClick(View v) {
+            if (!enableClick) {
+                return;
+            }
             int id = v.getId();
             if (id == R.id.password_question) {
                 Intent intent = new Intent(getContext(), HelpActivity.class);
@@ -576,28 +490,68 @@ public class InputEnterPasswordDialog extends Dialog {
                 intent.putExtra(ENTER_NEED_VERIFY_KEY, false);
                 getContext().startActivity(intent);
             } else if (id == R.id.del_password) {
-                if (mToastPoint.getChildCount() > 0) {
-                    final EffectButtonView lastView = (EffectButtonView) mToastPoint.getChildAt(mToastPoint.getChildCount() - 1);
-                    lastView.unSelect();
-                    mHandler.postDelayed(() -> {
-                        mToastPoint.removeView(lastView);
-                    }, lastView.getAnimatorTime());
+                if (mLeftButton.getAlpha() <= 0) {
+                    return;
+                }
+                String o = v.getTag().toString();
+                Integer i = Integer.parseInt(o);
+                if (i == R.string.verify_enter_clear) {
+                    clear();
+                    setLeftBottomButton(-1);
+                } else if (i == R.string.verify_enter_del) {
+                    if (mToastPoint.getChildCount() > 0) {
+                        final EffectButtonView lastView = (EffectButtonView) mToastPoint.getChildAt(mToastPoint.getChildCount() - 1);
+                        lastView.unSelect();
+                        mHandler.postDelayed(() -> {
+                            mToastPoint.removeView(lastView);
+                        }, lastView.getAnimatorTime());
+                        if (mToastPoint.getChildCount() == 1) {
+                            if (!TextUtils.isEmpty(iRecordPassword)) {
+                                setLeftBottomButton(R.string.verify_enter_clear);
+                            } else {
+                                setLeftBottomButton(-1);
+                            }
+                        }
+                    } else {
+                        if (!TextUtils.isEmpty(iRecordPassword)) {
+                            setLeftBottomButton(R.string.verify_enter_clear);
+                        } else {
+                            setLeftBottomButton(-1);
+                        }
+                    }
                 }
             } else if (id == R.id.enter_password) {
                 StringBuilder sb = new StringBuilder(BaseEncrypt.ENCRYPT_PRIVATE_KEY_LENGTH_MAX);
-                mRecoList.forEach((String i) -> {
-                    sb.append(i);
-                });
+                int count = mToastPoint.getChildCount();
+                for (int i = 0; i < count; i++) {
+                    EffectButtonView view = (EffectButtonView) mToastPoint.getChildAt(i);
+                    sb.append(view.getTag().toString());
+                }
                 ZYJUtils.logD(getClass(), "Password: " + sb.toString());
                 verify(sb.toString());
             }
         }
 
-
+        private void setLeftBottomButton(int res) {
+            mLeftButton.setTag(new Integer(res));
+            if (res < 0) {
+                if (mLeftButton.getAlpha() >= 1) {
+                    ObjectAnimator.ofFloat(mLeftButton, "alpha", 1, 0).setDuration(mDuration).start();
+                }
+                return;
+            }
+            if (res > 0) {
+                if (mLeftButton.getAlpha() <= 0) {
+                    ObjectAnimator.ofFloat(mLeftButton, "alpha", 0, 1).setDuration(mDuration).start();
+                }
+                mLeftButton.setText(res);
+                return;
+            }
+        }
 
         private void clear() {
             iSubTitle.setText(R.string.enter_password_setting);
-            mRecoList.clear();
+            mToastPoint.removeAllViews();
             iRecordPassword = "";
             iRecordCount = 0;
         }

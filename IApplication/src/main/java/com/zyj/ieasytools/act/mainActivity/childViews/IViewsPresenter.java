@@ -15,12 +15,17 @@ public interface IViewsPresenter extends com.zyj.ieasytools.act.IBasePresenter {
     /**
      * Get the datas by category
      */
-    void requestEntryByCategory(String category);
+    void onReload(String category);
 
     /**
      * Switch database
      */
     int onSwitchDatabase(final String name, final String path, final String password);
+
+    /**
+     * Valid the database
+     */
+    boolean valid();
 
     /**
      * Destroy resources

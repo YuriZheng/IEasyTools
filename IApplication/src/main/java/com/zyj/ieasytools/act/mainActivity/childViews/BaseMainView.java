@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.zyj.ieasytools.R;
 import com.zyj.ieasytools.act.mainActivity.MainActivity;
+import com.zyj.ieasytools.library.db.DatabaseColumns;
 import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 import com.zyj.ieasytools.library.utils.ZYJUtils;
 import com.zyj.ieasytools.views.DividerItemDecoration;
@@ -62,6 +63,20 @@ public abstract class BaseMainView<P extends IViewsPresenter> {
     }
 
     /**
+     * {@link IViewsView#verifyEnterPasswordSuccess()}
+     */
+    public void verifyEnterPasswordSuccess() {
+        if (!mPresenter.valid()) {
+            ZYJUtils.logD(getClass(), "Database is not valid");
+            // The path and password is useless
+            mPresenter.onSwitchDatabase(DatabaseColumns.EncryptColumns.DATABASE_NAME, "secret.izyj", "52043177821");
+            onReload();
+        } else {
+            ZYJUtils.logD(getClass(), "Database is valid");
+        }
+    }
+
+    /**
      * {@link IViewsView#destory()}
      */
     public void destory() {
@@ -101,7 +116,7 @@ public abstract class BaseMainView<P extends IViewsPresenter> {
      * {@link IViewsView#onReload()}
      */
     public void onReload() {
-        mPresenter.requestEntryByCategory(mCategory);
+        mPresenter.onReload(mCategory);
     }
 
     /**

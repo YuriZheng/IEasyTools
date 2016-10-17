@@ -57,7 +57,8 @@
     <string name="verify_enterpassword_gesture">手势验证</string>
     <string name="enter_password_setting">设置进入密码</string>
     <string name="enter_password_verify">验证密码</string>
-    <string name="verify_enter_clear">清除</string>
+    <string name="verify_enter_clear">重置</string>
+    <string name="verify_enter_del">删除</string>
     <string name="verify_enter_copy">请再次输入密码</string>
     <string name="verify_enter_faile">验证失败</string>
     <string name="verify_password_no_match">密码不匹配</string>

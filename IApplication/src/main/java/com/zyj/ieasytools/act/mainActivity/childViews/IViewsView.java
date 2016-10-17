@@ -20,6 +20,11 @@ public interface IViewsView<T extends IViewsPresenter> extends com.zyj.ieasytool
     String getDatabaseName();
 
     /**
+     * Verify success, if init then call this method
+     */
+    void verifyEnterPasswordSuccess();
+
+    /**
      * Get the root view
      *
      * @return return the root view instance

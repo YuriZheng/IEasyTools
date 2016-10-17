@@ -8,6 +8,7 @@ import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -108,7 +109,6 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected void verifyEnterPasswordSuccess() {
         // Subclass override method
-        // TODO: 11/10/2016 当第一次输入数据库密码时，不应该回调此方法，所以第一次输入密码应该单独给个输入框，后续改进
     }
 
     /**
@@ -165,15 +165,18 @@ public class BaseActivity extends AppCompatActivity {
             getContentResolver().registerContentObserver(ZYJContentProvider.SEETINGS_URI, true, mListener);
         }
 
+        @NonNull
         private Long getLastTime() {
             return mSettings != null ? mSettings.getLongProperties(SettingsConstant.SETTINGS_VERIFY_STATE_LAST_TIME, -1) : -1;
         }
 
+        @NonNull
         private Long getPauseTime() {
             return mSettings != null ? mSettings.getLongProperties(SettingsConstant.SETTINGS_PAUSE_TIME,
                     -1) : -1;
         }
 
+        @NonNull
         private Long getTimeOut() {
             return mSettings != null ? mSettings.getLongProperties(SettingsConstant.SETTINGS_PASSWORD_TIME_OUT,
                     SettingsConstant.SETTINGS_PASSWORD_TIME_OUT_DEFAULT_VALUE) : -1;
@@ -197,7 +200,7 @@ public class BaseActivity extends AppCompatActivity {
                 }, 250);
             } else {
                 ZYJUtils.logD(TAG, "time not out");
-                BaseActivity.this.verifyEnterPasswordSuccess();
+                verifyEnterPasswordSuccess();
             }
         }
 
@@ -211,18 +214,15 @@ public class BaseActivity extends AppCompatActivity {
             getContentResolver().unregisterContentObserver(mListener);
         }
 
-        private InputEnterPasswordDialog.VerifyResultCallBack mVerifyCallBack = new InputEnterPasswordDialog.VerifyResultCallBack() {
-            @Override
-            public void verifyEnterPasswordCallBack(boolean success) {
-                if (success) {
-                    ZYJUtils.logD(TAG, "verifyEnterPasswordSuccess");
-                    BaseActivity.this.verifyEnterPasswordSuccess();
-                } else {
-                    // verify faile, clear the buffer of password
-                    // TODO: 2016/5/26 清空密码
-                    ZYJUtils.logD(TAG, "verifyEnterPasswordFaile");
-                    exitApp();
-                }
+        private InputEnterPasswordDialog.VerifyResultCallBack mVerifyCallBack = (success) -> {
+            if (success) {
+                ZYJUtils.logD(TAG, "verifyEnterPasswordSuccess");
+                BaseActivity.this.verifyEnterPasswordSuccess();
+            } else {
+                // verify faile, clear the buffer of password
+                // TODO: 2016/5/26 清空密码 待确认
+                ZYJUtils.logD(TAG, "verifyEnterPasswordFaile");
+                exitApp();
             }
         };
 

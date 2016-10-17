@@ -46,17 +46,24 @@ public abstract class BaseMainPresenter<V extends IViewsView> {
         mEntrypt.destroy();
     }
 
+    public boolean valid() {
+        return mEntrypt.validDatabase();
+    }
+
     /**
-     * {@link IViewsPresenter#requestEntryByCategory(String)}
+     * {@link IViewsPresenter#onReload(String)}
      */
-    public void requestEntryByCategory(String category) {
+    public void onReload(String category) {
         if (mEntrypt != null) {
+            ZYJUtils.logD(getClass(), "Start reload data ...");
             mView.setDatas(mEntrypt.queryEntry(new String[]{
                     DatabaseColumns.EncryptColumns._TITLE,
                     DatabaseColumns.EncryptColumns._USERNAME,
                     DatabaseColumns.EncryptColumns._DESCRIPTION,
                     DatabaseColumns.EncryptColumns._REMARKS
             }, DatabaseColumns.EncryptColumns._CATEGORY + "=?", new String[]{category}, null, null));
+        } else {
+            ZYJUtils.logD(getClass(), "Can't reload data ...");
         }
     }
 

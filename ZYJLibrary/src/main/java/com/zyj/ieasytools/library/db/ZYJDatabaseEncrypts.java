@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.zyj.ieasytools.library.db.DatabaseColumns.EncryptColumns.DATABASE_NAME;
+import static com.zyj.ieasytools.library.db.DatabaseColumns.EncryptColumns.*;
 
 /**
  * Author: Yuri.zheng<br>
@@ -203,7 +203,7 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
         if (mListener != null) {
             mListener.finishDelete();
         }
-        return d.delete(DatabaseColumns.EncryptColumns.TABLE_NAME, DatabaseColumns.EncryptColumns._UUID + "=?", new String[]{uuid});
+        return d.delete(DatabaseColumns.EncryptColumns.TABLE_NAME, _UUID + "=?", new String[]{uuid});
     }
 
     /**
@@ -225,47 +225,47 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
         }
         SQLiteDatabase d = mSQLDatabase.getSQLDatabase();
         ContentValues v = getContentValues(entry, password);
-        String uuid = v.getAsString(DatabaseColumns.EncryptColumns._UUID);
+        String uuid = v.getAsString(_UUID);
         ZYJUtils.logD(TAG, "update: " + entry);
         if (mListener != null) {
             mListener.finishModify();
         }
-        return d.update(DatabaseColumns.EncryptColumns.TABLE_NAME, v, DatabaseColumns.EncryptColumns._UUID + "=?", new String[]{uuid});
+        return d.update(DatabaseColumns.EncryptColumns.TABLE_NAME, v, _UUID + "=?", new String[]{uuid});
     }
 
     private ContentValues getContentValues(PasswordEntry entry, String password) {
         BaseEncrypt encrypt = EncryptFactory.getInstance().getEncryptInstance(entry.getEncryptionMethod(), password);
         ContentValues v = new ContentValues();
 
-        v.put(DatabaseColumns.EncryptColumns._UUID, entry.getUuid());
-        v.put(DatabaseColumns.EncryptColumns._TITLE, entry.p_title);
-        v.put(DatabaseColumns.EncryptColumns._USERNAME, entry.p_username);
-        v.put(DatabaseColumns.EncryptColumns._CATEGORY, entry.p_category);
-        v.put(DatabaseColumns.EncryptColumns._DESCRIPTION, entry.p_description);
-        v.put(DatabaseColumns.EncryptColumns._REMARKS, entry.p_remarks);
+        v.put(_UUID, entry.getUuid());
+        v.put(_TITLE, entry.p_title);
+        v.put(_USERNAME, entry.p_username);
+        v.put(_CATEGORY, entry.p_category);
+        v.put(_DESCRIPTION, entry.p_description);
+        v.put(_REMARKS, entry.p_remarks);
 
-        v.put(DatabaseColumns.EncryptColumns._PASSWORD, encrypt.encrypt(entry.p_password, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._ADDRESS, encrypt.encrypt(entry.p_address, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._EMAIL, encrypt.encrypt(entry.p_email, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._PHONE, encrypt.encrypt(entry.p_phone, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._QUESTION_1, encrypt.encrypt(entry.p_q_1, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_1, encrypt.encrypt(entry.p_q_a_1, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._QUESTION_2, encrypt.encrypt(entry.p_q_2, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_2, encrypt.encrypt(entry.p_q_a_2, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._QUESTION_3, encrypt.encrypt(entry.p_q_3, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_3, encrypt.encrypt(entry.p_q_a_3, ZYJVersion.getCurrentVersion()));
-        v.put(DatabaseColumns.EncryptColumns._ADD_TIME, entry.getAddTime());
-        v.put(DatabaseColumns.EncryptColumns._MODIFY_TIME, entry.p_modify_time);
-        v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_METHOD, entry.getEncryptionMethod());
-        v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_FROM, entry.getTestFrom());
-        v.put(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_TO, entry.getTestTo());
-        v.put(DatabaseColumns.EncryptColumns._Version, entry.p_version);
+        v.put(_PASSWORD, encrypt.encrypt(entry.p_password, ZYJVersion.getCurrentVersion()));
+        v.put(_ADDRESS, encrypt.encrypt(entry.p_address, ZYJVersion.getCurrentVersion()));
+        v.put(_EMAIL, encrypt.encrypt(entry.p_email, ZYJVersion.getCurrentVersion()));
+        v.put(_PHONE, encrypt.encrypt(entry.p_phone, ZYJVersion.getCurrentVersion()));
+        v.put(_QUESTION_1, encrypt.encrypt(entry.p_q_1, ZYJVersion.getCurrentVersion()));
+        v.put(_QUESTION_ANSWER_1, encrypt.encrypt(entry.p_q_a_1, ZYJVersion.getCurrentVersion()));
+        v.put(_QUESTION_2, encrypt.encrypt(entry.p_q_2, ZYJVersion.getCurrentVersion()));
+        v.put(_QUESTION_ANSWER_2, encrypt.encrypt(entry.p_q_a_2, ZYJVersion.getCurrentVersion()));
+        v.put(_QUESTION_3, encrypt.encrypt(entry.p_q_3, ZYJVersion.getCurrentVersion()));
+        v.put(_QUESTION_ANSWER_3, encrypt.encrypt(entry.p_q_a_3, ZYJVersion.getCurrentVersion()));
+        v.put(_ADD_TIME, entry.getAddTime());
+        v.put(_MODIFY_TIME, entry.p_modify_time);
+        v.put(_ENCRYPTION_METHOD, entry.getEncryptionMethod());
+        v.put(_ENCRYPTION_TEST_FROM, entry.getTestFrom());
+        v.put(_ENCRYPTION_TEST_TO, entry.getTestTo());
+        v.put(_Version, entry.p_version);
         //Reserve
-        v.put(DatabaseColumns.EncryptColumns._Reserve_0, "");
-        v.put(DatabaseColumns.EncryptColumns._Reserve_1, "");
-        v.put(DatabaseColumns.EncryptColumns._Reserve_2, "");
-        v.put(DatabaseColumns.EncryptColumns._Reserve_3, "");
-        v.put(DatabaseColumns.EncryptColumns._Reserve_4, "");
+        v.put(_Reserve_0, "");
+        v.put(_Reserve_1, "");
+        v.put(_Reserve_2, "");
+        v.put(_Reserve_3, "");
+        v.put(_Reserve_4, "");
         return v;
     }
 
@@ -276,46 +276,46 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
         String method = null;
         long addTime = 0;
         int version = 0;
-        if (columnsList == null || columnsList.contains(DatabaseColumns.EncryptColumns._UUID)) {
-            uuid = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._UUID));
+        if (columnsList == null || columnsList.contains(_UUID)) {
+            uuid = c.getString(c.getColumnIndex(_UUID));
         }
-        if (columnsList == null || columnsList.contains(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_FROM)) {
-            from = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_FROM));
+        if (columnsList == null || columnsList.contains(_ENCRYPTION_TEST_FROM)) {
+            from = c.getString(c.getColumnIndex(_ENCRYPTION_TEST_FROM));
         }
-        if (columnsList == null || columnsList.contains(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_TO)) {
-            to = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_TO));
+        if (columnsList == null || columnsList.contains(_ENCRYPTION_TEST_TO)) {
+            to = c.getString(c.getColumnIndex(_ENCRYPTION_TEST_TO));
         }
-        if (columnsList == null || columnsList.contains(DatabaseColumns.EncryptColumns._ENCRYPTION_METHOD)) {
-            method = c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ENCRYPTION_METHOD));
+        if (columnsList == null || columnsList.contains(_ENCRYPTION_METHOD)) {
+            method = c.getString(c.getColumnIndex(_ENCRYPTION_METHOD));
         }
-        if (columnsList == null || columnsList.contains(DatabaseColumns.EncryptColumns._ADD_TIME)) {
-            addTime = c.getLong(c.getColumnIndex(DatabaseColumns.EncryptColumns._ADD_TIME));
+        if (columnsList == null || columnsList.contains(_ADD_TIME)) {
+            addTime = c.getLong(c.getColumnIndex(_ADD_TIME));
         }
-        if (columnsList == null || columnsList.contains(DatabaseColumns.EncryptColumns._Version)) {
-            version = c.getInt(c.getColumnIndex(DatabaseColumns.EncryptColumns._Version));
+        if (columnsList == null || columnsList.contains(_Version)) {
+            version = c.getInt(c.getColumnIndex(_Version));
         }
         PasswordEntry entry = new PasswordEntry(uuid, addTime, method, from, to, version);
-        int titleColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._TITLE);
+        int titleColumn = c.getColumnIndex(_TITLE);
         if (titleColumn >= 0) {
             entry.p_title = c.getString(titleColumn);
         }
-        int userColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._USERNAME);
+        int userColumn = c.getColumnIndex(_USERNAME);
         if (userColumn >= 0) {
             entry.p_username = c.getString(userColumn);
         }
-        int descriptionColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._DESCRIPTION);
+        int descriptionColumn = c.getColumnIndex(_DESCRIPTION);
         if (descriptionColumn >= 0) {
             entry.p_description = c.getString(descriptionColumn);
         }
-        int remarkColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._REMARKS);
+        int remarkColumn = c.getColumnIndex(_REMARKS);
         if (remarkColumn >= 0) {
             entry.p_remarks = c.getString(remarkColumn);
         }
-        int modifyColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._MODIFY_TIME);
+        int modifyColumn = c.getColumnIndex(_MODIFY_TIME);
         if (modifyColumn >= 0) {
             entry.p_modify_time = c.getLong(modifyColumn);
         }
-        int categoryColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._CATEGORY);
+        int categoryColumn = c.getColumnIndex(_CATEGORY);
         if (categoryColumn >= 0) {
             entry.p_category = c.getString(categoryColumn);
         }
@@ -326,43 +326,43 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
                 ZYJUtils.logW(TAG, c.getString(c.getColumnIndex(DatabaseColumns.EncryptColumns._ID))
                         + " record password wrong");
             } else {
-                int passwordColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._PASSWORD);
+                int passwordColumn = c.getColumnIndex(_PASSWORD);
                 if (passwordColumn >= 0) {
                     entry.p_password = encrypt.decrypt(c.getString(passwordColumn), version);
                 }
-                int addressColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._ADDRESS);
+                int addressColumn = c.getColumnIndex(_ADDRESS);
                 if (addressColumn >= 0) {
                     entry.p_address = encrypt.decrypt(c.getString(addressColumn), version);
                 }
-                int emailColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._EMAIL);
+                int emailColumn = c.getColumnIndex(_EMAIL);
                 if (emailColumn >= 0) {
                     entry.p_email = encrypt.decrypt(c.getString(emailColumn), version);
                 }
-                int phoneColumn = c.getColumnIndex(DatabaseColumns.EncryptColumns._PHONE);
+                int phoneColumn = c.getColumnIndex(_PHONE);
                 if (phoneColumn >= 0) {
                     entry.p_phone = encrypt.decrypt(c.getString(phoneColumn), version);
                 }
-                int q1Column = c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_1);
+                int q1Column = c.getColumnIndex(_QUESTION_1);
                 if (q1Column >= 0) {
                     entry.p_q_1 = encrypt.decrypt(c.getString(q1Column), version);
                 }
-                int a1Column = c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_1);
+                int a1Column = c.getColumnIndex(_QUESTION_ANSWER_1);
                 if (a1Column >= 0) {
                     entry.p_q_a_1 = encrypt.decrypt(c.getString(a1Column), version);
                 }
-                int q2Column = c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_2);
+                int q2Column = c.getColumnIndex(_QUESTION_2);
                 if (q2Column >= 0) {
                     entry.p_q_2 = encrypt.decrypt(c.getString(q2Column), version);
                 }
-                int a2Column = c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_2);
+                int a2Column = c.getColumnIndex(_QUESTION_ANSWER_2);
                 if (a2Column >= 0) {
                     entry.p_q_a_2 = encrypt.decrypt(c.getString(a2Column), version);
                 }
-                int q3Column = c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_3);
+                int q3Column = c.getColumnIndex(_QUESTION_3);
                 if (q3Column >= 0) {
                     entry.p_q_3 = encrypt.decrypt(c.getString(q3Column), version);
                 }
-                int a3Column = c.getColumnIndex(DatabaseColumns.EncryptColumns._QUESTION_ANSWER_3);
+                int a3Column = c.getColumnIndex(_QUESTION_ANSWER_3);
                 if (a3Column >= 0) {
                     entry.p_q_a_3 = encrypt.decrypt(c.getString(a3Column), version);
                 }
@@ -382,8 +382,8 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
      * @return return {@link Cursor#getCount()} > 0
      */
     private boolean checkUUID(SQLiteDatabase d, String uuid) {
-        Cursor c = d.query(DatabaseColumns.EncryptColumns.TABLE_NAME, new String[]{DatabaseColumns.EncryptColumns._UUID},
-                DatabaseColumns.EncryptColumns._UUID + "=?", new String[]{uuid}, null, null, null);
+        Cursor c = d.query(DatabaseColumns.EncryptColumns.TABLE_NAME, new String[]{_UUID},
+                _UUID + "=?", new String[]{uuid}, null, null, null);
         if (c == null) {
             return false;
         }
@@ -438,23 +438,23 @@ public class ZYJDatabaseEncrypts extends BaseDatabase {
             for (String n : columns) {
                 columnsList.add(n);
             }
-            if (!columnsList.contains(DatabaseColumns.EncryptColumns._UUID)) {
-                columnsList.add(DatabaseColumns.EncryptColumns._UUID);
+            if (!columnsList.contains(_UUID)) {
+                columnsList.add(_UUID);
             }
-            if (!columnsList.contains(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_FROM)) {
-                columnsList.add(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_FROM);
+            if (!columnsList.contains(_ENCRYPTION_TEST_FROM)) {
+                columnsList.add(_ENCRYPTION_TEST_FROM);
             }
-            if (!columnsList.contains(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_TO)) {
-                columnsList.add(DatabaseColumns.EncryptColumns._ENCRYPTION_TEST_TO);
+            if (!columnsList.contains(_ENCRYPTION_TEST_TO)) {
+                columnsList.add(_ENCRYPTION_TEST_TO);
             }
-            if (!columnsList.contains(DatabaseColumns.EncryptColumns._ENCRYPTION_METHOD)) {
-                columnsList.add(DatabaseColumns.EncryptColumns._ENCRYPTION_METHOD);
+            if (!columnsList.contains(_ENCRYPTION_METHOD)) {
+                columnsList.add(_ENCRYPTION_METHOD);
             }
-            if (!columnsList.contains(DatabaseColumns.EncryptColumns._ADD_TIME)) {
-                columnsList.add(DatabaseColumns.EncryptColumns._ADD_TIME);
+            if (!columnsList.contains(_ADD_TIME)) {
+                columnsList.add(_ADD_TIME);
             }
-            if (!columnsList.contains(DatabaseColumns.EncryptColumns._Version)) {
-                columnsList.add(DatabaseColumns.EncryptColumns._Version);
+            if (!columnsList.contains(_Version)) {
+                columnsList.add(_Version);
             }
             return columnsList;
         }

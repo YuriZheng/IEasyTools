@@ -9,6 +9,8 @@ import com.zyj.ieasytools.library.encrypt.PasswordEntry;
 
 import java.util.List;
 
+import static com.zyj.ieasytools.library.utils.ZYJDatabaseUtils.OUR_DATABASE_KEY;
+
 /**
  * Author: Yuri.zheng<br>
  * Date: 8/21/16<br>
@@ -30,7 +32,9 @@ public final class EntryptImple implements IEntrypt {
         String password = DatabaseUtils.getSettingsInstance(context).getStringProperties(SettingsConstant.SETTINGS_SAVE_ENTER_PASSWORD, null);
         if (!TextUtils.isEmpty(password)) {
             mZYJEncrypts = DatabaseUtils.getCurrentEncryptDatabase(context, password);
-            mRecordkey = null;
+            if (mZYJEncrypts != null && mZYJEncrypts.validDatabase()) {
+                mRecordkey = OUR_DATABASE_KEY;
+            }
         }
     }
 
@@ -40,7 +44,9 @@ public final class EntryptImple implements IEntrypt {
     public EntryptImple(Context context, String path, String password) {
         if (!TextUtils.isEmpty(path) && !TextUtils.isEmpty(password)) {
             mZYJEncrypts = DatabaseUtils.getEncryptDatabaseFromPath(context, path, password);
-            mRecordkey = path;
+            if (mZYJEncrypts != null && mZYJEncrypts.validDatabase()) {
+                mRecordkey = path;
+            }
         }
     }
 

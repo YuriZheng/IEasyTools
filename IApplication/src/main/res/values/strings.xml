@@ -56,7 +56,8 @@
     <string name="verify_enterpassword_gesture">Verify gesture</string>
     <string name="enter_password_setting">Setting Enter Password</string>
     <string name="enter_password_verify">Verify Password</string>
-    <string name="verify_enter_clear">Clear</string>
+    <string name="verify_enter_clear">Reset</string>
+    <string name="verify_enter_del">Delete</string>
     <string name="verify_enter_copy">Input Again</string>
     <string name="verify_enter_faile">Verify Faile</string>
     <string name="verify_password_no_match">Passwords do not match</string>
