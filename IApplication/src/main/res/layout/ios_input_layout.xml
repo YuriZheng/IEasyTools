@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/colorAccent"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/iod_verify_top">
+
+        <TextView
+            android:id="@+id/sub_title"
+            style="@style/input_enter_password_dialog_sub_title"
+            android:layout_centerHorizontal="true"/>
+
+        <ImageButton
+            android:id="@+id/password_question"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/iod_verify_bottom_text_mar_top"/>
+
+    </RelativeLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/iod_verify_toast_layout_padd"
+        android:layout_marginRight="@dimen/iod_verify_toast_layout_padd"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/input_point"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/iod_verify_small_point"
+            android:gravity="center"
+            android:orientation="horizontal"/>
+    </HorizontalScrollView>
+
+    <GridLayout
+        android:id="@+id/grid_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/iod_verify_keyboard_top"
+        android:columnCount="3"
+        android:orientation="horizontal"
+        android:rowCount="3">
+
+        <com.zyj.ieasytools.library.views.EffectButtonView
+            style="@style/ios_button_style"
+            android:tag="1"/>
+
+
+        <com.zyj.ieasytools.library.views.EffectButtonView
+            style="@style/ios_button_style"
+            android:layout_marginBottom="@dimen/iod_verify_keyboard_padd"
+            android:layout_marginLeft="@dimen/iod_verify_keyboard_padd"
+            android:layout_marginRight="@dimen/iod_verify_keyboard_padd"
+            android:tag="2"/>
+
+        <com.zyj.ieasytools.library.views.EffectButtonView
+            style="@style/ios_button_style"
+            android:tag="3"/>
+
+        <com.zyj.ieasytools.library.views.EffectButtonView
+            style="@style/ios_button_style"
+            android:tag="4"/>
+
+        <com.zyj.ieasytools.library.views.EffectButtonView
+            style="@style/ios_button_style"
+            android:layout_marginBottom="@dimen/iod_verify_keyboard_padd"
+            android:layout_marginLeft="@dimen/iod_verify_keyboard_padd"
+            android:layout_marginRight="@dimen/iod_verify_keyboard_padd"
+            android:tag="5"/>
+
+        <com.zyj.ieasytools.library.views.EffectButtonView
+            style="@style/ios_button_style"
+            android:tag="6"/>
+
+        <com.zyj.ieasytools.library.views.EffectButtonView
+            style="@style/ios_button_style"
+            android:tag="7"/>
+
+        <com.zyj.ieasytools.library.views.EffectButtonView
+            style="@style/ios_button_style"
+            android:layout_marginLeft="@dimen/iod_verify_keyboard_padd"
+            android:layout_marginRight="@dimen/iod_verify_keyboard_padd"
+            android:tag="8"/>
+
+        <com.zyj.ieasytools.library.views.EffectButtonView
+            style="@style/ios_button_style"
+            android:tag="9"/>
+
+    </GridLayout>
+
+    <com.zyj.ieasytools.library.views.EffectButtonView
+        android:id="@+id/point_zero"
+        style="@style/ios_button_style"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/iod_verify_keyboard_padd"
+        android:tag="0"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/iod_verify_bottom_text_mar_top"
+        android:layout_marginRight="@dimen/iod_verify_bottom_text_mar_top"
+        android:layout_marginTop="@dimen/iod_verify_bottom_text_mar_top"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/del_password"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:alpha="0"
+            android:tag="-1"/>
+
+        <TextView
+            android:id="@+id/enter_password"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:gravity="right"
+            android:text="@android:string/ok"/>
+    </RelativeLayout>
+
+
+</LinearLayout>

@@ -1,19 +1,26 @@
 package com.zyj.ieasytools.library.encrypt;
 
+import android.text.TextUtils;
+
 /**
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
+ *
  * Need a password<br>
  * Finish
- *
- * @author yuri.zheng 2016/04/25
  */
 public class RC4Encrypt extends BaseEncrypt {
 
-    private RC4Encrypt(String privateKey) {
+    protected RC4Encrypt(String privateKey) {
         super(privateKey, ENCRYPT_RC4);
     }
 
     @Override
     protected String protectedEncrypt(String resourceString) {
+        if (TextUtils.isEmpty(resourceString)) {
+            return "";
+        }
         String key = getPrivateKey();
         if (resourceString == null || key == null) {
             return null;
@@ -23,6 +30,9 @@ public class RC4Encrypt extends BaseEncrypt {
 
     @Override
     protected String protectedDecrypt(String encryptString) {
+        if (TextUtils.isEmpty(encryptString)) {
+            return "";
+        }
         String key = getPrivateKey();
         if (encryptString == null || key == null) {
             return null;

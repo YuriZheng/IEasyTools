@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
+ *
  * The base encrypt class<br>
  * Note:The private key's length must been range {@link #ENCRYPT_PRIVATE_KEY_LENGTH_MIN}-{@link #ENCRYPT_PRIVATE_KEY_LENGTH_MAX}
- *
- * @author yuri.zheng 2016/04/25
  */
 public abstract class BaseEncrypt {
 
@@ -106,7 +108,8 @@ public abstract class BaseEncrypt {
     }
 
     /**
-     * Add the encrypt listener
+     * Add the encrypt listener<br>
+     * Best not to use
      *
      * @param listener the listener
      * @hide
@@ -116,7 +119,8 @@ public abstract class BaseEncrypt {
     }
 
     /**
-     * Remove the encrypt listener
+     * Remove the encrypt listener<br>
+     * Best not to use
      *
      * @param listener the listener
      * @hide
@@ -135,8 +139,11 @@ public abstract class BaseEncrypt {
     public String encrypt(String resourceString, int version) {
         startEncrypt(resourceString);
         String after = "";
-        if (version == ZYJVersion.FIRST_VERSION) {
-            after = protectedEncrypt(resourceString);
+        // Distinguish encrypt method from diff version
+        switch (version) {
+            case ZYJVersion.FIRST_VERSION:
+                after = protectedEncrypt(resourceString);
+                break;
         }
         endEncrypt(after);
         return after;
@@ -152,8 +159,11 @@ public abstract class BaseEncrypt {
     public String decrypt(String encryptString, int version) {
         startDecrypt(encryptString);
         String after = "";
-        if (version == ZYJVersion.FIRST_VERSION) {
-            after = protectedDecrypt(encryptString);
+        // Distinguish decrypt method from diff version
+        switch (version) {
+            case ZYJVersion.FIRST_VERSION:
+                after = protectedDecrypt(encryptString);
+                break;
         }
         endDecrypt(after);
         return after;

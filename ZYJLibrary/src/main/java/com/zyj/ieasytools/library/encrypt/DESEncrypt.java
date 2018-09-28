@@ -1,5 +1,7 @@
 package com.zyj.ieasytools.library.encrypt;
 
+import android.text.TextUtils;
+
 import java.security.Key;
 
 import javax.crypto.Cipher;
@@ -8,9 +10,11 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 /**
- * DESEncrypt encrypt class
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  *
- * @author yuri.zheng 2016/04/25
+ * DESEncrypt encrypt class
  */
 public class DESEncrypt extends BaseEncrypt {
 
@@ -19,7 +23,7 @@ public class DESEncrypt extends BaseEncrypt {
      */
     private final String MODE = "DES/ECB/ISO10126Padding";
 
-    private DESEncrypt(String privateKey) {
+    protected DESEncrypt(String privateKey) {
         super(privateKey, ENCRYPT_DES);
     }
 
@@ -32,6 +36,9 @@ public class DESEncrypt extends BaseEncrypt {
 
     @Override
     protected String protectedEncrypt(String resourceString) {
+        if (TextUtils.isEmpty(resourceString)) {
+            return "";
+        }
         try {
             Key deskey = generateKey(getPrivateKey());
             Cipher cipher = Cipher.getInstance(MODE);
@@ -46,6 +53,9 @@ public class DESEncrypt extends BaseEncrypt {
 
     @Override
     protected String protectedDecrypt(String encryptString) {
+        if (TextUtils.isEmpty(encryptString)) {
+            return "";
+        }
         try {
             Key deskey = generateKey(getPrivateKey());
             Cipher cipher = Cipher.getInstance(MODE);

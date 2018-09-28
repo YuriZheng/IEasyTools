@@ -1,4 +1,129 @@
 <resources>
-    <string name="app_name">IApplication</string>
-    <string name="action_settings">Settings</string>
+
+    <string name="app_name">SecretSecurity</string>
+
+    <string name="application_reboot">Exit</string>
+
+    <!-- Settings -->
+    <string name="settings_help">Help To use</string>
+    <string name="settings_about">About Us</string>
+    <string name="settings_settings">Setting</string>
+    <string name="settings_feedback">Feedback</string>
+    <string name="settings_view_other">Other Database</string>
+    <string name="settings_password_time_out">Setting password expiration</string>
+    <string name="settings_import_other_file">Import other database</string>
+    <string name="settings_import_title">Import</string>
+    <string name="settings_import_file_title">Choose a file</string>
+    <string name="settings_import_no_manager">Please install the file manager</string>
+    <string name="settings_import_path_error">Path error</string>
+    <string name="settings_import_file_error">File read error</string>
+    <string name="settings_import_database_path_error">Database path is wrong</string>
+    <string name="settings_import_error_suffix">File format error</string>
+    <string name="settings_import_already">%1$s already import!</string>
+    <string name="settings_import_success">Import success</string>
+    <string name="settings_export_other_file">Export the database to local</string>
+    <string name="settings_export_title">Export</string>
+    <string name="settings_export_exists">Database file is not exists, Please reboot application!</string>
+    <string name="settings_export_sd_error">The SD card does not exist, or there is not enough storage space</string>
+    <string name="settings_export_file">Exporting file to:\n%1$s</string>
+    <string name="settings_export_exception">Copy file is abnormal. try again?</string>
+    <string name="settings_export_exists_success">Export to: %1$s</string>
+    <string name="settings_password_time_out_title">Choose:</string>
+    <string name="settings_password_time_out_grade_1">Ten minutes</string>
+    <string name="settings_password_time_out_grade_2">Thirty minutes</string>
+    <string name="settings_password_time_out_grade_3">One hour</string>
+    <string name="settings_password_time_out_grade_4">Two hours</string>
+    <string name="settings_password_time_out_grade_5">One day</string>
+    <string name="settings_password_time_out_grade_6">Never</string>
+    <string name="settings_password_time_explanation">Within a set time "Enter password" effective, over time you need to enter the "Enter Password" again for authentication</string>
+    <string name="settings_password_time_never">Any period of time into the applications no longer need to verify identity</string>
+    <string name="settings_password_time_warn">Safety warning</string>
+
+    <string name="other_db_title">Other Database</string>
+    <string name="other_db_dialog_switch">Switch</string>
+    <string name="other_db_dialog_switching">Switching to other database</string>
+    <string name="other_db_null_error">Path or name is null</string>
+    <string name="other_db_switch_same_db">Current database already handle</string>
+    <string name="other_db_dialog_message">Make sure to switch to another database?</string>
+    <string name="other_db_switch_success">Switch database success</string>
+
+    <string name="file_manager_title">File Manager</string>
+    <string name="file_manager_can_not_read">File path can\&apos;t read!</string>
+
+    <string name="verify_enterpassword_input">Key Input</string>
+    <string name="verify_enterpassword_ios">Verify Number</string>
+    <string name="verify_enterpassword_fingerprint">Verify Finger</string>
+    <string name="verify_enterpassword_gesture">Verify gesture</string>
+    <string name="enter_password_setting">Setting Enter Password</string>
+    <string name="enter_password_verify">Verify Password</string>
+    <string name="verify_enter_clear">Reset</string>
+    <string name="verify_enter_del">Delete</string>
+    <string name="verify_enter_copy">Input Again</string>
+    <string name="verify_enter_faile">Verify Faile</string>
+    <string name="verify_password_no_match">Passwords do not match</string>
+    <string name="verify_passed">Validation passed</string>
+    <string name="verify_five_minutes_later">Try %1$d minutes later</string>
+    <string name="verify_error_count">Error:%1$d</string>
+
+    <string name="database_open_error">Database open error:%1$s</string>
+    <string name="database_open_file_exception">database open file exception</string>
+    <string name="database_open_password_wrong">database open password wrong</string>
+    <string name="database_open_open_unknow">database open unknow</string>
+    <string name="database_open_unknow">unknow</string>
+
+    <string name="password_short">Password is too short</string>
+    <string name="password_long">Password is too long</string>
+    <string name="setting_password_finish">Setup is complete</string>
+
+    <string name="add_input_title">Title</string>
+    <string name="add_input_title_hint">Input title between 2 and 10 chars</string>
+    <string name="add_input_user">User</string>
+    <string name="add_input_user_hint">Input user</string>
+    <string name="add_input_password">Password</string>
+    <string name="add_input_password_hint">Input password</string>
+    <string name="add_input_method">Method</string>
+    <string name="add_input_method_hint">Encrypt method</string>
+    <string name="add_input_email">Email</string>
+    <string name="add_input_email_hint">Input email for this user</string>
+    <string name="add_input_phone">Phone</string>
+    <string name="add_input_phone_hint">Input phone for this user</string>
+    <string name="add_input_address">Address</string>
+    <string name="add_input_address_hint">Input address for this user</string>
+    <string name="add_input_description">Description</string>
+    <string name="add_input_description_hint">Description for this user</string>
+    <string name="add_input_q_1">Question 1</string>
+    <string name="add_input_q_hint">Input the question for this user</string>
+    <string name="add_input_a_1">Answe 1</string>
+    <string name="add_input_a_hint">Input the answe for this user</string>
+    <string name="add_input_q_2">Question 2</string>
+    <string name="add_input_q_3">Question 3</string>
+    <string name="add_input_a_2">Answe 2</string>
+    <string name="add_input_a_3">Answe 3</string>
+    <string name="add_input_remark">Remark</string>
+    <string name="add_input_remark_hint">Input remark</string>
+    <string name="add_input_next">Next</string>
+    <string name="add_input_previous">Previous</string>
+    <string name="add_method">Choice encrypt method:</string>
+    <string name="add_encrypt_help">Encryption method?</string>
+    <string name="add_input_see_password">Input see password</string>
+    <string name="add_save">Save</string>
+    <string name="add_success">Insert success</string>
+    <string name="add_fail">Insert fail</string>
+    <string name="add_see_password_help">See password?</string>
+    <string name="add_enter_password_help">Enter password?</string>
+    <string name="add_save_title_null">Title can\'t be null</string>
+    <string name="add_save_user_null">User can\'t be null</string>
+    <string name="add_save_password_null">Password can\'t be null</string>
+
+    <!-- Password group -->
+    <string name="password_catrgory_web">Web</string>
+    <string name="password_catrgory_email">Email</string>
+    <string name="password_catrgory_wallet">Wallet</string>
+    <string name="password_catrgory_app">Application</string>
+    <string name="password_catrgory_game">Game</string>
+    <string name="password_catrgory_other">Other</string>
+
+    <!-- No translatable-->
+    <string name="blank_text" translatable="false"></string>
+
 </resources>

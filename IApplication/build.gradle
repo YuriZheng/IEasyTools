@@ -2,7 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '24.0.3'
+
+    // Lambda
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
         applicationId "com.zyj.ieasytools"
@@ -10,19 +16,61 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        jackOptions {
+            enabled true
+        }
     }
-    buildTypes {
+
+    signingConfigs {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+        }
+        debug {
+            storeFile file(DEBUG_STORE_FILE)
+            storePassword DEBUG_STORE_PASSWORD
+            keyAlias DEBUG_KEY_ALIAS
+            keyPassword DEBUG_KEY_PASSWORD
+        }
+    }
+
+    buildTypes {
+        debug {
+
+            buildConfigField("boolean", "FUNCTION_DEBUG", "true")
+
+//            minifyEnabled false
+//            zipAlignEnabled false
+//            shrinkResources false
+
+            debuggable true
+            jniDebuggable true
+
+            signingConfig signingConfigs.debug
+
+        }
+
+        release {
+
+            buildConfigField("boolean", "FUNCTION_DEBUG", "false")
+
+//            minifyEnabled true
+//            zipAlignEnabled true
+//            shrinkResources true
+
+            debuggable false
+            jniDebuggable false
+
+            signingConfig signingConfigs.release
+
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:design:23.2.1'
     compile project(':ZYJLibrary')
 }

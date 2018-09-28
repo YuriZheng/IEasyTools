@@ -2,19 +2,58 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <!-- Action bar -->
         <item name="colorPrimary">@color/colorPrimary</item>
+        <!-- Status bar -->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- Tint widgets -->
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Animation" parent="AppTheme.NoActionBar">
+        <item name="android:windowAnimationStyle">@style/activity_push_animation_style</item>
+    </style>
+
+    <style name="activity_push_animation_style">
+        <!--
+            当我们从 A1 启动 A2 时，A1 从屏幕上消失，这个动画叫做 android:activityOpenExitAnimation
+            当我们从 A1 启动 A2 时，A2 出现在屏幕上，这个动画叫做 android:activityOpenEnterAnimation
+            当我们从 A2 退出回到 A1 时，A2 从屏幕上消失，这个叫做 android:activityCloseExitAnimation
+            当我们从 A2 退出回到 A1 时，A1 出现在屏幕上，这个叫做 android:activityCloseEnterAnimation
+        -->
+        <item name="android:activityOpenExitAnimation">@anim/activity_push_open_exit</item>
+        <item name="android:activityOpenEnterAnimation">@anim/activity_push_open_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_push_close_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_push_close_enter</item>
+    </style>
+
+    <style name="app_welcome_theme_style" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@mipmap/start_up_bg</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="enter_password_dialog_style">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/share_dialog_animation_style</item>
+    </style>
+
+    <style name="share_dialog_animation_style" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/input_enter_password_open</item>
+        <item name="android:windowExitAnimation">@anim/input_enter_password_close</item>
+    </style>
 
 </resources>

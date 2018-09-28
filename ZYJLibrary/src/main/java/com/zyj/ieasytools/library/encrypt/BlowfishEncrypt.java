@@ -1,12 +1,16 @@
 package com.zyj.ieasytools.library.encrypt;
 
+import android.text.TextUtils;
+
 import java.security.MessageDigest;
 import java.util.Random;
 
 /**
- * Blowfish encrypt class
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  *
- * @author yuri.zheng 2016/04/25
+ * Blowfish encrypt class
  */
 public class BlowfishEncrypt extends BaseEncrypt {
     private static final char HEXTAB[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
@@ -14,7 +18,7 @@ public class BlowfishEncrypt extends BaseEncrypt {
     private BlowfishCBC m_bfish;
     private Random m_rndGen = new Random();
 
-    private BlowfishEncrypt(String privateKey) {
+    protected BlowfishEncrypt(String privateKey) {
         super(privateKey, ENCRYPT_BLOWFISH);
         MessageDigest digest = null;
         try {
@@ -30,11 +34,17 @@ public class BlowfishEncrypt extends BaseEncrypt {
 
     @Override
     protected String protectedEncrypt(String resourceString) {
+        if (TextUtils.isEmpty(resourceString)) {
+            return "";
+        }
         return encryptString(resourceString);
     }
 
     @Override
     protected String protectedDecrypt(String encryptString) {
+        if (TextUtils.isEmpty(encryptString)) {
+            return "";
+        }
         return decryptString(encryptString);
     }
 

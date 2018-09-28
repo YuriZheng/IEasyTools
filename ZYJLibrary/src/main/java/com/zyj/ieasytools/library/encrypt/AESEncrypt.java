@@ -1,5 +1,7 @@
 package com.zyj.ieasytools.library.encrypt;
 
+import android.text.TextUtils;
+
 import java.security.Key;
 import java.security.SecureRandom;
 
@@ -8,10 +10,12 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 /**
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
+ *
  * AES encrypt class,Nees a private password to encrypt or decrypt string<br>
  * Default encrypt class
- *
- * @author yuri.zheng 2016/04/25
  */
 public class AESEncrypt extends BaseEncrypt {
 
@@ -20,18 +24,14 @@ public class AESEncrypt extends BaseEncrypt {
      */
     private final String MODE = "AES";
 
-    private AESEncrypt(String privateKey) {
+    protected AESEncrypt(String privateKey) {
         super(privateKey, ENCRYPT_AES);
     }
 
     private SecretKey generateKey(String keyStr) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
         SecureRandom sr = null;
-        if (android.os.Build.VERSION.SDK_INT >= 17) {
-            sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
-        } else {
-            sr = SecureRandom.getInstance("SHA1PRNG");
-        }
+        sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
         sr.setSeed(keyStr.getBytes("utf-8"));
         kgen.init(128, sr); // 192 and 256 bits may not be available
         SecretKey skey = kgen.generateKey();
@@ -40,6 +40,9 @@ public class AESEncrypt extends BaseEncrypt {
 
     @Override
     protected String protectedEncrypt(String resourceString) {
+        if (TextUtils.isEmpty(resourceString)) {
+            return "";
+        }
         try {
             Key key = generateKey(getPrivateKey());
             Cipher cipher = Cipher.getInstance(MODE);
@@ -54,6 +57,9 @@ public class AESEncrypt extends BaseEncrypt {
 
     @Override
     protected String protectedDecrypt(String encryptString) {
+        if (TextUtils.isEmpty(encryptString)) {
+            return "";
+        }
         try {
             byte[] data = Base64Encrypt.Base64Utils.parseHexStr2Byte(encryptString);
             Key key = generateKey(getPrivateKey());

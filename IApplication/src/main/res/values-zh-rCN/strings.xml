@@ -1,75 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- 标题 -->
-    <string name="app_name">爱易工具</string>
+    <string name="app_name">易密保</string>
 
-    <!-- 公共菜单 -->
-    <string name="menu_setting">设置</string>
-    <string name="menu_exit">退出</string>
-    <string name="menu_save">保存</string>
-    <string name="menu_next_step">下一步</string>
+    <string name="application_reboot">退出</string>
 
-    <!-- 文件管理 -->
-    <string name="fragment_file_tag_name">文件管理</string>
-    <string name="fragment_path_hint_text">路径:</string>
-    <string name="fragment_error_path">非法路径</string>
+    <!-- 设置 -->
+    <string name="settings_help">使用手册</string>
+    <string name="settings_about">关于我们</string>
+    <string name="settings_settings">操作设置</string>
+    <string name="settings_feedback">反馈意见</string>
+    <string name="settings_view_other">查看其它</string>
+    <string name="settings_password_time_out">设置密码过期时间</string>
+    <string name="settings_import_other_file">导入其它数据库</string>
+    <string name="settings_import_title">导入</string>
+    <string name="settings_import_file_title">请选择一个文件</string>
+    <string name="settings_import_no_manager">请安装文件管理器</string>
+    <string name="settings_import_path_error">路径错误</string>
+    <string name="settings_import_file_error">文件读取错误</string>
+    <string name="settings_import_database_path_error">数据库路径获取错误</string>
+    <string name="settings_import_error_suffix">文件格式选择错误</string>
+    <string name="settings_import_already">%1$s已经导入，不能重复导入！</string>
+    <string name="settings_import_success">导入成功</string>
+    <string name="settings_export_other_file">导出数据库文件到本地</string>
+    <string name="settings_export_title">导出</string>
+    <string name="settings_export_exists">数据库文件不存在,请退出应用重新启动!</string>
+    <string name="settings_export_sd_error">SD卡不存在,或存储空间不足</string>
+    <string name="settings_export_file">正在导出文件到:\n%1$s</string>
+    <string name="settings_export_exception">拷贝文件异常,重试？</string>
+    <string name="settings_export_exists_success">复制成功: %1$s</string>
+    <string name="settings_password_time_out_title">请选择:</string>
+    <string name="settings_password_time_out_grade_1">10分钟</string>
+    <string name="settings_password_time_out_grade_2">30分钟</string>
+    <string name="settings_password_time_out_grade_3">1个小时</string>
+    <string name="settings_password_time_out_grade_4">2个小时</string>
+    <string name="settings_password_time_out_grade_5">1天</string>
+    <string name="settings_password_time_out_grade_6">永不</string>
+    <string name="settings_password_time_explanation">在设定时间内"进入密码"有效，超过该时间则需要再次输入"进入密码"来进行身份验证</string>
+    <string name="settings_password_time_never">任何时间段进入应用都不再需要验证身份</string>
+    <string name="settings_password_time_warn">安全警告</string>
 
-    <!-- 文件管理菜单 -->
+    <string name="other_db_title">其它数据库</string>
+    <string name="other_db_dialog_switch">切换</string>
+    <string name="other_db_dialog_switching">正在切换到其它数据库</string>
+    <string name="other_db_null_error">路径或者名称为空</string>
+    <string name="other_db_switch_same_db">当前数据库已经为选择的数据库，无法切换</string>
+    <string name="other_db_dialog_message">确认切换到其它数据库？</string>
+    <string name="other_db_switch_success">切换成功</string>
 
+    <string name="file_manager_title">文件管理</string>
+    <string name="file_manager_can_not_read">文件路径不可读！</string>
 
-    <!-- 密码管理 -->
-    <string name="fragment_password_tag_name">密码管理</string>
-    <string name="fragment_password_input_password">请输入进入密码：</string>
-    <string name="fragment_password_input_see_password">请输入查看密码: </string>
-    <string name="fragment_password_add_title">新记录</string>
-    <string name="fragment_password_add_no_data">没有查询到数据</string>
-    <string name="fragment_password_enter_password_null">进入密码不能为空</string>
-    <string name="fragment_password_check_password_null">查看密码不能为空</string>
+    <string name="verify_enterpassword_input">键盘输入</string>
+    <string name="verify_enterpassword_ios">数字验证</string>
+    <string name="verify_enterpassword_fingerprint">指纹验证</string>
+    <string name="verify_enterpassword_gesture">手势验证</string>
+    <string name="enter_password_setting">设置进入密码</string>
+    <string name="enter_password_verify">验证密码</string>
+    <string name="verify_enter_clear">重置</string>
+    <string name="verify_enter_del">删除</string>
+    <string name="verify_enter_copy">请再次输入密码</string>
+    <string name="verify_enter_faile">验证失败</string>
+    <string name="verify_password_no_match">密码不匹配</string>
+    <string name="verify_passed">验证通过</string>
+    <string name="verify_five_minutes_later">%1$d分钟之后再试</string>
+    <string name="verify_error_count">错误%1$d次</string>
 
-    <!-- 密码记录分类 -->
-    <string name="fragment_password_choose">选择:</string>
-    <string name="fragment_password_record_web">网站账户</string>
-    <string name="fragment_password_record_email">邮箱账户</string>
-    <string name="fragment_password_record_wallet">私人钱包</string>
-    <string name="fragment_password_record_account">私人账户</string>
-    <string name="fragment_password_record_app">手机应用</string>
-    <string name="fragment_password_record_game">游戏账户</string>
-    <string name="fragment_password_record_other">其它类别</string>
-    <string name="fragment_password_record_add_title_input">请输入标题(如:百度)</string>
-    <string name="fragment_password_record_add_user_input">请输入用户名</string>
-    <string name="fragment_password_record_lable_password">密码:</string>
-    <string name="fragment_password_record_lable_password_hint">输入密码</string>
-    <string name="fragment_password_record_lable_web">网址:</string>
-    <string name="fragment_password_record_lable_web_hint">输入网址</string>
-    <string name="fragment_password_record_lable_description">描述:</string>
-    <string name="fragment_password_record_lable_description_hint">信息描述</string>
-    <string name="fragment_password_record_lable_email">绑定邮箱:</string>
-    <string name="fragment_password_record_lable_email_hint">绑定的邮箱</string>
-    <string name="fragment_password_record_lable_phone">绑定电话:</string>
-    <string name="fragment_password_record_lable_phone_hint">绑定的手机</string>
-    <string name="fragment_password_record_lable_remarks">备注信息:</string>
-    <string name="fragment_password_record_lable_question_1">安全问题1 :</string>
-    <string name="fragment_password_record_lable_question_2">安全问题2 :</string>
-    <string name="fragment_password_record_lable_question_3">安全问题3 :</string>
+    <string name="database_open_error">数据库错误代码：%1$s</string>
+    <string name="database_open_file_exception">数据库文件异常</string>
+    <string name="database_open_password_wrong">数据库密码错误</string>
+    <string name="database_open_open_unknow">数据库未知错误</string>
+    <string name="database_open_unknow">未知错误</string>
 
-    <!-- 密码管理菜单项 -->
-    <string name="menu_password_add">添加记录</string>
-    <string name="menu_password_batch_del">批量删除</string>
-    <string name="menu_password_import">导入数据库</string>
-    <string name="menu_password_settings">密码项设置</string>
+    <string name="password_short">密码太短</string>
+    <string name="password_long">密码太长</string>
+    <string name="setting_password_finish">密码设置完成</string>
 
-    <!-- 测试 -->
-    <string name="fragment_test_tag_name">测试专用</string>
+    <string name="add_input_title">标题</string>
+    <string name="add_input_title_hint">请输入标题，2-10个字符</string>
+    <string name="add_input_user">用户</string>
+    <string name="add_input_user_hint">请输入用户名</string>
+    <string name="add_input_password">密码</string>
+    <string name="add_input_password_hint">请输入密码</string>
+    <string name="add_input_method">方式</string>
+    <string name="add_input_method_hint">请选择加密\解密方法</string>
+    <string name="add_input_a_1">答案1</string>
+    <string name="add_input_a_2">答案2</string>
+    <string name="add_input_a_3">答案3</string>
+    <string name="add_input_a_hint">请输入问题答案</string>
+    <string name="add_input_address">地址</string>
+    <string name="add_input_address_hint">请输入帐号相关地址</string>
+    <string name="add_input_description">描述</string>
+    <string name="add_input_description_hint">请输入帐号相关描述</string>
+    <string name="add_input_email">邮件</string>
+    <string name="add_input_email_hint">请输入帐号绑定邮箱</string>
+    <string name="add_input_phone">电话</string>
+    <string name="add_input_phone_hint">请输入帐号绑定电话</string>
+    <string name="add_input_q_1">问题1</string>
+    <string name="add_input_q_2">问题2</string>
+    <string name="add_input_q_3">问题3</string>
+    <string name="add_input_q_hint">请输入帐号相关问题</string>
+    <string name="add_input_remark">备注</string>
+    <string name="add_input_remark_hint">请输入相关备注</string>
+    <string name="add_input_next">下一步</string>
+    <string name="add_input_previous">上一步</string>
+    <string name="add_method">选择加密方式：</string>
+    <string name="add_encrypt_help">加密方法？</string>
+    <string name="add_input_see_password">请输入查看密码</string>
+    <string name="add_save">保存</string>
+    <string name="add_success">插入成功</string>
+    <string name="add_fail">插入失败</string>
+    <string name="add_see_password_help">查看密码？</string>
+    <string name="add_enter_password_help">进入密码？</string>
+    <string name="add_save_title_null">标题不能为空</string>
+    <string name="add_save_user_null">用户不能为空</string>
+    <string name="add_save_password_null">密码不能为空</string>
 
-    <!-- 内存单元 -->
-    <string name="memory_unit_unknow">未知容量</string>
-
-    <!-- 暂无翻译的 -->
-    <string name="fragment_password_open_databse_faile">密码错误或数据库文件错误，请确保密码正确、sd卡可读然后重试</string>
-    <string name="settings_property_error">数据库错误，请重新运行本程序</string>
-    <string name="fragment_password_username_not_null">用户名不能为空</string>
-    <string name="fragment_password_not_null">密码不能为空</string>
-    <string name="fragment_password_add_dialog_error">添加数据异常,请重新退出然后重新进入应用</string>
+    <!-- 分组 -->
+    <string name="password_catrgory_web">网页</string>
+    <string name="password_catrgory_email">邮件</string>
+    <string name="password_catrgory_wallet">钱包</string>
+    <string name="password_catrgory_app">应用</string>
+    <string name="password_catrgory_game">游戏</string>
+    <string name="password_catrgory_other">其它</string>
 
 </resources>

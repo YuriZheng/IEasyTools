@@ -1,42 +1,53 @@
 package com.zyj.ieasytools.library.encrypt;
 
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
+import com.zyj.ieasytools.library.utils.ZYJVersion;
+
 /**
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
+ * <p>
  * The password entry
- *
- * @author yuri.zheng 2016/04/25
  */
 public final class PasswordEntry implements Parcelable {
+
+    // TODO: 2016/8/18  6个不加密、6个不能修改，
+    // TODO: 2016/8/18 因为显示简介时，需要根据不同的查看密码来获取真实信息，所以这里规定“UUID”、“类别”、“标题”、“用户”、“描述”和“备注”六个字段不进行任何形式的加密
 
     /**
      * Web group，default
      */
-    public static final int CATEGORY_WEB = 0;
+    public static final String CATEGORY_WEB = "web";
     /**
      * Email group
      */
-    public static final int CATEGORY_EMAIL = 1;
+    public static final String CATEGORY_EMAIL = "email";
     /**
      * Wallet group
      */
-    public static final int CATEGORY_WALLET = 2;
+    public static final String CATEGORY_WALLET = "wallet";
     /**
      * Application group
      */
-    public static final int CATEGORY_APP = 3;
+    public static final String CATEGORY_APP = "app";
     /**
      * Game group
      */
-    public static final int CATEGORY_GAME = 4;
+    public static final String CATEGORY_GAME = "game";
     /**
      * Other group
      */
-    public static final int CATEGORY_OTHER = 5;
+    public static final String CATEGORY_OTHER = "other";
 
-    private String uuid; // No change
+    /**
+     * <h1>No change</h1>
+     * UUID,Uniquely identifies
+     */
+    private String uuid;
 
     /**
      * Category<br>
@@ -47,7 +58,7 @@ public final class PasswordEntry implements Parcelable {
      * {@link #CATEGORY_OTHER}<br>
      * Other Customize group
      */
-    public int p_category = CATEGORY_WEB;
+    public String p_category = CATEGORY_WEB;
 
     /**
      * Save title
@@ -115,29 +126,33 @@ public final class PasswordEntry implements Parcelable {
     public String p_q_a_3;
 
     /**
-     * The add time
+     * <h1>No change</h1>
+     * The add time, not encrypt
      */
-    private long p_add_time = -1;// No change
+    private long p_add_time = -1;
 
     /**
-     * The last modify time
+     * The last modify time, not encrypt
      */
     public long p_modify_time = -1;
 
     /**
-     * The encrypt method
+     * <h1>No change</h1>
+     * The encrypt method, not encrypt
      */
-    private String p_encryption_method = BaseEncrypt.ENCRYPT_AES;// No change
+    private String p_encryption_method = BaseEncrypt.ENCRYPT_AES;
 
     /**
-     * Compared field, to judg the password
+     * <h1>No change</h1>
+     * Compared field, to judg the password, not encrypt
      */
-    public String p_test_from = "";
+    private String p_test_from;
 
     /**
-     * The string after encrypt
+     * <h1>No change</h1>
+     * The string after encrypt, not encrypt
      */
-    public String p_test_to = "";
+    private String p_test_to;
 
     /**
      * The remark
@@ -145,41 +160,56 @@ public final class PasswordEntry implements Parcelable {
     public String p_remarks;
 
     /**
-     * This app's version,Compatible version of encrypt method
+     * <h1>No change</h1>
+     * This app's version,Compatible version of encrypt method, not encrypt<br>
+     * {@link android.os.Build.VERSION#SDK_INT}
      */
-    public int p_version = Build.VERSION.SDK_INT;
+    public int p_version;
 
     /**
-     * @param uuid        key
-     * @param addTime     this record add time,if addTime is -1, say this is a new entry
-     * @param method      encryption method
-     * @param private_key private key,the see password
+     * Instance from database
+     *
+     * @param uuid    key
+     * @param addTime this record add time,if addTime is -1, say this is a new entry
+     * @param method  encryption method
+     * @param from    check the passwrod resource
+     * @param to      check the password's string after compared
+     * @param version encrypted app's version
      */
-    public PasswordEntry(String uuid, long addTime, String method, String private_key) {
-        this(uuid, addTime, method, "", private_key);
-    }
-
-    /**
-     * @param uuid        key
-     * @param addTime     this record add time,if addTime is -1, say this is a new entry
-     * @param method      encryption method
-     * @param public_key  public key,Temporarily not used
-     * @param private_key private key,the see password
-     * @deprecated Temporarily not used to public
-     */
-    public PasswordEntry(String uuid, long addTime, String method, String public_key, String private_key) {
+    public PasswordEntry(String uuid, long addTime, String method, String from, String to, int version) {
         this.uuid = uuid;
-        if (p_add_time <= 0) {
+        if (addTime <= 0) {
             p_add_time = System.currentTimeMillis();
         } else {
             p_add_time = addTime;
         }
-        this.p_encryption_method = method;
+        p_version = version;
+        p_encryption_method = method;
+        p_test_from = from;
+        p_test_to = to;
+    }
+
+    /**
+     * New from code
+     *
+     * @param uuid     key
+     * @param password the entry's password
+     * @param method   encryption method
+     */
+    public PasswordEntry(String uuid, String password, String method) {
+        String[] test = ZYJDatabaseUtils.generateTestTo(method, password, ZYJVersion.getCurrentVersion());
+        this.uuid = uuid;
+        p_add_time = System.currentTimeMillis();
+        p_modify_time = p_add_time;
+        p_version = ZYJVersion.getCurrentVersion();
+        p_encryption_method = method;
+        p_test_from = test[0];
+        p_test_to = test[1];
     }
 
     private PasswordEntry(Parcel in) {
         uuid = in.readString();
-        p_category = in.readInt();
+        p_category = in.readString();
         p_username = in.readString();
         p_password = in.readString();
         p_address = in.readString();
@@ -204,7 +234,7 @@ public final class PasswordEntry implements Parcelable {
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(uuid);
-        dest.writeInt(p_category);
+        dest.writeString(p_category);
         dest.writeString(p_username);
         dest.writeString(p_password);
         dest.writeString(p_address);
@@ -232,18 +262,14 @@ public final class PasswordEntry implements Parcelable {
         if (o instanceof PasswordEntry) {
             PasswordEntry entry = (PasswordEntry) o;
             // uuid、password、username
-            return entry.uuid.equals(this.uuid) && entry.p_password.equals(p_password) && entry.p_username.equals(p_username);
+            return entry.uuid.equals(this.uuid) && entry.p_username.equals(p_username);
         }
         return false;
     }
 
     @Override
     public String toString() {
-        return "Title: " + p_title
-                + "UUID: " + uuid
-                + "Username: " + p_username
-                + ", Add time: " + p_add_time
-                + ", Encrypt way: " + p_encryption_method;
+        return "UUID: " + uuid + ", Title: " + p_title + ", Username: " + p_username;
     }
 
     @Override
@@ -292,6 +318,27 @@ public final class PasswordEntry implements Parcelable {
      */
     public String getEncryptionMethod() {
         return p_encryption_method;
+    }
+
+    /**
+     * {@link #p_test_from}
+     */
+    public String getTestFrom() {
+        return p_test_from;
+    }
+
+    /**
+     * {@link #p_test_to}
+     */
+    public String getTestTo() {
+        return p_test_to;
+    }
+
+    /**
+     * {@link #p_version}
+     */
+    public int getEncryptVersion() {
+        return p_version;
     }
 
     @Override

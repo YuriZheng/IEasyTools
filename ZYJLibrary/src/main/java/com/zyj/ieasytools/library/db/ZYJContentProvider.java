@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.Nullable;
 
+import com.zyj.ieasytools.library.utils.ZYJDatabaseUtils;
 import com.zyj.ieasytools.library.utils.ZYJVersion;
 
 import net.sqlcipher.database.SQLiteDatabase;
@@ -16,7 +17,9 @@ import net.sqlcipher.database.SQLiteQueryBuilder;
 import java.lang.reflect.Method;
 
 /**
- * Created by yuri.zheng on 2016/5/5.
+ * Author: Yuri.zheng<br>
+ * Date: 8/21/16<br>
+ * Email: 497393102@qq.com<br>
  */
 public class ZYJContentProvider extends ContentProvider {
 
@@ -65,11 +68,11 @@ public class ZYJContentProvider extends ContentProvider {
     }
 
     private boolean openSettingsDatabase() {
-        if (mSettingDb == null) {
+        if (mSettingDb == null || !mSettingDb.isOpen()) {
             // The instance must be completed, otherwise occur error
-            ZYJSettings settings = ZYJSettings.getInstance(getContext());
+            ZYJDatabaseSettings settings = ZYJDatabaseUtils.getSettingsInstance(getContext());
             try {
-                Method method = ZYJSettings.class.getDeclaredMethod("openDatabase");
+                Method method = ZYJDatabaseSettings.class.getDeclaredMethod("openDatabase");
                 method.setAccessible(true);
                 BaseDatabase.MySQLiteDatabase settingMy = (BaseDatabase.MySQLiteDatabase) method.invoke(settings);
                 if (settingMy != null) {

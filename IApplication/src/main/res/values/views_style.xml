@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="base_button_background_less">
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="base_button_background">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="activity_main_group_image_button_style" parent="base_button_background_less">
+        <item name="android:layout_width">?attr/actionBarSize</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:layout_gravity">right</item>
+        <item name="android:onClick">onGroupMenuClick</item>
+    </style>
+
+    <style name="input_enter_password_dialog_sub_title">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/input_enter_dialog_sub_padd</item>
+        <item name="android:layout_marginTop">@dimen/input_enter_dialog_sub_padd</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="add_input_lable_style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="add_input_edit_style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">5</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="setting_item_title_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/setting_item_title_color</item>
+    </style>
+
+    <style name="setting_item_explanation_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/setting_item_explanation_color</item>
+    </style>
+
+    <style name="black_line_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">@color/div_black_line_color</item>
+    </style>
+
+    <style name="while_line_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">@color/div_while_line_color</item>
+    </style>
+
+    <style name="ios_button_style">
+        <item name="android:layout_width">@dimen/iod_verify_keyboard_h_w</item>
+        <item name="android:layout_height">@dimen/iod_verify_keyboard_h_w</item>
+    </style>
+
+
+</resources>

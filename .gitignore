@@ -18,6 +18,7 @@ ZYJLibrary/gen
 .gradle/
 .idea/
 build/
+ZYJJniLib/build
 IApplication/build
 ZYJLibrary/build
 
@@ -40,9 +41,16 @@ captures/
 
 # Iml file
 IEasyTools.iml
+ZYJJniLib/ZYJJniLib.iml
 IApplication/IApplication.iml
 ZYJLibrary/ZYJLibrary.iml
 
 # Igonre gradle file
 /build.gradle
 /gradle
+
+.DS_Store
+
+zyj.readme
+gradle.properties
+keystore
